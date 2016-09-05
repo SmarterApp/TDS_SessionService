@@ -8,6 +8,17 @@ public class Session {
     private int type;
     private long id;
 
+    public Session(){}
+
+    /**
+     * @param type type of session
+     * @param id unique identifier for the session
+     */
+    public Session(int type, long id) {
+        this.type = type;
+        this.id = id;
+    }
+
     /**
      * @return the id for the session
      */

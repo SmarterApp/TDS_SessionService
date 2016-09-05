@@ -6,13 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tds.session.Session;
 import tds.session.services.SessionService;
-
-import java.util.Optional;
+import tds.session.web.resources.SessionResource;
+import web.exceptions.NotFoundException;
 
 /**
  * Contains the endpoints for the session
  */
 @RestController
+@RequestMapping("/session")
 public class SessionController {
     private final SessionService sessionService;
 
@@ -21,14 +22,12 @@ public class SessionController {
         this.sessionService = sessionService;
     }
 
-    @RequestMapping(value = "/session/{sessionId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{sessionId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Session> getSession(@PathVariable final long sessionId) {
-        final Optional<Session> clientSystemFlag = sessionService.getSessionById(sessionId);
-//        if (!clientSystemFlag.isPresent()) {
-//            throw new NotFoundException("Could not find ClientSystemFlag for client name " + clientName + " and audit object " + auditObject);
-//        }
+    public ResponseEntity<SessionResource> getSession(@PathVariable final long sessionId) {
+        final Session session = sessionService.getSessionById(sessionId)
+                .orElseThrow(() -> new NotFoundException("Could not find session for %d", sessionId));
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(new SessionResource(session));
     }
 }

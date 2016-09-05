@@ -19,6 +19,8 @@
     </parent>
 
     <properties>
+        <tds.session.client>0.0.1-SNAPSHOT</tds.session.client>
+        <tds.common>0.0.1-SNAPSHOT</tds.common>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <unit-tests.skip>false</unit-tests.skip>
@@ -33,7 +35,12 @@
         <dependency>
             <groupId>org.opentestsystem.session</groupId>
             <artifactId>tds-session-client</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${tds.session.client}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opentestsystem.common</groupId>
+            <artifactId>tds-common</artifactId>
+            <version>${tds.common}</version>
         </dependency>
 
         <!-- Spring dependencies -->
