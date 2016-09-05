@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import tds.session.Session;
 import tds.session.services.SessionService;
 import tds.session.web.resources.SessionResource;
-import web.exceptions.NotFoundException;
+import tds.common.web.exceptions.NotFoundException;
 
 import java.util.UUID;
 

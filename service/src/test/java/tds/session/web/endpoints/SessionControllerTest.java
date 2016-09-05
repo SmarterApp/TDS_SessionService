@@ -11,7 +11,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import tds.session.Session;
 import tds.session.services.SessionService;
 import tds.session.web.resources.SessionResource;
-import web.exceptions.NotFoundException;
+import tds.common.web.exceptions.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
