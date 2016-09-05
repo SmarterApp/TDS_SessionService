@@ -10,17 +10,6 @@ public class Session {
     private int type;
     private UUID id;
 
-    public Session(){}
-
-    /**
-     * @param id unique identifier for the session
-     * @param type type of session
-     */
-    public Session(UUID id, int type) {
-        this.type = type;
-        this.id = id;
-    }
-
     /**
      * @return the id for the session
      */
@@ -39,7 +28,7 @@ public class Session {
         return status;
     }
 
-    void setStatus(String status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -50,7 +39,7 @@ public class Session {
         return type;
     }
 
-    void setType(int type) {
+    public void setType(int type) {
         this.type = type;
     }
 }

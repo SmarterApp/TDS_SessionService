@@ -31,11 +31,13 @@ public class SessionServiceImplTest {
     @Test
     public void itShouldReturnASession() {
         UUID id = UUID.randomUUID();
-        when(repository.getSessionById(id)).thenReturn(Optional.of(new Session(id, 0)));
+        Session session = new Session();
+        session.setId(id);
+        when(repository.getSessionById(id)).thenReturn(Optional.of(session));
 
-        Optional<Session> session = service.getSessionById(id);
+        Optional<Session> sessionOptional = service.getSessionById(id);
 
-        assertThat(session.get().getId()).isEqualTo(id);
+        assertThat(sessionOptional.get().getId()).isEqualTo(id);
 
         verify(repository).getSessionById(id);
     }

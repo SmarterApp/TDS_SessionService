@@ -42,7 +42,9 @@ public class SessionControllerTest {
     @Test
     public void aSessionCanBeFound() {
         UUID id = UUID.randomUUID();
-        when(sessionService.getSessionById(id)).thenReturn(Optional.of(new Session(id, 0)));
+        Session session = new Session();
+        session.setId(id);
+        when(sessionService.getSessionById(id)).thenReturn(Optional.of(session));
 
         ResponseEntity<SessionResource> response = controller.getSession(id);
 
