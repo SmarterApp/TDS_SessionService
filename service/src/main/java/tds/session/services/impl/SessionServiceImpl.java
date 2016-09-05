@@ -7,9 +7,10 @@ import tds.session.repositories.SessionRepository;
 import tds.session.services.SessionService;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
-public class SessionServiceImpl implements SessionService {
+class SessionServiceImpl implements SessionService {
     private final SessionRepository sessionRepository;
 
     @Autowired
@@ -18,7 +19,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public Optional<Session> getSessionById(long id) {
+    public Optional<Session> getSessionById(UUID id) {
         return sessionRepository.getSessionById(id);
     }
 }

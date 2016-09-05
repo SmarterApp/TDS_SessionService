@@ -9,6 +9,8 @@ import tds.session.services.SessionService;
 import tds.session.web.resources.SessionResource;
 import web.exceptions.NotFoundException;
 
+import java.util.UUID;
+
 /**
  * Contains the endpoints for the session
  */
@@ -24,9 +26,9 @@ public class SessionController {
 
     @RequestMapping(value = "/{sessionId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<SessionResource> getSession(@PathVariable final long sessionId) {
+    public ResponseEntity<SessionResource> getSession(@PathVariable final UUID sessionId) {
         final Session session = sessionService.getSessionById(sessionId)
-                .orElseThrow(() -> new NotFoundException("Could not find session for %d", sessionId));
+                .orElseThrow(() -> new NotFoundException("Could not find session for %s", sessionId));
 
         return ResponseEntity.ok(new SessionResource(session));
     }

@@ -15,6 +15,7 @@ import web.exceptions.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -40,20 +41,22 @@ public class SessionControllerTest {
 
     @Test
     public void aSessionCanBeFound() {
-        when(sessionService.getSessionById(1L)).thenReturn(Optional.of(new Session(0, 1L)));
+        UUID id = UUID.randomUUID();
+        when(sessionService.getSessionById(id)).thenReturn(Optional.of(new Session(id, 0)));
 
-        ResponseEntity<SessionResource> response = controller.getSession(1L);
+        ResponseEntity<SessionResource> response = controller.getSession(id);
 
-        verify(sessionService).getSessionById(1L);
+        verify(sessionService).getSessionById(id);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getSession().getId()).isEqualTo(1L);
-        assertThat(response.getBody().getId().getHref()).isEqualTo("http://localhost/session/1");
+        assertThat(response.getBody().getSession().getId()).isEqualTo(id);
+        assertThat(response.getBody().getId().getHref()).isEqualTo("http://localhost/session/" + id.toString());
     }
 
     @Test (expected = NotFoundException.class)
     public void sessionNotFoundThrows() {
-        when(sessionService.getSessionById(1L)).thenReturn(Optional.empty());
-        controller.getSession(1L);
+        UUID id = UUID.randomUUID();
+        when(sessionService.getSessionById(id)).thenReturn(Optional.empty());
+        controller.getSession(id);
     }
 }

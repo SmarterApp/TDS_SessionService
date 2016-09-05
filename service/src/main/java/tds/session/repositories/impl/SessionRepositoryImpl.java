@@ -8,6 +8,7 @@ import tds.session.repositories.SessionRepository;
 
 import javax.sql.DataSource;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class SessionRepositoryImpl implements SessionRepository {
@@ -19,7 +20,7 @@ public class SessionRepositoryImpl implements SessionRepository {
     }
 
     @Override
-    public Optional<Session> getSessionById(long id) {
+    public Optional<Session> getSessionById(UUID id) {
         return null;
     }
 }

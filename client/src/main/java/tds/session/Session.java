@@ -1,20 +1,22 @@
 package tds.session;
 
+import java.util.UUID;
+
 /**
  * Represents a session.  A session is information concerning the active session for exams to be taken.
  */
 public class Session {
     private String status;
     private int type;
-    private long id;
+    private UUID id;
 
     public Session(){}
 
     /**
-     * @param type type of session
      * @param id unique identifier for the session
+     * @param type type of session
      */
-    public Session(int type, long id) {
+    public Session(UUID id, int type) {
         this.type = type;
         this.id = id;
     }
@@ -22,11 +24,11 @@ public class Session {
     /**
      * @return the id for the session
      */
-    public long getId() {
+    public UUID getId() {
         return id;
     }
 
-    void setId(long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

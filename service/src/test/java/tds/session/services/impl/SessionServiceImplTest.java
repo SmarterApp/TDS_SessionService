@@ -8,6 +8,7 @@ import tds.session.repositories.SessionRepository;
 import tds.session.services.SessionService;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -29,12 +30,13 @@ public class SessionServiceImplTest {
 
     @Test
     public void itShouldReturnASession() {
-        when(repository.getSessionById(1L)).thenReturn(Optional.of(new Session(0, 1L)));
+        UUID id = UUID.randomUUID();
+        when(repository.getSessionById(id)).thenReturn(Optional.of(new Session(id, 0)));
 
-        Optional<Session> session = service.getSessionById(1L);
+        Optional<Session> session = service.getSessionById(id);
 
-        assertThat(session.get().getId()).isEqualTo(1L);
+        assertThat(session.get().getId()).isEqualTo(id);
 
-        verify(repository).getSessionById(1L);
+        verify(repository).getSessionById(id);
     }
 }
