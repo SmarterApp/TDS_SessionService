@@ -36,11 +36,7 @@ CREATE TABLE session (
   PRIMARY KEY (_key),
   UNIQUE KEY ix_sessionid (sessionid,clientname),
   KEY ix_sessionproctor (_efk_proctor,clientname)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
---
--- Dumping data for table session
---
---
 INSERT INTO session VALUES (X'06485031B2B64CEDA0C1B294EDA54DB2',5,'57325f70e4b0ed2c55c37e3d','CA Admin','Adm-44','closed','',NULL,'2016-08-18 18:25:07.161','2016-08-18 18:25:07.115','2016-08-18 18:26:31.669','ip-172-31-33-51',NULL,'2016-08-18 18:26:31.669','2016-08-18 18:25:07.115','SBAC_PT',X'CB5C658D4B32463D9DFA119052E27474','Development',0,NULL,2,0,NULL,NULL,NULL);
 
