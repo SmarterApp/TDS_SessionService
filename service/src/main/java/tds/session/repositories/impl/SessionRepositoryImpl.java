@@ -29,7 +29,7 @@ public class SessionRepositoryImpl implements SessionRepository {
         final SqlParameterSource parameters = new MapSqlParameterSource("id", UuidAdapter.getBytesFromUUID(id));
 
         String query = "SELECT _Key as id, sessionType as type, status \n" +
-                       "FROM session \n" +
+                       "FROM session.session \n" +
                        "WHERE _Key = :id";
 
         Optional<Session> sessionOptional;
