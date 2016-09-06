@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import tds.common.web.exceptions.NotFoundException;
 import tds.common.web.resources.ExceptionMessageResource;
 
@@ -31,5 +32,14 @@ class ExceptionAdvice {
 
         return new ResponseEntity<>(
                 new ExceptionMessageResource(HttpStatus.INTERNAL_SERVER_ERROR.toString(), ex.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    ResponseEntity<ExceptionMessageResource> handleArgumentMismatchException(final MethodArgumentTypeMismatchException ex) {
+        return new ResponseEntity<>(
+                new ExceptionMessageResource(HttpStatus.BAD_REQUEST.toString(), String.format("Invalid value: %s", ex.getName())), HttpStatus.BAD_REQUEST);
     }
 }
