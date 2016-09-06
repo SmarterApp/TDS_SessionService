@@ -210,10 +210,9 @@
                         <configuration>
                             <locations>filesystem:src/test/resources/db/migration</locations>
                             <!-- no point in running migrations if integration tests are skipped -->
-                            <!--<skip>${integration-tests.skip}</skip>-->
-                            <url>jdbc:h2:mem:configs;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS "public";</url>
+                            <skip>${integration-tests.skip}</skip>
+                            <url>jdbc:h2:mem:session;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS "public";</url>
                             <user>sa</user>
-                            <password></password>
                         </configuration>
                     </execution>
                 </executions>
