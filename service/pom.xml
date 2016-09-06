@@ -138,6 +138,12 @@
             <version>1.9.5</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -203,7 +209,7 @@
                 <executions>
                     <execution>
                         <id>flyway_test_migrations</id>
-                        <phase>test-compile</phase>
+                        <phase>test</phase>
                         <goals>
                             <goal>migrate</goal>
                         </goals>
@@ -211,8 +217,9 @@
                             <locations>filesystem:src/test/resources/db/migration</locations>
                             <!-- no point in running migrations if integration tests are skipped -->
                             <skip>${integration-tests.skip}</skip>
-                            <url>jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS "public";</url>
+                            <url>jdbc:h2:mem:session;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS "public";</url>
                             <user>sa</user>
+                            <password></password>
                         </configuration>
                     </execution>
                 </executions>
