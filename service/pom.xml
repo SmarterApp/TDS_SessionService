@@ -75,7 +75,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-            <version>4.1.7.RELEASE</version>
         </dependency>
 
         <dependency>
@@ -158,7 +157,7 @@
                 <configuration>
                     <skipTests>${unit-tests.skip}</skipTests>
                     <excludes>
-                        <exclude>**/*IntegrationTest.java</exclude>
+                        <exclude>**/*IntegrationTests.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
