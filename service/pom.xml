@@ -29,6 +29,7 @@
         <assertj.version>3.4.1</assertj.version>
         <mockito.version>1.10.19</mockito.version>
         <rest-assured.version>2.9.0</rest-assured.version>
+        <h2-database.version>1.4.191</h2-database.version>
     </properties>
 
     <dependencies>
@@ -111,21 +112,31 @@
         </dependency>
 
         <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2-database.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>${assertj.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>com.jayway.restassured</groupId>
             <artifactId>rest-assured</artifactId>
             <version>${rest-assured.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>1.9.5</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -183,6 +194,37 @@
                         </resource>
                     </resources>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>4.0.3</version>
+                <executions>
+                    <execution>
+                        <id>flyway_test_migrations</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>migrate</goal>
+                        </goals>
+                        <configuration>
+                            <locations>filesystem:src/test/resources/db/migration</locations>
+                            <!-- no point in running migrations if integration tests are skipped -->
+                            <!--<skip>${integration-tests.skip}</skip>-->
+                            <url>jdbc:h2:mem:configs;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS "public";</url>
+                            <user>sa</user>
+                            <password></password>
+                        </configuration>
+                    </execution>
+                </executions>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>${h2-database.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
