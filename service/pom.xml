@@ -211,7 +211,7 @@
                             <locations>filesystem:src/test/resources/db/migration</locations>
                             <!-- no point in running migrations if integration tests are skipped -->
                             <skip>${integration-tests.skip}</skip>
-                            <url>jdbc:h2:mem:session;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS "public";</url>
+                            <url>jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS "public";</url>
                             <user>sa</user>
                         </configuration>
                     </execution>
