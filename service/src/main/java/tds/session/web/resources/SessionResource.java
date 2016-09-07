@@ -1,6 +1,7 @@
 package tds.session.web.resources;
 
 import org.springframework.hateoas.ResourceSupport;
+
 import tds.session.Session;
 import tds.session.web.endpoints.SessionController;
 

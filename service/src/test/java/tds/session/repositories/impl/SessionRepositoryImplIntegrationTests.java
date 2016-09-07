@@ -5,13 +5,15 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.Optional;
+import java.util.UUID;
+
 import tds.session.Session;
 import tds.session.SessionServiceApplication;
 import tds.session.repositories.SessionRepository;
 
-import java.util.Optional;
-import java.util.UUID;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SessionServiceApplication.class)

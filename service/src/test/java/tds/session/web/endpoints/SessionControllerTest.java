@@ -8,14 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import tds.session.Session;
-import tds.session.services.SessionService;
-import tds.session.web.resources.SessionResource;
-import tds.common.web.exceptions.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.UUID;
+
+import tds.common.web.exceptions.NotFoundException;
+import tds.session.Session;
+import tds.session.services.SessionService;
+import tds.session.web.resources.SessionResource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -37,7 +38,8 @@ public class SessionControllerTest {
     }
 
     @After
-    public void tearDown() {}
+    public void tearDown() {
+    }
 
     @Test
     public void aSessionCanBeFound() {
@@ -55,7 +57,7 @@ public class SessionControllerTest {
         assertThat(response.getBody().getId().getHref()).isEqualTo("http://localhost/session/" + id.toString());
     }
 
-    @Test (expected = NotFoundException.class)
+    @Test(expected = NotFoundException.class)
     public void sessionNotFoundThrows() {
         UUID id = UUID.randomUUID();
         when(sessionService.getSessionById(id)).thenReturn(Optional.empty());

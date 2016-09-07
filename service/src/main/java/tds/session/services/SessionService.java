@@ -1,9 +1,9 @@
 package tds.session.services;
 
-import tds.session.Session;
-
 import java.util.Optional;
 import java.util.UUID;
+
+import tds.session.Session;
 
 /**
  * Handles interactions with the testing session

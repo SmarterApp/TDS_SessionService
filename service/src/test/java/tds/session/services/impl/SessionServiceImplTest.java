@@ -3,12 +3,13 @@ package tds.session.services.impl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import tds.session.Session;
-import tds.session.repositories.SessionRepository;
-import tds.session.services.SessionService;
 
 import java.util.Optional;
 import java.util.UUID;
+
+import tds.session.Session;
+import tds.session.repositories.SessionRepository;
+import tds.session.services.SessionService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

@@ -1,9 +1,9 @@
 package tds.session.repositories;
 
-import tds.session.Session;
-
 import java.util.Optional;
 import java.util.UUID;
+
+import tds.session.Session;
 
 /**
  * Handles the data access for {@link tds.session.Session Session}
