@@ -17,7 +17,7 @@ import tds.session.Session;
 import tds.session.repositories.SessionRepository;
 
 @Repository
-public class SessionRepositoryImpl implements SessionRepository {
+class SessionRepositoryImpl implements SessionRepository {
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
