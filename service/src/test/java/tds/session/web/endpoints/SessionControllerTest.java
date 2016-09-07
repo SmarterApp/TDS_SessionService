@@ -3,6 +3,8 @@ package tds.session.web.endpoints;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -55,6 +57,19 @@ public class SessionControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getSession().getId()).isEqualTo(id);
         assertThat(response.getBody().getId().getHref()).isEqualTo("http://localhost/session/" + id.toString());
+    }
+
+    @Test
+    public void something() {
+        try {
+            test();
+        } catch (IncorrectResultSizeDataAccessException ie) {
+            assertThat(ie).isNotNull();
+        }
+    }
+
+    private void test() {
+        throw new EmptyResultDataAccessException(1);
     }
 
     @Test(expected = NotFoundException.class)
