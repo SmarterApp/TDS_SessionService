@@ -150,3 +150,7 @@ local.properties
 
 # Code Recommenders
 .recommenders/
+
+### Project-specific ###
+# Ignore Docker environment variable files
+**/*.env

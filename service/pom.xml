@@ -188,9 +188,6 @@
                 <configuration>
                     <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
                     <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
-                    <imageTags>
-                        <imageTag>page</imageTag>
-                    </imageTags>
                     <resources>
                         <resource>
                             <targetPath>/</targetPath>
@@ -216,7 +213,7 @@
                             <locations>
                                 <location>filesystem:src/test/resources/db/migration</location>
                             </locations>
-                            <!-- no point in running migrations if integration tests are skipped -->
+                            <!-- do not run migrations if integration tests are skipped -->
                             <skip>${integration-tests.skip}</skip>
                             <url>jdbc:h2:mem:session;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS "public";</url>
                             <user>sa</user>
