@@ -59,19 +59,6 @@ public class SessionControllerTest {
         assertThat(response.getBody().getId().getHref()).isEqualTo("http://localhost/session/" + id.toString());
     }
 
-    @Test
-    public void something() {
-        try {
-            test();
-        } catch (IncorrectResultSizeDataAccessException ie) {
-            assertThat(ie).isNotNull();
-        }
-    }
-
-    private void test() {
-        throw new EmptyResultDataAccessException(1);
-    }
-
     @Test(expected = NotFoundException.class)
     public void sessionNotFoundThrows() {
         UUID id = UUID.randomUUID();
