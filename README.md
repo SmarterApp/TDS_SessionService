@@ -6,6 +6,10 @@ The `TDS_ConfigService` (aka Config Support Service) consists of two modules:
 * **service:** REST endpoints that provide TDS session data
 
 ## Build
+To build the **client** and **service**, use the "parent" `pom.xml` that is contained in the `TDS_SessionService` directory:
+
+* `mvn clean install -f /path/to/parent/pom.xml`
+
 To build the **client**:
 
 * `mvn clean install -f /path/to/client/pom.xml`
