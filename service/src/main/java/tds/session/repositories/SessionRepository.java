@@ -15,4 +15,18 @@ public interface SessionRepository {
      * @return optional containing {@link tds.session.Session Session} otherwise empty Optional
      */
     Optional<Session> getSessionById(UUID id);
+
+    /**
+     * Record a change in the {@link Session}'s reason.
+     * <p>
+     *     The database design for microservices is to never execute an UPDATE against existing records.  Any changes
+     *     to the state of an object should be recorded as a new record.  For example, when a session is paused, its
+     *     state is changed.  Rather than updating the existing record in the session.session table, a new record should
+     *     be inserted into a reason table that records the change.
+     * </p>
+     *
+     * @param session The {@link Session} to pause
+     * @param reason A description of why the {@link Session} is being paused
+     */
+    void pause(final Session session, final String reason);
 }

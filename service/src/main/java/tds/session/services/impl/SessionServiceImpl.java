@@ -23,4 +23,10 @@ class SessionServiceImpl implements SessionService {
     public Optional<Session> getSessionById(UUID id) {
         return sessionRepository.getSessionById(id);
     }
+
+    @Override
+    public void pause(final Session session, final String reason) {
+        sessionRepository.pause(session, reason);
+        // TODO:  Add call to create audit record that indicates the session is paused.
+    }
 }
