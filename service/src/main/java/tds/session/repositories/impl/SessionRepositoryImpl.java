@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -61,17 +62,26 @@ class SessionRepositoryImpl implements SessionRepository {
         return sessionOptional;
     }
 
+    /**
+     * In order to preserve compatibility with the existing TDS system, this implementation executes an UPDATE against
+     * the existing record in the {@code session.session} table.  Once the new code has complete responsibility for
+     * managing a {@link Session}, this implementation will be updated to comply with the "immutability" database design
+     * concept.
+     *
+     * @param sessionId The id of the {@link Session} to pause
+     * @param newStatus The status of the {@link Session} is being paused
+     */
     @Override
-    public void pause(final Session session, final String reason) {
-        Instant now = Instant.now();
+    public void pause(final UUID sessionId, final String newStatus) {
+        Timestamp utcNow = Timestamp.from(Instant.now());
         final SqlParameterSource parameters =
-                new MapSqlParameterSource("id", UuidAdapter.getBytesFromUUID(session.getId()))
-                        .addValue("reason", reason)
-                        .addValue("dateChanged", now)
-                        .addValue("dateEnd", now);
+                new MapSqlParameterSource("id", UuidAdapter.getBytesFromUUID(sessionId))
+                        .addValue("reason", newStatus)
+                        .addValue("dateChanged", utcNow)
+                        .addValue("dateEnd", utcNow);
 
         final String SQL =
-                "UPDATE\n" +
+                "UPDATE \n" +
                 "   session.session \n" +
                 "SET \n" +
                 "   status = :reason, \n" +
@@ -83,7 +93,7 @@ class SessionRepositoryImpl implements SessionRepository {
         try {
             jdbcTemplate.update(SQL, parameters);
         } catch (DataAccessException e) {
-            log.error(String.format("%s UPDATE threw exception", SQL), e);
+            log.error("{} UPDATE threw exception", SQL, e);
             throw e;
         }
     }

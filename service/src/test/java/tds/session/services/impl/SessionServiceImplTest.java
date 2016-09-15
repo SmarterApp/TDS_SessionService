@@ -38,8 +38,21 @@ public class SessionServiceImplTest {
 
         Optional<Session> sessionOptional = service.getSessionById(id);
 
+        assertThat(sessionOptional).isPresent();
         assertThat(sessionOptional.get().getId()).isEqualTo(id);
 
         verify(repository).getSessionById(id);
+    }
+
+    @Test
+    public void shouldReturnOptionalEmptyForInvalidSessionId() {
+        UUID id = UUID.randomUUID();
+        Session session = new Session();
+        session.setId(id);
+        when(repository.getSessionById(id)).thenReturn(Optional.empty());
+
+        Optional<Session> result = service.getSessionById(id);
+
+        assertThat(result).isNotPresent();
     }
 }

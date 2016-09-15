@@ -25,8 +25,9 @@ class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public void pause(final Session session, final String reason) {
-        sessionRepository.pause(session, reason);
+    public void pause(final UUID sessionId, final String newStatus) {
+        // TODO:  Throw an exception if attempting to pause a Session that is already paused?
+        sessionRepository.pause(sessionId, newStatus);
         // TODO:  Add call to create audit record that indicates the session is paused.
     }
 }

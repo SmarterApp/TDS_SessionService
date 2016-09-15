@@ -45,6 +45,35 @@ public class SessionControllerIntegrationTests {
 
     @Test
     public void shouldHandleNonUUID() {
-        given().accept(ContentType.JSON).when().get(String.format("/session/invalidUUID")).then().statusCode(400);
+        given()
+            .accept(ContentType.JSON)
+        .when()
+            .get(String.format("/session/invalidUUID"))
+        .then()
+            .statusCode(400);
+    }
+
+    @Test
+    public void shouldPauseASession() {
+        String sessionId = "08A57E3F-3A87-44C5-82A6-5B473E60785E".toLowerCase();
+        String newStatus = "ctrl_test";
+        given()
+            .accept(ContentType.JSON)
+            .body(newStatus)
+        .when()
+            .put(String.format("/session/%s/pause", sessionId))
+        .then()
+            .statusCode(204)
+            .header("Location", equalTo(String.format("http://localhost:8080/session/%s", sessionId)));
+
+        // Verify the update happened
+        given()
+            .accept(ContentType.JSON)
+        .when()
+            .get(String.format("/session/%s", sessionId))
+        .then()
+            .statusCode(200)
+            .body("session.id", equalTo(sessionId))
+            .body("session.status", equalTo(newStatus));
     }
 }

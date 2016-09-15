@@ -54,4 +54,21 @@ public class SessionRepositoryImplIntegrationTests {
 
         assertThat(sessionOptional).isNotPresent();
     }
+
+    @Test
+    public void shouldPauseASession() {
+        UUID sessionId = UUID.fromString("08A57E3F-3A87-44C5-82A6-5B473E60785E");
+        final String status = "unit test";  // represents the status change sent in from the caller
+
+        sessionRepository.pause(sessionId, status);
+
+        Optional<Session> result = sessionRepository.getSessionById(sessionId);
+        assertThat(result).isPresent();
+        assertThat(result.get().getId()).isEqualTo(sessionId);
+        assertThat(result.get().getStatus()).isEqualTo(status);
+        assertThat(result.get().getDateChanged()).isNotNull();
+        assertThat(result.get().getDateChanged().getTime()).isGreaterThan(result.get().getDateBegin().getTime());
+        assertThat(result.get().getDateEnd()).isNotNull();
+        assertThat(result.get().getDateEnd().getTime()).isGreaterThan(result.get().getDateBegin().getTime());
+    }
 }
