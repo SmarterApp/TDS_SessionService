@@ -17,34 +17,28 @@ import static org.hamcrest.Matchers.equalTo;
 @SpringApplicationConfiguration(classes = SessionServiceApplication.class)
 @WebAppConfiguration
 @IntegrationTest("server.port:8080")
-public class SessionControllerIntegrationTests {
+public class ExternControllerIntegrationTests {
     @Test
-    public void shouldReturnSession() {
-        String sessionId = "06485031-B2B6-4CED-A0C1-B294EDA54DB2".toLowerCase();
+    public void shouldReturnExtern() {
         given()
             .accept(ContentType.JSON)
-        .when()
-            .get(String.format("/session/%s", sessionId))
-        .then()
+            .when()
+            .get(String.format("/session/extern/%s", "SBAC"))
+            .then()
             .contentType(ContentType.JSON)
             .statusCode(200)
-            .body("session.id", equalTo(sessionId))
-            .body("session.status", equalTo("closed"));
+            .body("extern.clientName", equalTo("SBAC"))
+            .body("extern.environment", equalTo("SIMULATION"));
     }
 
     @Test
-    public void shouldReturnNotFound() {
-        String sessionId = "55585031-B2B6-4CED-A0C1-B294EDA54DB2";
+    public void shouldReturnNotFoundWhenExternCannotBeFoundByClientName() {
         given()
             .accept(ContentType.JSON)
-        .when()
-            .get(String.format("/session/%s", sessionId))
-        .then()
+            .when()
+            .get(String.format("/session/extern/%s", "FAKE"))
+            .then()
             .statusCode(404);
     }
-
-    @Test
-    public void shouldHandleNonUUID() {
-        given().accept(ContentType.JSON).when().get("/session/invalidUUID").then().statusCode(400);
-    }
 }
+
