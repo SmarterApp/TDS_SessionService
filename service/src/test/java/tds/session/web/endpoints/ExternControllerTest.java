@@ -17,9 +17,9 @@ import tds.session.Extern;
 import tds.session.services.ExternService;
 import tds.session.web.resources.ExternResource;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExternControllerTest {
     private ExternContoller controller;
@@ -40,10 +40,7 @@ public class ExternControllerTest {
 
     @Test
     public void shouldGetExternByClientName() {
-        Extern extern = new Extern.Builder()
-            .withClientName("SBAC")
-            .withEnvironment("Development")
-            .build();
+        Extern extern = new Extern("SBAC", "Development");
         when(externService.getExternByClientName("SBAC")).thenReturn(Optional.of(extern));
 
         ResponseEntity<ExternResource> resource = controller.getExternByClientName("SBAC");

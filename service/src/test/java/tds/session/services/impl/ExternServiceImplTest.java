@@ -1,5 +1,6 @@
 package tds.session.services.impl;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,13 +25,13 @@ public class ExternServiceImplTest {
         externService = new ExternServiceImpl(externRepository);
     }
 
+    @After
+    public void tearDown() {
+    }
+
     @Test
     public void shouldGetExternByClientName() {
-        Extern extern = new Extern.Builder()
-            .withClientName("SBAC")
-            .withEnvironment("SIMULATION")
-            .build();
-
+        Extern extern = new Extern("SBAC", "SIMULATION");
         when(externRepository.getExternByClientName("SBAC")).thenReturn(Optional.of(extern));
         Optional<Extern> optional = externService.getExternByClientName("SBAC");
         verify(externRepository).getExternByClientName("SBAC");

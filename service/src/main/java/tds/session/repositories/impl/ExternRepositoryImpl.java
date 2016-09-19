@@ -32,10 +32,8 @@ public class ExternRepositoryImpl implements ExternRepository {
 
         Optional<Extern> externOptional;
         try {
-            externOptional = Optional.of(jdbcTemplate.queryForObject(query, parameters, (rs, rowNum) -> new Extern.Builder()
-                .withClientName(rs.getString("clientName"))
-                .withEnvironment(rs.getString("environment"))
-                .build()));
+            externOptional = Optional.of(jdbcTemplate.queryForObject(query, parameters, (rs, rowNum) ->
+                new Extern(rs.getString("clientName"), rs.getString("environment"))));
         } catch (EmptyResultDataAccessException e) {
             externOptional = Optional.empty();
         }

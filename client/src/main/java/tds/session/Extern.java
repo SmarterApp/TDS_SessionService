@@ -4,29 +4,16 @@ package tds.session;
  * configuration properties for the session system
  */
 public class Extern {
-    private String clientName;
-    private String environment;
+    private final String clientName;
+    private final String environment;
 
-    public static class Builder {
-        private String clientName;
-        private String environment;
-
-        public Builder withClientName(String clientName) {
-            this.clientName = clientName;
-            return this;
-        }
-
-        public Builder withEnvironment(String environment) {
-            this.environment = environment;
-            return this;
-        }
-
-        public Extern build() {
-            Extern extern = new Extern();
-            extern.clientName = this.clientName;
-            extern.environment = this.environment;
-            return extern;
-        }
+    /**
+     * @param clientName  client name for the session
+     * @param environment environment label for the session
+     */
+    public Extern(String clientName, String environment) {
+        this.clientName = clientName;
+        this.environment = environment;
     }
 
     /**
