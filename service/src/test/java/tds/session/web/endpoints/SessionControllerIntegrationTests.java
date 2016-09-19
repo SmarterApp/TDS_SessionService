@@ -7,6 +7,7 @@ import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import tds.session.SessionServiceApplication;
 
@@ -17,6 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 @SpringApplicationConfiguration(classes = SessionServiceApplication.class)
 @WebAppConfiguration
 @IntegrationTest("server.port:8080")
+@Transactional
 public class SessionControllerIntegrationTests {
     @Test
     public void shouldReturnSession() {
@@ -45,6 +47,38 @@ public class SessionControllerIntegrationTests {
 
     @Test
     public void shouldHandleNonUUID() {
-        given().accept(ContentType.JSON).when().get("/sessions/invalidUUID").then().statusCode(400);
+        given()
+            .accept(ContentType.JSON)
+        .when()
+            .get(String.format("/sessions/invalidUUID"))
+        .then()
+            .statusCode(400);
+    }
+
+    @Test
+    public void shouldPauseASession() {
+        String sessionId = "08A57E3F-3A87-44C5-82A6-5B473E60785E".toLowerCase();
+        String newStatus = "ctrl_test";
+        String selfRel =
+                given()
+                    .accept(ContentType.JSON)
+                    .body(newStatus)
+                .when()
+                    .put(String.format("/sessions/%s/pause", sessionId))
+                .then()
+                    .statusCode(200)
+                    .header("Location", equalTo(String.format("http://localhost:8080/sessions/%s", sessionId)))
+                .extract()
+                    .header("Location");
+
+        // Verify the update happened
+        given()
+            .accept(ContentType.JSON)
+        .when()
+            .get(selfRel)
+        .then()
+            .statusCode(200)
+            .body("session.id", equalTo(sessionId))
+            .body("session.status", equalTo(newStatus));
     }
 }
