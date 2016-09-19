@@ -4,7 +4,6 @@ import org.springframework.hateoas.ResourceSupport;
 
 import tds.session.Extern;
 import tds.session.web.endpoints.ExternContoller;
-import tds.session.web.endpoints.SessionController;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
