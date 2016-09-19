@@ -16,7 +16,7 @@ import tds.session.services.ExternService;
 import tds.session.web.resources.ExternResource;
 
 @RestController
-@RequestMapping("/session/externs")
+@RequestMapping("/sessions/externs")
 public class ExternContoller {
     private final ExternService externService;
 
