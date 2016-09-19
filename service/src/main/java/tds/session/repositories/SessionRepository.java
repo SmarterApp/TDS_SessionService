@@ -28,5 +28,5 @@ public interface SessionRepository {
      * @param sessionId The id of the {@link Session} to pause
      * @param newStatus A description of why the {@link Session} is being paused
      */
-    void pause(final UUID sessionId, final String newStatus);
+    void pause(UUID sessionId, String newStatus);
 }

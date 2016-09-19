@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.UUID;
 
+import tds.session.PauseSessionResponse;
 import tds.session.Session;
 import tds.session.repositories.SessionRepository;
 import tds.session.services.SessionService;
@@ -25,9 +26,31 @@ class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public void pause(final UUID sessionId, final String newStatus) {
-        // TODO:  Throw an exception if attempting to pause a Session that is already paused?
+    public Optional<PauseSessionResponse> pause(final UUID sessionId, final String newStatus) {
+        final Optional<Session> sessionOptional = sessionRepository.getSessionById(sessionId);
+        if (!sessionOptional.isPresent()) {
+            return Optional.empty();
+        }
+
+        Session session = sessionOptional.get();
+        PauseSessionResponse pauseSessionResponse = new PauseSessionResponse();
+
+        // if session is not open, it does not need to be paused, so return.
+        // TODO:  This condition might be over-simplified
+        if (!session.isOpen()) {
+            // TODO:  Collect all Exams associated w/the Session
+            pauseSessionResponse.setSession(session);
+            return Optional.of(pauseSessionResponse);
+        }
+
+        // TODO:  Call pause exam for each Exam in session
+
+        // Pause the Session
         sessionRepository.pause(sessionId, newStatus);
+
         // TODO:  Add call to create audit record that indicates the session is paused.
+        Session updatedSession = sessionRepository.getSessionById(sessionId).get(); // we know the session exists already
+        pauseSessionResponse.setSession(updatedSession);
+        return Optional.of(pauseSessionResponse);
     }
 }

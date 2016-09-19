@@ -32,8 +32,8 @@ public class SessionServiceImplIntegrationTests {
         assertThat(result.get().getId()).isEqualTo(sessionId);
         assertThat(result.get().getStatus()).isEqualTo(newStatus);
         assertThat(result.get().getDateChanged()).isNotNull();
-        assertThat(result.get().getDateChanged().getTime()).isGreaterThan(result.get().getDateBegin().getTime());
+        assertThat(result.get().getDateChanged()).isGreaterThan(result.get().getDateBegin());
         assertThat(result.get().getDateEnd()).isNotNull();
-        assertThat(result.get().getDateEnd().getTime()).isGreaterThan(result.get().getDateBegin().getTime());
+        assertThat(result.get().getDateEnd()).isGreaterThan(result.get().getDateBegin());
     }
 }

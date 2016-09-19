@@ -2,7 +2,6 @@ package tds.session;
 
 import org.junit.Test;
 
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
@@ -12,11 +11,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SessionTest {
     @Test
     public void shouldBeInstantiated() {
-        Session session = new Session();
         UUID sessionId = UUID.randomUUID();
-        session.setId(sessionId);
-        session.setType(0);
-        session.setStatus("closed");
+        Session session = new Session.Builder()
+                .withId(sessionId)
+                .withType(0)
+                .withStatus("closed")
+                .build();
 
         assertThat(session.getId()).isEqualTo(sessionId);
         assertThat(session.getType()).isEqualTo(0);
@@ -25,60 +25,60 @@ public class SessionTest {
 
     @Test
     public void shouldBeOpen() {
-        Session session = new Session();
-
-        session.setId(UUID.randomUUID());
-        session.setDateBegin(Timestamp.from(Instant.now().minus(20, ChronoUnit.MINUTES)));
-        session.setDateEnd(Timestamp.from(Instant.now().plus(20, ChronoUnit.MINUTES)));
-        session.setStatus("open");
+        Session session = new Session.Builder()
+                .withId(UUID.randomUUID())
+                .withStatus("open")
+                .withDateBegin(Instant.now().minus(20, ChronoUnit.MINUTES))
+                .withDateEnd(Instant.now().plus(20, ChronoUnit.MINUTES))
+                .build();
 
         assertThat(session.isOpen()).isTrue();
     }
 
     @Test
     public void shouldBeOpenAndStatusIsCaseInsensitive() {
-        Session session = new Session();
-
-        session.setId(UUID.randomUUID());
-        session.setDateBegin(Timestamp.from(Instant.now().minus(20, ChronoUnit.MINUTES)));
-        session.setDateEnd(Timestamp.from(Instant.now().plus(20, ChronoUnit.MINUTES)));
-        session.setStatus("OPEN");
+        Session session = new Session.Builder()
+                .withId(UUID.randomUUID())
+                .withStatus("OPEN")
+                .withDateBegin(Instant.now().minus(20, ChronoUnit.MINUTES))
+                .withDateEnd(Instant.now().plus(20, ChronoUnit.MINUTES))
+                .build();
 
         assertThat(session.isOpen()).isTrue();
     }
 
     @Test
     public void shouldBeClosedBecauseStatusIsNotOpen() {
-        Session session = new Session();
-
-        session.setId(UUID.randomUUID());
-        session.setDateBegin(Timestamp.from(Instant.now().minus(20, ChronoUnit.MINUTES)));
-        session.setDateEnd(Timestamp.from(Instant.now().plus(20, ChronoUnit.MINUTES)));
-        session.setStatus("closed");
+        Session session = new Session.Builder()
+                .withId(UUID.randomUUID())
+                .withStatus("closed")
+                .withDateBegin(Instant.now().minus(20, ChronoUnit.MINUTES))
+                .withDateEnd(Instant.now().plus(20, ChronoUnit.MINUTES))
+                .build();
 
         assertThat(session.isOpen()).isFalse();
     }
 
     @Test
     public void shouldBeClosedBecauseSessionHasAlreadyEnded() {
-        Session session = new Session();
-
-        session.setId(UUID.randomUUID());
-        session.setDateBegin(Timestamp.from(Instant.now().minus(40, ChronoUnit.MINUTES)));
-        session.setDateEnd(Timestamp.from(Instant.now().minus(20, ChronoUnit.MINUTES)));
-        session.setStatus("open");
+        Session session = new Session.Builder()
+                .withId(UUID.randomUUID())
+                .withStatus("open")
+                .withDateBegin(Instant.now().minus(40, ChronoUnit.MINUTES))
+                .withDateEnd(Instant.now().minus(20, ChronoUnit.MINUTES))
+                .build();
 
         assertThat(session.isOpen()).isFalse();
     }
 
     @Test
     public void shouldBeClosedBecauseSessionHasNotStarted() {
-        Session session = new Session();
-
-        session.setId(UUID.randomUUID());
-        session.setDateBegin(Timestamp.from(Instant.now().plus(20, ChronoUnit.MINUTES)));
-        session.setDateEnd(Timestamp.from(Instant.now().plus(40, ChronoUnit.MINUTES)));
-        session.setStatus("open");
+        Session session = new Session.Builder()
+                .withId(UUID.randomUUID())
+                .withStatus("open")
+                .withDateBegin(Instant.now().plus(20, ChronoUnit.MINUTES))
+                .withDateEnd(Instant.now().plus(40, ChronoUnit.MINUTES))
+                .build();
 
         assertThat(session.isOpen()).isFalse();
     }

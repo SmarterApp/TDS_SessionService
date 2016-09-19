@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
@@ -31,22 +32,37 @@ public class SessionRepositoryImplIntegrationTests {
     @Test
     public void shouldRetrieveSessionForId() throws ParseException {
         UUID sessionId = UUID.fromString("06485031-B2B6-4CED-A0C1-B294EDA54DB2");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
         Optional<Session> sessionOptional = sessionRepository.getSessionById(sessionId);
         assertThat(sessionOptional).isPresent();
         assertThat(sessionOptional.get().getId()).isEqualTo(sessionId);
         assertThat(sessionOptional.get().getType()).isEqualTo(0);
         assertThat(sessionOptional.get().getStatus()).isEqualTo("closed");
-        assertThat(sessionOptional.get().getDateBegin()).isEqualTo(new Timestamp(dateFormat.parse("2016-08-18 18:25:07.115").getTime()));
-        assertThat(sessionOptional.get().getDateEnd()).isEqualTo(new Timestamp(dateFormat.parse("2016-08-18 18:26:31.669").getTime()));
-        assertThat(sessionOptional.get().getDateChanged()).isEqualTo(new Timestamp(dateFormat.parse("2016-08-18 18:26:31.669").getTime()));
-        assertThat(sessionOptional.get().getDateVisited()).isEqualTo(new Timestamp(dateFormat.parse("2016-08-18 18:25:07.115").getTime()));
+        assertThat(sessionOptional.get().getDateBegin()).isEqualTo(Instant.parse("2016-08-18T18:25:07.115Z"));
+        assertThat(sessionOptional.get().getDateEnd()).isEqualTo(Instant.parse("2016-08-18T18:26:31.669Z"));
+        assertThat(sessionOptional.get().getDateChanged()).isEqualTo(Instant.parse("2016-08-18T18:26:31.669Z"));
+        assertThat(sessionOptional.get().getDateVisited()).isEqualTo(Instant.parse("2016-08-18T18:25:07.115Z"));
         assertThat(sessionOptional.get().getClientName()).isEqualTo("SBAC_PT");
         assertThat(sessionOptional.get().getProctorId()).isEqualTo(5);
         assertThat(sessionOptional.get().getBrowserKey()).isEqualTo(UUID.fromString("CB5C658D-4B32-463D-9DFA-119052E27474"));
     }
 
+    @Test
+    public void shouldReturnASessionForASessionIdThatHasNullDates() {
+        UUID sessionId = UUID.fromString("A976E970-F80C-4107-830E-B1020053DE96");
+
+        Optional<Session> sessionOptional = sessionRepository.getSessionById(sessionId);
+        assertThat(sessionOptional).isPresent();
+        assertThat(sessionOptional.get().getId()).isEqualTo(sessionId);
+        assertThat(sessionOptional.get().getType()).isEqualTo(0);
+        assertThat(sessionOptional.get().getStatus()).isEqualTo("open");
+        assertThat(sessionOptional.get().getDateBegin()).isNull();
+        assertThat(sessionOptional.get().getDateEnd()).isNull();
+        assertThat(sessionOptional.get().getDateChanged()).isNull();
+        assertThat(sessionOptional.get().getDateVisited()).isNull();
+        assertThat(sessionOptional.get().getProctorId()).isEqualTo(6);
+        assertThat(sessionOptional.get().getBrowserKey()).isEqualTo(UUID.fromString("F7A0375C-C63A-4164-976E-E883C2D13F62"));
+    }
     @Test
     public void shouldReturnOptionalEmptyForInvalidSessionId() {
         UUID sessionId = UUID.randomUUID();
@@ -67,8 +83,8 @@ public class SessionRepositoryImplIntegrationTests {
         assertThat(result.get().getId()).isEqualTo(sessionId);
         assertThat(result.get().getStatus()).isEqualTo(status);
         assertThat(result.get().getDateChanged()).isNotNull();
-        assertThat(result.get().getDateChanged().getTime()).isGreaterThan(result.get().getDateBegin().getTime());
+        assertThat(result.get().getDateChanged()).isGreaterThan(result.get().getDateBegin());
         assertThat(result.get().getDateEnd()).isNotNull();
-        assertThat(result.get().getDateEnd().getTime()).isGreaterThan(result.get().getDateBegin().getTime());
+        assertThat(result.get().getDateEnd()).isGreaterThan(result.get().getDateBegin());
     }
 }

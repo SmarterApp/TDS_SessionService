@@ -1,7 +1,6 @@
 package tds.session;
 
 
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
@@ -13,13 +12,95 @@ public class Session {
     private UUID id;
     private int type;
     private String status;
-    private Timestamp dateBegin;
-    private Timestamp dateEnd;
-    private Timestamp dateChanged;
-    private Timestamp dateVisited;
+    private Instant dateBegin;
+    private Instant dateEnd;
+    private Instant dateChanged;
+    private Instant dateVisited;
     private String clientName;
-    private Integer proctorId;
+    private Long proctorId;
     private UUID browserKey;
+
+    public static class Builder {
+        private UUID id;
+        private int type;
+        private String status;
+        private Instant dateBegin;
+        private Instant dateEnd;
+        private Instant dateChanged;
+        private Instant dateVisited;
+        private String clientName;
+        private Long proctorId;
+        private UUID browserKey;
+
+        public Builder withId(UUID newId) {
+            id = newId;
+            return this;
+        }
+
+        public Builder withType(int newType) {
+            type = newType;
+            return this;
+        }
+
+        public Builder withStatus(String newStatus) {
+            status = newStatus;
+            return this;
+        }
+
+        public Builder withDateBegin(Instant newDateBegin) {
+            dateBegin = newDateBegin;
+            return this;
+        }
+
+        public Builder withDateEnd(Instant newDateEnd) {
+            dateEnd = newDateEnd;
+            return this;
+        }
+
+        public Builder withDateChanged(Instant newDateChanged) {
+            dateChanged = newDateChanged;
+            return this;
+        }
+
+        public Builder withDateVisited(Instant newDateVisited) {
+            dateVisited = newDateVisited;
+            return this;
+        }
+
+        public Builder withClientName(String newClientName) {
+            clientName = newClientName;
+            return this;
+        }
+
+        public Builder withProctorId(Long newProctorId) {
+            proctorId = newProctorId;
+            return this;
+        }
+
+        public Builder withBrowserKey(UUID newBrowserKey) {
+            browserKey = newBrowserKey;
+            return this;
+        }
+
+        public Session build() {
+            return new Session(this);
+        }
+    }
+
+    public Session() {}
+
+    private Session(Builder builder) {
+        id = builder.id;
+        type = builder.type;
+        status = builder.status;
+        dateBegin = builder.dateBegin;
+        dateEnd = builder.dateEnd;
+        dateChanged = builder.dateChanged;
+        dateVisited = builder.dateVisited;
+        clientName = builder.clientName;
+        proctorId = builder.proctorId;
+        browserKey = builder.browserKey;
+    }
 
     /**
      * @return the id for the session
@@ -60,11 +141,11 @@ public class Session {
      *     Should handle date and time in UTC
      * </p>
      */
-    public Timestamp getDateBegin() {
+    public Instant getDateBegin() {
         return dateBegin;
     }
 
-    public void setDateBegin(Timestamp dateBegin) {
+    public void setDateBegin(Instant dateBegin) {
         this.dateBegin = dateBegin;
     }
 
@@ -74,11 +155,11 @@ public class Session {
      *     Should handle date and time in UTC
      * </p>
      */
-    public Timestamp getDateEnd() {
+    public Instant getDateEnd() {
         return dateEnd;
     }
 
-    public void setDateEnd(Timestamp dateEnd) {
+    public void setDateEnd(Instant dateEnd) {
         this.dateEnd = dateEnd;
     }
 
@@ -89,11 +170,11 @@ public class Session {
      *     changes.
      * </p>
      */
-    public Timestamp getDateChanged() {
+    public Instant getDateChanged() {
         return dateChanged;
     }
 
-    public void setDateChanged(Timestamp dateChanged) {
+    public void setDateChanged(Instant dateChanged) {
         this.dateChanged = dateChanged;
     }
 
@@ -103,11 +184,11 @@ public class Session {
      *     Should handle date and time in UTC.  This field is related to evaluating the checkin time.
      * </p>
      */
-    public Timestamp getDateVisited() {
+    public Instant getDateVisited() {
         return dateVisited;
     }
 
-    public void setDateVisited(Timestamp dateVisited) {
+    public void setDateVisited(Instant dateVisited) {
         this.dateVisited = dateVisited;
     }
 
@@ -129,16 +210,19 @@ public class Session {
     /**
      * @return The identifier of the Proctor managing this {@link Session}.
      */
-    public Integer getProctorId() {
+    public Long getProctorId() {
         return proctorId;
     }
 
-    public void setProctorId(Integer proctorId) {
+    public void setProctorId(Long proctorId) {
         this.proctorId = proctorId;
     }
 
     /**
-     * @return The identifier of the "browser" (the workstation?) managing this {@link Session}.
+     * @return The identifier of the browser information for this {@link Session}.
+     * <p>
+     *     "Browser information" refers to IP address, user-agent etc, from another table.
+     * </p>
      */
     public UUID getBrowserKey() {
         return browserKey;
@@ -149,33 +233,21 @@ public class Session {
     }
 
     /**
-     * Logic from line 1103 of StudentDLL._ValidateTesteeAccessProc_SP:
+     * Determine if this {@link Session} is open.  A {@link Session} is open if:
+     * <ul>
+     *     <li>The {@link Session}'s status is "open" (case-insensitive)</li>
+     *     <li>The current UTC time is after five minutes before this {@link Session}'s begin date</li>
+     *     <li>The end date is before the current UTC time</li>
+     * </ul>
      *
-     * Date now = _dateUtil.getDateWRetStatus (connection); // returns result of select now(3), found in DataUtilDLL.java
-     * // other unrelated things happen...
-     * dateBegin = this._commonDll.adjustDateMinutes(dateBegin, Integer.valueOf(-5));
-     * if(DbComparator.notEqual(sessionStatus, "open") || DbComparator.lessThan(now, dateBegin) || DbComparator.greaterThan(now, dateEnd)) {
-     *  message.set("The session is not available for testing, please check with your test administrator.");
-     *  return;
-     * }
-     * <p>
-     *     In the legacy code and performance updates, a SELECT NOW(3); is executed against the database to get the
-     *     current date and time.
-     * </p>
-     * <p>
-     *     Calling the {@code toInstant()} method on the begin date and end date will guarantee the date and times are
-     *     in UTC (unless a different {@code Clock} is in use).
-     * </p>
-     *
-     * @return {@code True} if the {@link Session}'s status is "open" (case-insensitive) and the current UTC time is
-     * between five minutes before the session's start date and the session's end date; otherwise {@code False}.
+     * @return {@code True} if the {@link Session} satisfies the rules above; otherwise {@code False}.
      */
     public Boolean isOpen() {
         final Instant now = Instant.now();
         final String OPEN_STATUS = "open";
 
         return this.getStatus().toLowerCase().equals(OPEN_STATUS)
-                && now.isAfter(this.getDateBegin().toInstant().minus(5, ChronoUnit.MINUTES))
-                && now.isBefore(this.getDateEnd().toInstant());
+                && now.isAfter(this.getDateBegin().minus(5, ChronoUnit.MINUTES))
+                && now.isBefore(this.getDateEnd());
     }
 }

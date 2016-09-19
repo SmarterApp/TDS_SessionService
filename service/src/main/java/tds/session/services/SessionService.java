@@ -3,6 +3,7 @@ package tds.session.services;
 import java.util.Optional;
 import java.util.UUID;
 
+import tds.session.PauseSessionResponse;
 import tds.session.Session;
 
 /**
@@ -21,13 +22,13 @@ public interface SessionService {
      * Pause a session, updating it to the specified status.
      * <p>
      *     In the context of TDS, "paused" means the session has been stopped and can no longer support students taking
-     *     examps.  A session that is "stopped" or "closed" (e.g. by a proctor voluntarily ending the session) is
+     *     exams.  A session that is "stopped" or "closed" (e.g. by a proctor voluntarily ending the session) is
      *     considered "paused".
      * </p>
      *
      * @param sessionId The id of the {@link Session} to pause
      * @param newStatus A description of why the {@link Session} is being paused
      */
-    void pause(final UUID sessionId, final String newStatus);
+    Optional<PauseSessionResponse> pause(UUID sessionId, String newStatus);
 }
 
