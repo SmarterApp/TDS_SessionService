@@ -24,7 +24,7 @@ public class SessionControllerIntegrationTests {
         given()
             .accept(ContentType.JSON)
         .when()
-            .get(String.format("/session/%s", sessionId))
+            .get(String.format("/sessions/%s", sessionId))
         .then()
             .contentType(ContentType.JSON)
             .statusCode(200)
@@ -38,13 +38,13 @@ public class SessionControllerIntegrationTests {
         given()
             .accept(ContentType.JSON)
         .when()
-            .get(String.format("/session/%s", sessionId))
+            .get(String.format("/sessions/%s", sessionId))
         .then()
             .statusCode(404);
     }
 
     @Test
     public void shouldHandleNonUUID() {
-        given().accept(ContentType.JSON).when().get("/session/invalidUUID").then().statusCode(400);
+        given().accept(ContentType.JSON).when().get("/sessions/invalidUUID").then().statusCode(400);
     }
 }

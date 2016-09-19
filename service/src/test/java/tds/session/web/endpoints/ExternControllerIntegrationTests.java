@@ -23,7 +23,7 @@ public class ExternControllerIntegrationTests {
         given()
             .accept(ContentType.JSON)
         .when()
-            .get(String.format("/session/externs/%s", "SBAC"))
+            .get(String.format("/sessions/externs/%s", "SBAC"))
         .then()
             .contentType(ContentType.JSON)
             .statusCode(200)
@@ -36,7 +36,7 @@ public class ExternControllerIntegrationTests {
         given()
             .accept(ContentType.JSON)
         .when()
-            .get(String.format("/session/externs/%s", "FAKE"))
+            .get(String.format("/sessions/externs/%s", "FAKE"))
         .then()
             .statusCode(404);
     }

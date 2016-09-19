@@ -22,7 +22,7 @@ public class HealthControllerIntegrationTests {
         given()
             .accept(ContentType.JSON)
             .when()
-        .get("/session/isAlive")
+        .get("/sessions/isAlive")
         .then()
             .contentType(ContentType.JSON)
             .statusCode(200);
