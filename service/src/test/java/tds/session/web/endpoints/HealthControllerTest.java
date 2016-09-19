@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class HealthControllerTest {
     @Test
-    public void aliveShouldReturnOk() {
+    public void shouldReturnOkForIsAliveEndpoint() {
         HealthController controller = new HealthController();
         ResponseEntity<String> response = controller.isAlive();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

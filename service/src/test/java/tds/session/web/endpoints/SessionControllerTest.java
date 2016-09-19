@@ -3,8 +3,6 @@ package tds.session.web.endpoints;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -44,10 +42,11 @@ public class SessionControllerTest {
     }
 
     @Test
-    public void aSessionCanBeFound() {
+    public void shouldFindASession() {
         UUID id = UUID.randomUUID();
-        Session session = new Session();
-        session.setId(id);
+        Session session = new Session.Builder()
+                .withId(id)
+                .build();
         when(sessionService.getSessionById(id)).thenReturn(Optional.of(session));
 
         ResponseEntity<SessionResource> response = controller.getSession(id);
@@ -60,7 +59,7 @@ public class SessionControllerTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void sessionNotFoundThrows() {
+    public void shouldThrowNotFoundExceptionForGettingAnInvalidSessionId() {
         UUID id = UUID.randomUUID();
         when(sessionService.getSessionById(id)).thenReturn(Optional.empty());
         controller.getSession(id);

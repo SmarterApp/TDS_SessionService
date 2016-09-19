@@ -11,6 +11,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import tds.session.SessionServiceApplication;
 
 import static com.jayway.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -45,6 +46,38 @@ public class SessionControllerIntegrationTests {
 
     @Test
     public void shouldHandleNonUUID() {
-        given().accept(ContentType.JSON).when().get(String.format("/session/invalidUUID")).then().statusCode(400);
+        given()
+            .accept(ContentType.JSON)
+        .when()
+            .get(String.format("/session/invalidUUID"))
+        .then()
+            .statusCode(400);
+    }
+
+    @Test
+    public void shouldPauseASession() {
+        String sessionId = "08A57E3F-3A87-44C5-82A6-5B473E60785E".toLowerCase();
+        String newStatus = "ctrl_test";
+        String selfRel =
+                given()
+                    .accept(ContentType.JSON)
+                    .body(newStatus)
+                .when()
+                    .put(String.format("/session/%s/pause", sessionId))
+                .then()
+                    .statusCode(200)
+                    .header("Location", equalTo(String.format("http://localhost:8080/session/%s", sessionId)))
+                .extract()
+                    .header("Location");
+
+        // Verify the update happened
+        given()
+            .accept(ContentType.JSON)
+        .when()
+            .get(selfRel)
+        .then()
+            .statusCode(200)
+            .body("session.id", equalTo(sessionId))
+            .body("session.status", equalTo(newStatus));
     }
 }
