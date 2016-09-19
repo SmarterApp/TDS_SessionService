@@ -4,8 +4,8 @@ package tds.session;
  * configuration properties for the session system
  */
 public class Extern {
-    private final String clientName;
-    private final String environment;
+    private String clientName;
+    private String environment;
 
     /**
      * @param clientName  client name for the session
@@ -15,6 +15,8 @@ public class Extern {
         this.clientName = clientName;
         this.environment = environment;
     }
+
+    Extern(){}
 
     /**
      * @return client name
