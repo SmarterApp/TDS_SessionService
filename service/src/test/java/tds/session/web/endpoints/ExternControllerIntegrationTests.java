@@ -22,9 +22,9 @@ public class ExternControllerIntegrationTests {
     public void shouldReturnExtern() {
         given()
             .accept(ContentType.JSON)
-            .when()
+        .when()
             .get(String.format("/session/extern/%s", "SBAC"))
-            .then()
+        .then()
             .contentType(ContentType.JSON)
             .statusCode(200)
             .body("extern.clientName", equalTo("SBAC"))
@@ -35,9 +35,9 @@ public class ExternControllerIntegrationTests {
     public void shouldReturnNotFoundWhenExternCannotBeFoundByClientName() {
         given()
             .accept(ContentType.JSON)
-            .when()
+        .when()
             .get(String.format("/session/extern/%s", "FAKE"))
-            .then()
+        .then()
             .statusCode(404);
     }
 }
