@@ -8,7 +8,7 @@ import tds.session.web.endpoints.SessionController;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-public class SessionResource extends ResourceSupport{
+public class SessionResource extends ResourceSupport {
     private final Session session;
 
     public SessionResource(Session session) {

@@ -7,17 +7,18 @@ import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import tds.session.SessionServiceApplication;
 
 import static com.jayway.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SessionServiceApplication.class)
 @WebAppConfiguration
 @IntegrationTest("server.port:8080")
+@Transactional
 public class SessionControllerIntegrationTests {
     @Test
     public void shouldReturnSession() {
@@ -25,7 +26,7 @@ public class SessionControllerIntegrationTests {
         given()
             .accept(ContentType.JSON)
         .when()
-            .get(String.format("/session/%s", sessionId))
+            .get(String.format("/sessions/%s", sessionId))
         .then()
             .contentType(ContentType.JSON)
             .statusCode(200)
@@ -39,7 +40,7 @@ public class SessionControllerIntegrationTests {
         given()
             .accept(ContentType.JSON)
         .when()
-            .get(String.format("/session/%s", sessionId))
+            .get(String.format("/sessions/%s", sessionId))
         .then()
             .statusCode(404);
     }
@@ -49,7 +50,7 @@ public class SessionControllerIntegrationTests {
         given()
             .accept(ContentType.JSON)
         .when()
-            .get(String.format("/session/invalidUUID"))
+            .get(String.format("/sessions/invalidUUID"))
         .then()
             .statusCode(400);
     }
@@ -63,10 +64,10 @@ public class SessionControllerIntegrationTests {
                     .accept(ContentType.JSON)
                     .body(newStatus)
                 .when()
-                    .put(String.format("/session/%s/pause", sessionId))
+                    .put(String.format("/sessions/%s/pause", sessionId))
                 .then()
                     .statusCode(200)
-                    .header("Location", equalTo(String.format("http://localhost:8080/session/%s", sessionId)))
+                    .header("Location", equalTo(String.format("http://localhost:8080/sessions/%s", sessionId)))
                 .extract()
                     .header("Location");
 

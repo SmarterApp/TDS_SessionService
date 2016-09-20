@@ -11,20 +11,34 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import tds.session.SessionServiceApplication;
 
 import static com.jayway.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SessionServiceApplication.class)
 @WebAppConfiguration
 @IntegrationTest("server.port:8080")
-public class HealthControllerIntegrationTests {
+public class ExternControllerIntegrationTests {
     @Test
-    public void shouldReturnOk() {
+    public void shouldReturnExtern() {
         given()
             .accept(ContentType.JSON)
-            .when()
-        .get("/sessions/isAlive")
+        .when()
+            .get(String.format("/sessions/externs/%s", "SBAC"))
         .then()
             .contentType(ContentType.JSON)
-            .statusCode(200);
+            .statusCode(200)
+            .body("extern.clientName", equalTo("SBAC"))
+            .body("extern.environment", equalTo("SIMULATION"));
+    }
+
+    @Test
+    public void shouldReturnNotFoundWhenExternCannotBeFoundByClientName() {
+        given()
+            .accept(ContentType.JSON)
+        .when()
+            .get(String.format("/sessions/externs/%s", "FAKE"))
+        .then()
+            .statusCode(404);
     }
 }
+

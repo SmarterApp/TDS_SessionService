@@ -4,7 +4,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
 import tds.session.Session;
 import tds.session.SessionServiceApplication;
 import tds.session.services.SessionService;
@@ -15,7 +18,8 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = SessionServiceApplication.class)
+@SpringBootTest
+@Transactional
 public class SessionServiceImplIntegrationTests {
     @Autowired
     private SessionService sessionService;

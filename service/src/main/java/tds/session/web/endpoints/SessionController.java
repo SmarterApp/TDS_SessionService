@@ -26,7 +26,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
  * Contains the endpoints for the session
  */
 @RestController
-@RequestMapping("/session")
+@RequestMapping("/sessions")
 public class SessionController {
     private final SessionService sessionService;
 

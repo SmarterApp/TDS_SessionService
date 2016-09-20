@@ -3,8 +3,9 @@ package tds.session.repositories.impl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -17,13 +18,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 import tds.session.Session;
-import tds.session.SessionServiceApplication;
 import tds.session.repositories.SessionRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = SessionServiceApplication.class)
+@SpringBootTest
+@Transactional
 public class SessionRepositoryImplIntegrationTests {
 
     @Autowired
@@ -63,11 +64,10 @@ public class SessionRepositoryImplIntegrationTests {
         assertThat(sessionOptional.get().getProctorId()).isEqualTo(6);
         assertThat(sessionOptional.get().getBrowserKey()).isEqualTo(UUID.fromString("F7A0375C-C63A-4164-976E-E883C2D13F62"));
     }
-    @Test
-    public void shouldReturnOptionalEmptyForInvalidSessionId() {
-        UUID sessionId = UUID.randomUUID();
-        Optional<Session> sessionOptional = sessionRepository.getSessionById(sessionId);
 
+    @Test
+    public void shouldHandleWhenSessionCannotBeFoundById() {
+        Optional<Session> sessionOptional = sessionRepository.getSessionById(UUID.randomUUID());
         assertThat(sessionOptional).isNotPresent();
     }
 

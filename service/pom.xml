@@ -226,7 +226,7 @@
                             </locations>
                             <!-- do not run migrations if integration tests are skipped -->
                             <skip>${integration-tests.skip}</skip>
-                            <url>jdbc:h2:mem:session;SCHEMA=session;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS "public";</url>
+                            <url>jdbc:h2:mem:session;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS "public";</url>
                             <user>sa</user>
                         </configuration>
                     </execution>

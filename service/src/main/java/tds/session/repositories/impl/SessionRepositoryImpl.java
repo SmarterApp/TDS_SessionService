@@ -20,6 +20,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import tds.common.data.mysql.UuidAdapter;
+import tds.common.data.mysql.spring.UuidBeanPropertyRowMapper;
+import tds.session.Extern;
 import tds.session.Session;
 import tds.session.repositories.SessionRepository;
 

@@ -55,7 +55,7 @@ public class SessionControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getSession().getId()).isEqualTo(id);
-        assertThat(response.getBody().getId().getHref()).isEqualTo("http://localhost/session/" + id.toString());
+        assertThat(response.getBody().getId().getHref()).isEqualTo("http://localhost/sessions/" + id.toString());
     }
 
     @Test(expected = NotFoundException.class)
