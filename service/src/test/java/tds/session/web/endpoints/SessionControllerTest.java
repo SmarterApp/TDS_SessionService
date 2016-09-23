@@ -42,16 +42,16 @@ public class SessionControllerTest {
     }
 
     @Test
-    public void shouldFindASession() {
+    public void shouldFindASessionById() {
         UUID id = UUID.randomUUID();
         Session session = new Session.Builder()
                 .withId(id)
                 .build();
-        when(sessionService.getSessionById(id)).thenReturn(Optional.of(session));
+        when(sessionService.findSessionById(id)).thenReturn(Optional.of(session));
 
-        ResponseEntity<SessionResource> response = controller.getSession(id);
+        ResponseEntity<SessionResource> response = controller.findSessionById(id);
 
-        verify(sessionService).getSessionById(id);
+        verify(sessionService).findSessionById(id);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getSession().getId()).isEqualTo(id);
@@ -59,9 +59,9 @@ public class SessionControllerTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void shouldThrowNotFoundExceptionForGettingAnInvalidSessionId() {
+    public void shouldThrowNotFoundExceptionWhenSessionCannotBeFoundById() {
         UUID id = UUID.randomUUID();
-        when(sessionService.getSessionById(id)).thenReturn(Optional.empty());
-        controller.getSession(id);
+        when(sessionService.findSessionById(id)).thenReturn(Optional.empty());
+        controller.findSessionById(id);
     }
 }

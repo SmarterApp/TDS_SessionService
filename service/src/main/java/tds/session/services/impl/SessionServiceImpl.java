@@ -21,13 +21,13 @@ class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public Optional<Session> getSessionById(UUID id) {
-        return sessionRepository.getSessionById(id);
+    public Optional<Session> findSessionById(UUID id) {
+        return sessionRepository.findSessionById(id);
     }
 
     @Override
     public Optional<PauseSessionResponse> pause(final UUID sessionId, final String newStatus) {
-        final Optional<Session> sessionOptional = sessionRepository.getSessionById(sessionId);
+        final Optional<Session> sessionOptional = sessionRepository.findSessionById(sessionId);
         if (!sessionOptional.isPresent()) {
             return Optional.empty();
         }
@@ -49,7 +49,7 @@ class SessionServiceImpl implements SessionService {
         sessionRepository.pause(sessionId, newStatus);
 
         // TODO:  Add call to create audit record that indicates the session is paused.
-        Session updatedSession = sessionRepository.getSessionById(sessionId).get(); // we know the session exists already
+        Session updatedSession = sessionRepository.findSessionById(sessionId).get(); // we know the session exists already
         pauseSessionResponse.setSession(updatedSession);
         return Optional.of(pauseSessionResponse);
     }

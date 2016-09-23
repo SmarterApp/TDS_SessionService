@@ -37,7 +37,7 @@ class SessionRepositoryImpl implements SessionRepository {
     }
 
     @Override
-    public Optional<Session> getSessionById(UUID id) {
+    public Optional<Session> findSessionById(UUID id) {
         final SqlParameterSource parameters = new MapSqlParameterSource("id", UuidAdapter.getBytesFromUUID(id));
 
         String query =

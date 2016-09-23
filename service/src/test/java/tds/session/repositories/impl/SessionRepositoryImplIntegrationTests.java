@@ -7,13 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,7 +29,7 @@ public class SessionRepositoryImplIntegrationTests {
     public void shouldRetrieveSessionForId() throws ParseException {
         UUID sessionId = UUID.fromString("06485031-B2B6-4CED-A0C1-B294EDA54DB2");
 
-        Optional<Session> sessionOptional = sessionRepository.getSessionById(sessionId);
+        Optional<Session> sessionOptional = sessionRepository.findSessionById(sessionId);
         assertThat(sessionOptional).isPresent();
         assertThat(sessionOptional.get().getId()).isEqualTo(sessionId);
         assertThat(sessionOptional.get().getType()).isEqualTo(0);
@@ -52,7 +47,7 @@ public class SessionRepositoryImplIntegrationTests {
     public void shouldReturnASessionForASessionIdThatHasNullDates() {
         UUID sessionId = UUID.fromString("A976E970-F80C-4107-830E-B1020053DE96");
 
-        Optional<Session> sessionOptional = sessionRepository.getSessionById(sessionId);
+        Optional<Session> sessionOptional = sessionRepository.findSessionById(sessionId);
         assertThat(sessionOptional).isPresent();
         assertThat(sessionOptional.get().getId()).isEqualTo(sessionId);
         assertThat(sessionOptional.get().getType()).isEqualTo(0);
@@ -67,7 +62,7 @@ public class SessionRepositoryImplIntegrationTests {
 
     @Test
     public void shouldHandleWhenSessionCannotBeFoundById() {
-        Optional<Session> sessionOptional = sessionRepository.getSessionById(UUID.randomUUID());
+        Optional<Session> sessionOptional = sessionRepository.findSessionById(UUID.randomUUID());
         assertThat(sessionOptional).isNotPresent();
     }
 
@@ -78,7 +73,7 @@ public class SessionRepositoryImplIntegrationTests {
 
         sessionRepository.pause(sessionId, status);
 
-        Optional<Session> result = sessionRepository.getSessionById(sessionId);
+        Optional<Session> result = sessionRepository.findSessionById(sessionId);
         assertThat(result).isPresent();
         assertThat(result.get().getId()).isEqualTo(sessionId);
         assertThat(result.get().getStatus()).isEqualTo(status);

@@ -3,17 +3,15 @@ package tds.session.services.impl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import tds.session.Session;
-import tds.session.SessionServiceApplication;
-import tds.session.services.SessionService;
-
 import java.util.Optional;
 import java.util.UUID;
+
+import tds.session.Session;
+import tds.session.services.SessionService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,7 +29,7 @@ public class SessionServiceImplIntegrationTests {
 
         sessionService.pause(sessionId, newStatus);
 
-        Optional<Session> result = sessionService.getSessionById(sessionId);
+        Optional<Session> result = sessionService.findSessionById(sessionId);
         assertThat(result).isPresent();
         assertThat(result.get().getId()).isEqualTo(sessionId);
         assertThat(result.get().getStatus()).isEqualTo(newStatus);

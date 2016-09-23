@@ -2,11 +2,11 @@ package tds.session.web.resources;
 
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.Resources;
-import tds.session.PauseSessionResponse;
-import tds.session.web.endpoints.SessionController;
-
 
 import java.util.UUID;
+
+import tds.session.PauseSessionResponse;
+import tds.session.web.endpoints.SessionController;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -23,11 +23,11 @@ public class PauseSessionResponseResource extends ResourceSupport {
         Resources<UUID> examIdResources = new Resources<>(pauseSessionResponse.getExamIds());
         examIdResources.add(linkTo(
                 methodOn(SessionController.class)
-                        .getSession(pauseSessionResponse.getSession().getId())
+                        .findSessionById(pauseSessionResponse.getSession().getId())
         ).withRel("session"));
         this.add(linkTo(
                 methodOn(SessionController.class)
-                .getSession(pauseSessionResponse.getSession().getId())
+                .findSessionById(pauseSessionResponse.getSession().getId())
                 ).withRel("session"));
     }
 
