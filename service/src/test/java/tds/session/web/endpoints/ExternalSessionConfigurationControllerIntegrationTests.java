@@ -17,18 +17,18 @@ import static org.hamcrest.Matchers.equalTo;
 @SpringApplicationConfiguration(classes = SessionServiceApplication.class)
 @WebAppConfiguration
 @IntegrationTest("server.port:8080")
-public class ExternControllerIntegrationTests {
+public class ExternalSessionConfigurationControllerIntegrationTests {
     @Test
     public void shouldReturnExtern() {
         given()
             .accept(ContentType.JSON)
         .when()
-            .get(String.format("/sessions/externs/%s", "SBAC"))
+            .get(String.format("/sessions/external-config/%s", "SBAC"))
         .then()
             .contentType(ContentType.JSON)
             .statusCode(200)
-            .body("extern.clientName", equalTo("SBAC"))
-            .body("extern.environment", equalTo("SIMULATION"));
+            .body("externalSessionConfiguration.clientName", equalTo("SBAC"))
+            .body("externalSessionConfiguration.environment", equalTo("SIMULATION"));
     }
 
     @Test
@@ -36,7 +36,7 @@ public class ExternControllerIntegrationTests {
         given()
             .accept(ContentType.JSON)
         .when()
-            .get(String.format("/sessions/externs/%s", "FAKE"))
+            .get(String.format("/sessions/external-config/%s", "FAKE"))
         .then()
             .statusCode(404);
     }

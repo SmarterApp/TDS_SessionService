@@ -1,6 +1,6 @@
 #Session Service
 ## Overview
-The `TDS_ConfigService` (aka Config Support Service) consists of two modules:
+The `TDS_Session` (aka Session Support Service) consists of two modules:
 
 * **client:** Contains the POJOs/classes needed for a consumer to interact with the Session Support Service
 * **service:** REST endpoints that provide TDS session data
@@ -64,7 +64,7 @@ To create the environment file:
 SESSION_DB_HOST=[IP address or FQDN of the MySQL database server that hosts the TDS session database]
 SESSION_DB_PORT=[The port on which the MySQL database server listens]
 SESSION_DB_NAME=[The name of the TDS session database (typically "session")]
-SESSION_DB_USER=[The MySQL user account with sufficient privileges to read from the configs and session databases]
+SESSION_DB_USER=[The MySQL user account with sufficient privileges to read from the session databases]
 SESSION_DB_PASSWORD=[The password for the MySQL user account]
 ```
 
@@ -93,7 +93,7 @@ The Docker container can be started via `docker-compose` or `docker run`:
 
 * The command for starting the container via `docker-compose`:  `docker-compose up -d -f /path/to/docker-compose.yml`
   * **NOTE:** If `docker-compose` is run in the same directory where the `docker-compose.yml` file is located, `docker-compose up -d` is sufficient to start the container
-* Alternately, `docker run` can be used to start up the container:  `docker run -d -p [open port on host]:8080 --env-file /path/to/session-service.env sbacoss/tds-config-service`
+* Alternately, `docker run` can be used to start up the container:  `docker run -d -p [open port on host]:8080 --env-file /path/to/session-service.env sbacoss/tds-session-service`
   * example:  `docker run -d -p 23572:8080 --env-file session-service.env sbacoss/tds-session-service`
 
 To see the list of running Docker containers, use the following command:

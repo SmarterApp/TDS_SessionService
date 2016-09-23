@@ -15,13 +15,14 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.UUID;
 
 import tds.common.data.mysql.UuidAdapter;
-import tds.common.data.mysql.spring.UuidBeanPropertyRowMapper;
-import tds.session.Extern;
 import tds.session.Session;
 import tds.session.repositories.SessionRepository;
 
@@ -36,7 +37,7 @@ class SessionRepositoryImpl implements SessionRepository {
     }
 
     @Override
-    public Optional<Session> getSessionById(UUID id) {
+    public Optional<Session> findSessionById(UUID id) {
         final SqlParameterSource parameters = new MapSqlParameterSource("id", UuidAdapter.getBytesFromUUID(id));
 
         String query =

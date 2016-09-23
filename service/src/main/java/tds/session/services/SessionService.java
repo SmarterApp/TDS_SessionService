@@ -16,7 +16,7 @@ public interface SessionService {
      * @param id session id
      * @return Optional containing {@link tds.session.Session Session} otherwise empty
      */
-    Optional<Session> getSessionById(UUID id);
+    Optional<Session> findSessionById(UUID id);
 
     /**
      * Pause a session, updating it to the specified status.

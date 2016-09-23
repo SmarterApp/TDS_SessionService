@@ -3,7 +3,6 @@ package tds.session.repositories;
 import java.util.Optional;
 import java.util.UUID;
 
-import tds.session.Extern;
 import tds.session.Session;
 
 /**
@@ -11,11 +10,11 @@ import tds.session.Session;
  */
 public interface SessionRepository {
     /**
-     * Fetches the Session by given id
+     * Finds the Session by given id
      * @param id session id
      * @return optional containing {@link tds.session.Session Session} otherwise empty Optional
      */
-    Optional<Session> getSessionById(UUID id);
+    Optional<Session> findSessionById(UUID id);
 
     /**
      * Pause an existing {@link Session}, updating the {@link Session}'s status to indicate it is no longer "open".

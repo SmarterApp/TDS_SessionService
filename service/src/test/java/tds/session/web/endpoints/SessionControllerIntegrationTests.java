@@ -21,7 +21,7 @@ import static org.hamcrest.Matchers.equalTo;
 @Transactional
 public class SessionControllerIntegrationTests {
     @Test
-    public void shouldReturnSession() {
+    public void shouldReturnSessionWhenFoundById() {
         String sessionId = "06485031-B2B6-4CED-A0C1-B294EDA54DB2".toLowerCase();
         given()
             .accept(ContentType.JSON)
@@ -35,7 +35,7 @@ public class SessionControllerIntegrationTests {
     }
 
     @Test
-    public void shouldReturnNotFound() {
+    public void shouldReturnNotFoundWhenSessionCannotBeFoundById() {
         String sessionId = "55585031-B2B6-4CED-A0C1-B294EDA54DB2";
         given()
             .accept(ContentType.JSON)
@@ -46,7 +46,7 @@ public class SessionControllerIntegrationTests {
     }
 
     @Test
-    public void shouldHandleNonUUID() {
+    public void shouldHandleNonUUIDWhenFindingSessionById() {
         given()
             .accept(ContentType.JSON)
         .when()

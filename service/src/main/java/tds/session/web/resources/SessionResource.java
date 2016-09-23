@@ -15,7 +15,7 @@ public class SessionResource extends ResourceSupport {
         this.session = session;
         this.add(linkTo(
                 methodOn(SessionController.class)
-                        .getSession(session.getId()))
+                        .findSessionById(session.getId()))
                 .withSelfRel());
     }
 
