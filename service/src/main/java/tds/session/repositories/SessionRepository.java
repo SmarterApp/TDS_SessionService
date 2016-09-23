@@ -3,7 +3,6 @@ package tds.session.repositories;
 import java.util.Optional;
 import java.util.UUID;
 
-import tds.session.Extern;
 import tds.session.Session;
 
 /**

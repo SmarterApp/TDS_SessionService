@@ -3,7 +3,7 @@ package tds.session;
 /**
  * configuration properties for the session system
  */
-public class Extern {
+public class ExternalSessionConfiguration {
     private String clientName;
     private String environment;
 
@@ -11,12 +11,12 @@ public class Extern {
      * @param clientName  client name for the session
      * @param environment environment label for the session
      */
-    public Extern(String clientName, String environment) {
+    public ExternalSessionConfiguration(String clientName, String environment) {
         this.clientName = clientName;
         this.environment = environment;
     }
 
-    Extern(){}
+    ExternalSessionConfiguration(){}
 
     /**
      * @return client name

@@ -9,19 +9,19 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.util.Optional;
 
-import tds.session.Extern;
-import tds.session.repositories.ExternRepository;
+import tds.session.ExternalSessionConfiguration;
+import tds.session.repositories.ExternalSessionConfigurationRepository;
 
 @Repository
-public class ExternRepositoryImpl implements ExternRepository {
+public class ExternalSessionConfigurationRepositoryImpl implements ExternalSessionConfigurationRepository {
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public ExternRepositoryImpl(final DataSource dataSource) {
+    public ExternalSessionConfigurationRepositoryImpl(final DataSource dataSource) {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
     @Override
-    public Optional<Extern> getExternByClientName(String clientName) {
+    public Optional<ExternalSessionConfiguration> findExternalSessionConfigurationByClientName(String clientName) {
         final SqlParameterSource parameters = new MapSqlParameterSource("clientName", clientName);
 
         String query = "SELECT " +
@@ -30,14 +30,14 @@ public class ExternRepositoryImpl implements ExternRepository {
             "FROM session.externs \n" +
             "WHERE clientname = :clientName";
 
-        Optional<Extern> externOptional;
+        Optional<ExternalSessionConfiguration> maybeExtern;
         try {
-            externOptional = Optional.of(jdbcTemplate.queryForObject(query, parameters, (rs, rowNum) ->
-                new Extern(rs.getString("clientName"), rs.getString("environment"))));
+            maybeExtern = Optional.of(jdbcTemplate.queryForObject(query, parameters, (rs, rowNum) ->
+                new ExternalSessionConfiguration(rs.getString("clientName"), rs.getString("environment"))));
         } catch (EmptyResultDataAccessException e) {
-            externOptional = Optional.empty();
+            maybeExtern = Optional.empty();
         }
 
-        return externOptional;
+        return maybeExtern;
     }
 }
