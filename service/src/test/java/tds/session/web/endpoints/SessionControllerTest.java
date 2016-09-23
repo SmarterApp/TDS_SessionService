@@ -14,8 +14,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import tds.common.web.exceptions.NotFoundException;
+import tds.session.PauseSessionResponse;
 import tds.session.Session;
 import tds.session.services.SessionService;
+import tds.session.web.resources.PauseSessionResponseResource;
 import tds.session.web.resources.SessionResource;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,7 +57,7 @@ public class SessionControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getSession().getId()).isEqualTo(id);
-        assertThat(response.getBody().getId().getHref()).isEqualTo("http://localhost/sessions/" + id.toString());
+        assertThat(response.getBody().getId().getHref()).isEqualTo("http://localhost/sessions/" + id);
     }
 
     @Test(expected = NotFoundException.class)
@@ -63,5 +65,29 @@ public class SessionControllerTest {
         UUID id = UUID.randomUUID();
         when(sessionService.findSessionById(id)).thenReturn(Optional.empty());
         controller.findSessionById(id);
+    }
+
+    @Test
+    public void shouldPauseSession() {
+        UUID sessionId = UUID.randomUUID();
+        PauseSessionResponse pauseSessionResponse = new PauseSessionResponse();
+        Session session = new Session();
+        session.setId(sessionId);
+        pauseSessionResponse.setSession(session);
+
+        when(sessionService.pause(sessionId, "paused")).thenReturn(Optional.of(pauseSessionResponse));
+        ResponseEntity<PauseSessionResponseResource> responseEntity = controller.pause(sessionId, "paused");
+        verify(sessionService).pause(sessionId, "paused");
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody().getPauseSessionResponse()).isEqualTo(pauseSessionResponse);
+        assertThat(responseEntity.getBody().getLink("session").getHref()).isEqualTo("http://localhost/sessions/" + sessionId);
+    }
+
+    @Test (expected = NotFoundException.class)
+    public void shouldThrowNotFoundIfSessionCannotBeFoundWhenPausingSession() {
+        UUID sessionId = UUID.randomUUID();
+        when(sessionService.pause(sessionId, "paused")).thenReturn(Optional.empty());
+        controller.pause(sessionId, "paused");
     }
 }
