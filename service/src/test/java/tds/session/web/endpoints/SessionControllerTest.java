@@ -10,6 +10,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -69,18 +70,23 @@ public class SessionControllerTest {
 
     @Test
     public void shouldPauseSession() {
-        UUID sessionId = UUID.randomUUID();
-        PauseSessionResponse pauseSessionResponse = new PauseSessionResponse();
+        final UUID sessionId = UUID.randomUUID();
+        final String newStatus = "paused";
+        final Instant dateChanged = Instant.now();
         Session session = new Session();
         session.setId(sessionId);
-        pauseSessionResponse.setSession(session);
+        session.setStatus(newStatus);
+        session.setDateChanged(dateChanged);
+        PauseSessionResponse pauseSessionResponse = new PauseSessionResponse(session);
 
-        when(sessionService.pause(sessionId, "paused")).thenReturn(Optional.of(pauseSessionResponse));
-        ResponseEntity<PauseSessionResponseResource> responseEntity = controller.pause(sessionId, "paused");
-        verify(sessionService).pause(sessionId, "paused");
+        when(sessionService.pause(sessionId, newStatus)).thenReturn(Optional.of(pauseSessionResponse));
+        ResponseEntity<PauseSessionResponseResource> responseEntity = controller.pause(sessionId, newStatus);
+        verify(sessionService).pause(sessionId, newStatus);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody().getPauseSessionResponse()).isEqualTo(pauseSessionResponse);
+        assertThat(responseEntity.getBody().getExamIds()).isEqualTo(pauseSessionResponse.getExamIds());
+        assertThat(responseEntity.getBody().getStatus()).isEqualTo(newStatus);
+        assertThat(responseEntity.getBody().getDateChanged()).isEqualTo(dateChanged);
         assertThat(responseEntity.getBody().getLink("session").getHref()).isEqualTo("http://localhost/sessions/" + sessionId);
     }
 
