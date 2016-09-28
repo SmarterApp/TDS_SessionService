@@ -71,8 +71,9 @@ public class SessionControllerTest {
     public void shouldPauseSession() {
         UUID sessionId = UUID.randomUUID();
         PauseSessionResponse pauseSessionResponse = new PauseSessionResponse();
-        Session session = new Session();
-        session.setId(sessionId);
+        Session session = new Session.Builder()
+                .withId(sessionId)
+                .build();
         pauseSessionResponse.setSession(session);
 
         when(sessionService.pause(sessionId, "paused")).thenReturn(Optional.of(pauseSessionResponse));

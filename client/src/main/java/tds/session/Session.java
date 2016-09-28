@@ -10,6 +10,7 @@ import java.util.UUID;
  */
 public class Session {
     private UUID id;
+    private String sessionId;
     private int type;
     private String status;
     private Instant dateBegin;
@@ -22,6 +23,7 @@ public class Session {
 
     public static class Builder {
         private UUID id;
+        private String sessionId;
         private int type;
         private String status;
         private Instant dateBegin;
@@ -34,6 +36,11 @@ public class Session {
 
         public Builder withId(UUID newId) {
             id = newId;
+            return this;
+        }
+
+        public Builder withSessionId(String newSessionId) {
+            sessionId = newSessionId;
             return this;
         }
 
@@ -91,6 +98,7 @@ public class Session {
 
     private Session(Builder builder) {
         id = builder.id;
+        sessionId = builder.sessionId;
         type = builder.type;
         status = builder.status;
         dateBegin = builder.dateBegin;
@@ -109,8 +117,11 @@ public class Session {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    /**
+     * @return The session identifier for this {@link Session}.
+     */
+    public String getSessionId() {
+        return this.sessionId;
     }
 
     /**
@@ -120,19 +131,11 @@ public class Session {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     /**
      * @return the type of session
      */
     public int getType() {
         return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     /**
@@ -145,10 +148,6 @@ public class Session {
         return dateBegin;
     }
 
-    public void setDateBegin(Instant dateBegin) {
-        this.dateBegin = dateBegin;
-    }
-
     /**
      * @return The time when the {@link Session} was ended.
      * <p>
@@ -157,10 +156,6 @@ public class Session {
      */
     public Instant getDateEnd() {
         return dateEnd;
-    }
-
-    public void setDateEnd(Instant dateEnd) {
-        this.dateEnd = dateEnd;
     }
 
     /**
@@ -174,10 +169,6 @@ public class Session {
         return dateChanged;
     }
 
-    public void setDateChanged(Instant dateChanged) {
-        this.dateChanged = dateChanged;
-    }
-
     /**
      * @return The time when the {@link Session} was "visited".
      * <p>
@@ -186,10 +177,6 @@ public class Session {
      */
     public Instant getDateVisited() {
         return dateVisited;
-    }
-
-    public void setDateVisited(Instant dateVisited) {
-        this.dateVisited = dateVisited;
     }
 
     /**
@@ -203,19 +190,11 @@ public class Session {
         return clientName;
     }
 
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
-    }
-
     /**
      * @return The identifier of the Proctor managing this {@link Session}.
      */
     public Long getProctorId() {
         return proctorId;
-    }
-
-    public void setProctorId(Long proctorId) {
-        this.proctorId = proctorId;
     }
 
     /**
@@ -226,10 +205,6 @@ public class Session {
      */
     public UUID getBrowserKey() {
         return browserKey;
-    }
-
-    public void setBrowserKey(UUID browserKey) {
-        this.browserKey = browserKey;
     }
 
     /**
@@ -249,5 +224,21 @@ public class Session {
         return this.getStatus().toLowerCase().equals(OPEN_STATUS)
                 && now.isAfter(this.getDateBegin().minus(5, ChronoUnit.MINUTES))
                 && now.isBefore(this.getDateEnd());
+    }
+
+    /**
+     * Determine if this {@link Session} is a Guest Session.
+     * <p>
+     *     A Guest session is created when a user takes a practice assessment without logging into the Student
+     *     application.  Also referred to as a "Proctorless session".
+     * </p>
+     *
+     * @return True if the {@link Session}'s session ID is "GUEST Session" (case-insensitive); otherwise false.
+     */
+    public boolean isGuestSession() {
+        final String GUEST_SESSION_ID = "guest session";
+
+        return this.getSessionId() != null
+                && this.getSessionId().toLowerCase().equals(GUEST_SESSION_ID);
     }
 }
