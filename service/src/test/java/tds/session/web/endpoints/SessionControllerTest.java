@@ -73,12 +73,11 @@ public class SessionControllerTest {
         final UUID sessionId = UUID.randomUUID();
         final String newStatus = "paused";
         final Instant dateChanged = Instant.now();
-        PauseSessionResponse pauseSessionResponse = new PauseSessionResponse();
         Session session = new Session();
         session.setId(sessionId);
         session.setStatus(newStatus);
         session.setDateChanged(dateChanged);
-        pauseSessionResponse.setSession(session);
+        PauseSessionResponse pauseSessionResponse = new PauseSessionResponse(session);
 
         when(sessionService.pause(sessionId, newStatus)).thenReturn(Optional.of(pauseSessionResponse));
         ResponseEntity<PauseSessionResponseResource> responseEntity = controller.pause(sessionId, newStatus);

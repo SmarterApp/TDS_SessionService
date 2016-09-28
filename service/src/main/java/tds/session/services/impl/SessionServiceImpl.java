@@ -33,14 +33,14 @@ class SessionServiceImpl implements SessionService {
         }
 
         Session session = sessionOptional.get();
-        PauseSessionResponse pauseSessionResponse = new PauseSessionResponse();
+        PauseSessionResponse pauseSessionResponse;
 
         // if session is not open, it does not need to be paused, so return.
         // TODO:  This condition might be over-simplified
         if (!session.isOpen()) {
             // TODO:  Collect all Exams associated w/the Session
             //pauseSessionResponse.setExamIds(examIds);
-            pauseSessionResponse.setSession(session);
+            pauseSessionResponse = new PauseSessionResponse(session);
             return Optional.of(pauseSessionResponse);
         }
 
@@ -52,7 +52,7 @@ class SessionServiceImpl implements SessionService {
 
         // TODO:  Add call to create audit record that indicates the session is paused.
         Session updatedSession = sessionRepository.findSessionById(sessionId).get(); // we know the session exists already
-        pauseSessionResponse.setSession(updatedSession);
+        pauseSessionResponse = new PauseSessionResponse(updatedSession);
         return Optional.of(pauseSessionResponse);
     }
 }

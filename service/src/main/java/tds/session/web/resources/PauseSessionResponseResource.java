@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 import tds.session.PauseSessionResponse;
-import tds.session.Session;
 import tds.session.web.endpoints.SessionController;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -26,15 +25,14 @@ public class PauseSessionResponseResource extends ResourceSupport {
 
     List<UUID> examIds;
 
-    public PauseSessionResponseResource(PauseSessionResponse pauseSessionResponse) {
-        Session session = pauseSessionResponse.getSession();
-        this.status = session.getStatus();
-        this.dateChanged = session.getDateChanged();
-        this.dateEnded = session.getDateEnd();
+    public PauseSessionResponseResource(PauseSessionResponse pauseSessionResponse) {;
+        this.status = pauseSessionResponse.getStatus();
+        this.dateChanged = pauseSessionResponse.getDateChanged();
+        this.dateEnded = pauseSessionResponse.getDateEnded();
         this.examIds = pauseSessionResponse.getExamIds();
         this.add(linkTo(
                 methodOn(SessionController.class)
-                .findSessionById(session.getId())
+                .findSessionById(pauseSessionResponse.getSessionId())
                 ).withRel("session"));
     }
 
