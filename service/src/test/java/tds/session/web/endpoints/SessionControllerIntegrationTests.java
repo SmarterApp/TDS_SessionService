@@ -13,6 +13,7 @@ import tds.session.SessionServiceApplication;
 
 import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SessionServiceApplication.class)
@@ -68,8 +69,12 @@ public class SessionControllerIntegrationTests {
                 .then()
                     .statusCode(200)
                     .header("Location", equalTo(String.format("http://localhost:8080/sessions/%s", sessionId)))
+                    .body("status", equalTo(newStatus))
+                    .body("clientname", isEmptyOrNullString())  // Ensure that internal/extra data is not explosed to client
+                    .body("session", isEmptyOrNullString())
                 .extract()
                     .header("Location");
+
 
         // Verify the update happened
         given()

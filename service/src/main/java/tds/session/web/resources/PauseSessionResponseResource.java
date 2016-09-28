@@ -1,11 +1,13 @@
 package tds.session.web.resources;
 
 import org.springframework.hateoas.ResourceSupport;
-import org.springframework.hateoas.Resources;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 import tds.session.PauseSessionResponse;
+import tds.session.Session;
 import tds.session.web.endpoints.SessionController;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -14,24 +16,41 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 /**
  * A HATEOAS representation of the {@link PauseSessionResponse}.
  */
-// TODO:  This is returning too much data: should return status, datechanged, dateended, collection of affected examids, and link to session.
 public class PauseSessionResponseResource extends ResourceSupport {
-    private final PauseSessionResponse pauseSessionResponse;
+
+    private String status;
+
+    private Instant dateChanged;
+
+    private Instant dateEnded;
+
+    List<UUID> examIds;
 
     public PauseSessionResponseResource(PauseSessionResponse pauseSessionResponse) {
-        this.pauseSessionResponse = pauseSessionResponse;
-        Resources<UUID> examIdResources = new Resources<>(pauseSessionResponse.getExamIds());
-        examIdResources.add(linkTo(
-                methodOn(SessionController.class)
-                        .findSessionById(pauseSessionResponse.getSession().getId())
-        ).withRel("session"));
+        Session session = pauseSessionResponse.getSession();
+        this.status = session.getStatus();
+        this.dateChanged = session.getDateChanged();
+        this.dateEnded = session.getDateEnd();
+        this.examIds = pauseSessionResponse.getExamIds();
         this.add(linkTo(
                 methodOn(SessionController.class)
-                .findSessionById(pauseSessionResponse.getSession().getId())
+                .findSessionById(session.getId())
                 ).withRel("session"));
     }
 
-    public PauseSessionResponse getPauseSessionResponse() {
-        return pauseSessionResponse;
+    public String getStatus() {
+        return status;
+    }
+
+    public Instant getDateChanged() {
+        return dateChanged;
+    }
+
+    public Instant getDateEnded() {
+        return dateEnded;
+    }
+
+    public List<UUID> getExamIds() {
+        return examIds;
     }
 }

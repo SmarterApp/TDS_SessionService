@@ -39,11 +39,13 @@ class SessionServiceImpl implements SessionService {
         // TODO:  This condition might be over-simplified
         if (!session.isOpen()) {
             // TODO:  Collect all Exams associated w/the Session
+            //pauseSessionResponse.setExamIds(examIds);
             pauseSessionResponse.setSession(session);
             return Optional.of(pauseSessionResponse);
         }
 
-        // TODO:  Call pause exam for each Exam in session
+        // TODO:  Call pause exam for each Exam in session and set affected examIds list on response object
+        // pauseSessionResponse.setExamIds();
 
         // Pause the Session
         sessionRepository.pause(sessionId, newStatus);
