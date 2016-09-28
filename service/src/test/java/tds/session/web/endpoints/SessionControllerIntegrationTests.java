@@ -57,7 +57,7 @@ public class SessionControllerIntegrationTests {
 
     @Test
     public void shouldPauseASession() {
-        String sessionId = "08A57E3F-3A87-44C5-82A6-5B473E60785E".toLowerCase();
+        String sessionId = "C7F1D37F-8A4A-4AD9-BF7A-915068C9D40D".toLowerCase();
         String newStatus = "ctrl_test";
         String selfRel =
                 given()
