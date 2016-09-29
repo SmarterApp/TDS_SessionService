@@ -27,8 +27,8 @@ public class ExternalSessionConfigurationControllerIntegrationTests {
         .then()
             .contentType(ContentType.JSON)
             .statusCode(200)
-            .body("externalSessionConfiguration.clientName", equalTo("SBAC"))
-            .body("externalSessionConfiguration.environment", equalTo("SIMULATION"));
+            .body("clientName", equalTo("SBAC"))
+            .body("environment", equalTo("SIMULATION"));
     }
 
     @Test

@@ -31,8 +31,8 @@ public class SessionControllerIntegrationTests {
         .then()
             .contentType(ContentType.JSON)
             .statusCode(200)
-            .body("session.id", equalTo(sessionId))
-            .body("session.status", equalTo("closed"));
+            .body("id", equalTo(sessionId))
+            .body("status", equalTo("closed"));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class SessionControllerIntegrationTests {
             .get(selfRel)
         .then()
             .statusCode(200)
-            .body("session.id", equalTo(sessionId))
-            .body("session.status", equalTo(newStatus));
+            .body("id", equalTo(sessionId))
+            .body("status", equalTo(newStatus));
     }
 }

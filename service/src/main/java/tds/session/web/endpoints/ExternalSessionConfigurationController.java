@@ -13,7 +13,6 @@ import java.util.function.Supplier;
 import tds.common.web.exceptions.NotFoundException;
 import tds.session.ExternalSessionConfiguration;
 import tds.session.services.ExternalSessionConfigurationService;
-import tds.session.web.resources.ExternalSessionConfigurationResource;
 
 @RestController
 @RequestMapping("/sessions/external-config")
@@ -26,10 +25,10 @@ public class ExternalSessionConfigurationController {
 
     @RequestMapping(value = "/{clientName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<ExternalSessionConfigurationResource> findExternalSessionConfigurationByClientName(@PathVariable final String clientName) {
+    public ResponseEntity<ExternalSessionConfiguration> findExternalSessionConfigurationByClientName(@PathVariable final String clientName) {
         final ExternalSessionConfiguration externalSessionConfiguration = externalSessionConfigurationService.findExternalSessionConfigurationByClientName(clientName)
             .orElseThrow((Supplier<RuntimeException>) () -> new NotFoundException("Could not find extern with client name %s", clientName));
 
-        return ResponseEntity.ok(new ExternalSessionConfigurationResource(externalSessionConfiguration));
+        return ResponseEntity.ok(externalSessionConfiguration);
     }
 }
