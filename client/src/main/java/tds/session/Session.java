@@ -87,7 +87,10 @@ public class Session {
         }
     }
 
-    public Session() {}
+    /**
+     * Empty constructor for frameworks
+     */
+    private Session() {}
 
     private Session(Builder builder) {
         id = builder.id;
@@ -109,10 +112,6 @@ public class Session {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
     /**
      * @return the status of the session. "open" or "closed"
      */
@@ -120,19 +119,11 @@ public class Session {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     /**
      * @return the type of session
      */
     public int getType() {
         return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     /**
@@ -145,10 +136,6 @@ public class Session {
         return dateBegin;
     }
 
-    public void setDateBegin(Instant dateBegin) {
-        this.dateBegin = dateBegin;
-    }
-
     /**
      * @return The time when the {@link Session} was ended.
      * <p>
@@ -157,10 +144,6 @@ public class Session {
      */
     public Instant getDateEnd() {
         return dateEnd;
-    }
-
-    public void setDateEnd(Instant dateEnd) {
-        this.dateEnd = dateEnd;
     }
 
     /**
@@ -174,10 +157,6 @@ public class Session {
         return dateChanged;
     }
 
-    public void setDateChanged(Instant dateChanged) {
-        this.dateChanged = dateChanged;
-    }
-
     /**
      * @return The time when the {@link Session} was "visited".
      * <p>
@@ -186,10 +165,6 @@ public class Session {
      */
     public Instant getDateVisited() {
         return dateVisited;
-    }
-
-    public void setDateVisited(Instant dateVisited) {
-        this.dateVisited = dateVisited;
     }
 
     /**
@@ -203,19 +178,11 @@ public class Session {
         return clientName;
     }
 
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
-    }
-
     /**
      * @return The identifier of the Proctor managing this {@link Session}.
      */
     public Long getProctorId() {
         return proctorId;
-    }
-
-    public void setProctorId(Long proctorId) {
-        this.proctorId = proctorId;
     }
 
     /**
@@ -226,10 +193,6 @@ public class Session {
      */
     public UUID getBrowserKey() {
         return browserKey;
-    }
-
-    public void setBrowserKey(UUID browserKey) {
-        this.browserKey = browserKey;
     }
 
     /**
@@ -250,4 +213,6 @@ public class Session {
                 && now.isAfter(this.getDateBegin().minus(5, ChronoUnit.MINUTES))
                 && now.isBefore(this.getDateEnd());
     }
+
+
 }
