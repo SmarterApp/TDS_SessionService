@@ -15,7 +15,6 @@ import java.util.Optional;
 import tds.common.web.exceptions.NotFoundException;
 import tds.session.ExternalSessionConfiguration;
 import tds.session.services.ExternalSessionConfigurationService;
-import tds.session.web.resources.ExternalSessionConfigurationResource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -43,9 +42,10 @@ public class ExternalSessionConfigurationControllerTest {
         ExternalSessionConfiguration externalSessionConfiguration = new ExternalSessionConfiguration("SBAC", "Development");
         when(externalSessionConfigurationService.findExternalSessionConfigurationByClientName("SBAC")).thenReturn(Optional.of(externalSessionConfiguration));
 
-        ResponseEntity<ExternalSessionConfigurationResource> resource = controller.findExternalSessionConfigurationByClientName("SBAC");
+        ResponseEntity<ExternalSessionConfiguration> response = controller.findExternalSessionConfigurationByClientName("SBAC");
 
-        assertThat(resource.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(externalSessionConfiguration);
     }
 
     @Test(expected = NotFoundException.class)

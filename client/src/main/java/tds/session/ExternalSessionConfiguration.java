@@ -16,7 +16,10 @@ public class ExternalSessionConfiguration {
         this.environment = environment;
     }
 
-    ExternalSessionConfiguration(){}
+    /**
+     * Empty constructor for frameworks
+     */
+    private ExternalSessionConfiguration(){}
 
     /**
      * @return client name

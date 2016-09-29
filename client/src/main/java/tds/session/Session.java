@@ -94,7 +94,10 @@ public class Session {
         }
     }
 
-    public Session() {}
+    /**
+     * Empty constructor for frameworks
+     */
+    private Session() {}
 
     private Session(Builder builder) {
         id = builder.id;
@@ -118,7 +121,11 @@ public class Session {
     }
 
     /**
-     * @return The session identifier for this {@link Session}.
+     * @return The public session identifier for this {@link Session}.
+     * <p>
+     *     This value is displayed on the Proctor's user interface as the Session ID.  Students use this value when
+     *     logging into the Student UI to take an exam.
+     * </p>
      */
     public String getSessionId() {
         return this.sessionId;

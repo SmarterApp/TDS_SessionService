@@ -19,7 +19,6 @@ import tds.session.PauseSessionResponse;
 import tds.session.Session;
 import tds.session.services.SessionService;
 import tds.session.web.resources.PauseSessionResponseResource;
-import tds.session.web.resources.SessionResource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -52,13 +51,12 @@ public class SessionControllerTest {
                 .build();
         when(sessionService.findSessionById(id)).thenReturn(Optional.of(session));
 
-        ResponseEntity<SessionResource> response = controller.findSessionById(id);
+        ResponseEntity<Session> response = controller.findSessionById(id);
 
         verify(sessionService).findSessionById(id);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().getSession().getId()).isEqualTo(id);
-        assertThat(response.getBody().getId().getHref()).isEqualTo("http://localhost/sessions/" + id);
+        assertThat(response.getBody().getId()).isEqualTo(id);
     }
 
     @Test(expected = NotFoundException.class)
@@ -74,10 +72,11 @@ public class SessionControllerTest {
         final String newStatus = "paused";
         final Instant dateChanged = Instant.now();
         Session session = new Session.Builder()
-                .withId(sessionId)
-                .withStatus(newStatus)
-                .withDateChanged(dateChanged)
-                .build();
+            .withId(sessionId)
+            .withStatus(newStatus)
+            .withDateChanged(dateChanged)
+            .build();
+
         PauseSessionResponse pauseSessionResponse = new PauseSessionResponse(session);
 
         when(sessionService.pause(sessionId, newStatus)).thenReturn(Optional.of(pauseSessionResponse));

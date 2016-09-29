@@ -20,7 +20,6 @@ import tds.session.PauseSessionResponse;
 import tds.session.Session;
 import tds.session.services.SessionService;
 import tds.session.web.resources.PauseSessionResponseResource;
-import tds.session.web.resources.SessionResource;
 
 /**
  * Contains the endpoints for the session
@@ -37,11 +36,11 @@ public class SessionController {
 
     @RequestMapping(value = "/{sessionId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<SessionResource> findSessionById(@PathVariable final UUID sessionId) {
+    public ResponseEntity<Session> findSessionById(@PathVariable final UUID sessionId) {
         final Session session = sessionService.findSessionById(sessionId)
                 .orElseThrow(() -> new NotFoundException("Could not find session for %s", sessionId));
 
-        return ResponseEntity.ok(new SessionResource(session));
+        return ResponseEntity.ok(session);
     }
 
     @RequestMapping(value = "/{sessionId}/pause", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
