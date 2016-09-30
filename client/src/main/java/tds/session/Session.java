@@ -10,6 +10,7 @@ import java.util.UUID;
  */
 public class Session {
     private UUID id;
+    private String sessionId;
     private int type;
     private String status;
     private Instant dateBegin;
@@ -22,6 +23,7 @@ public class Session {
 
     public static class Builder {
         private UUID id;
+        private String sessionId;
         private int type;
         private String status;
         private Instant dateBegin;
@@ -34,6 +36,11 @@ public class Session {
 
         public Builder withId(UUID newId) {
             id = newId;
+            return this;
+        }
+
+        public Builder withSessionId(String newSessionId) {
+            sessionId = newSessionId;
             return this;
         }
 
@@ -94,6 +101,7 @@ public class Session {
 
     private Session(Builder builder) {
         id = builder.id;
+        sessionId = builder.sessionId;
         type = builder.type;
         status = builder.status;
         dateBegin = builder.dateBegin;
@@ -110,6 +118,17 @@ public class Session {
      */
     public UUID getId() {
         return id;
+    }
+
+    /**
+     * @return The public session identifier for this {@link Session}.
+     * <p>
+     *     This value is displayed on the Proctor's user interface as the Session ID.  Students use this value when
+     *     logging into the Student UI to take an exam.
+     * </p>
+     */
+    public String getSessionId() {
+        return this.sessionId;
     }
 
     /**
@@ -214,5 +233,19 @@ public class Session {
                 && now.isBefore(this.getDateEnd());
     }
 
+    /**
+     * Determine if this {@link Session} is a Guest Session.
+     * <p>
+     *     A Guest session is created when a user takes a practice assessment without logging into the Student
+     *     application.  Also referred to as a "Proctorless session".
+     * </p>
+     *
+     * @return True if the {@link Session}'s session ID is "GUEST Session" (case-insensitive); otherwise false.
+     */
+    public boolean isGuestSession() {
+        final String GUEST_SESSION_ID = "guest session";
 
+        return this.getSessionId() != null
+                && this.getSessionId().toLowerCase().equals(GUEST_SESSION_ID);
+    }
 }

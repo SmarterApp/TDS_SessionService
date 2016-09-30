@@ -82,4 +82,44 @@ public class SessionTest {
 
         assertThat(session.isOpen()).isFalse();
     }
+
+    @Test
+    public void shouldCrreateAGuestSession() {
+        Session session = new Session.Builder()
+                .withId(UUID.randomUUID())
+                .withSessionId("guest session")
+                .build();
+
+        assertThat(session.isGuestSession()).isTrue();
+    }
+
+    @Test
+    public void shouldCreateAGuestSessionCaseInsensitive() {
+        Session session = new Session.Builder()
+                .withId(UUID.randomUUID())
+                .withSessionId("GUEST sesSion")
+                .build();
+
+        assertThat(session.isGuestSession()).isTrue();
+    }
+
+    @Test
+    public void shouldCreateARealSessionWithASessionId() {
+        Session session = new Session.Builder()
+                .withId(UUID.randomUUID())
+                .withSessionId("unit test session")
+                .build();
+
+        assertThat(session.isGuestSession()).isFalse();
+    }
+
+    @Test
+    public void shouldCreateARealSessionWhenSessionIdIsNull() {
+        Session session = new Session.Builder()
+                .withId(UUID.randomUUID())
+                .withSessionId(null)
+                .build();
+
+        assertThat(session.isGuestSession()).isFalse();
+    }
 }

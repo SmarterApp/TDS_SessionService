@@ -43,6 +43,7 @@ class SessionRepositoryImpl implements SessionRepository {
         String query =
                 "SELECT \n" +
                 "   s._key AS id, \n" +
+                "   s.sessionid AS sessionId, \n" +
                 "   s.sessiontype AS `type`, \n" +
                 "   s.status, \n" +
                 "   s.datebegin, \n" +
@@ -107,6 +108,7 @@ class SessionRepositoryImpl implements SessionRepository {
         public Session mapRow(ResultSet rs, int i) throws SQLException {
             return new Session.Builder()
                     .withId(UuidAdapter.getUUIDFromBytes(rs.getBytes("id")))
+                    .withSessionId(rs.getString("sessionId"))
                     .withType(rs.getInt("type"))
                     .withStatus(rs.getString("status"))
                     .withDateBegin(mapTimeStampToInstant(rs, "datebegin"))
@@ -121,9 +123,6 @@ class SessionRepositoryImpl implements SessionRepository {
 
         /**
          * Map a {@link Timestamp} to an {@link Instant}.
-         * <p>
-         *     TODO:  Should be moved to a more generic mapper to prevent duplication.
-         * </p>
          *
          * @param rs The {@link ResultSet} being processed.
          * @param columnLabel The name of the column that should be mapped.
@@ -131,6 +130,7 @@ class SessionRepositoryImpl implements SessionRepository {
          * @throws SQLException in the event an error occurs processing the {@code RecordSet}.
          */
         private Instant mapTimeStampToInstant(ResultSet rs, String columnLabel) throws SQLException {
+            // TODO:  Should be moved to a more generic mapper to prevent duplication.
             Timestamp ts = rs.getTimestamp(columnLabel);
             return ts == null
                     ? null
