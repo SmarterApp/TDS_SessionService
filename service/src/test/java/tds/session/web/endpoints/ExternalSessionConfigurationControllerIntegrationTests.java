@@ -1,44 +1,55 @@
 package tds.session.web.endpoints;
 
-import com.jayway.restassured.http.ContentType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
 
-import tds.session.SessionServiceApplication;
+import java.net.URI;
+import java.util.Optional;
 
-import static com.jayway.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
+import tds.session.ExternalSessionConfiguration;
+import tds.session.services.ExternalSessionConfigurationService;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = SessionServiceApplication.class)
-@WebAppConfiguration
-@IntegrationTest("server.port:8080")
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@RunWith(SpringRunner.class)
+@WebMvcTest(ExternalSessionConfigurationController.class)
 public class ExternalSessionConfigurationControllerIntegrationTests {
+    @Autowired
+    private MockMvc http;
+
+    @MockBean
+    private ExternalSessionConfigurationService service;
+
     @Test
-    public void shouldReturnExtern() {
-        given()
-            .accept(ContentType.JSON)
-        .when()
-            .get(String.format("/sessions/external-config/%s", "SBAC"))
-        .then()
-            .contentType(ContentType.JSON)
-            .statusCode(200)
-            .body("clientName", equalTo("SBAC"))
-            .body("environment", equalTo("SIMULATION"));
+    public void shouldReturnExternalSessionConfiguration() throws Exception {
+        ExternalSessionConfiguration externalSessionConfiguration = new ExternalSessionConfiguration("SBAC", "development", 3, 5);
+        when(service.findExternalSessionConfigurationByClientName("SBAC")).thenReturn(Optional.of(externalSessionConfiguration));
+
+        http.perform(get(new URI("/sessions/external-config/SBAC"))
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("clientName", is("SBAC")))
+            .andExpect(jsonPath("environment", is("development")))
+            .andExpect(jsonPath("shiftWindowStart", is(3)))
+            .andExpect(jsonPath("shiftWindowEnd", is(5)));
     }
 
     @Test
-    public void shouldReturnNotFoundWhenExternCannotBeFoundByClientName() {
-        given()
-            .accept(ContentType.JSON)
-        .when()
-            .get(String.format("/sessions/external-config/%s", "FAKE"))
-        .then()
-            .statusCode(404);
+    public void shouldReturnNotFoundWhenExternalSessionConfigurationCannotBeFoundByClientName() throws Exception {
+        when(service.findExternalSessionConfigurationByClientName("SBAC")).thenReturn(Optional.empty());
+        http.perform(get(new URI("/sessions/external-config/SBAC"))
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
     }
 }
 

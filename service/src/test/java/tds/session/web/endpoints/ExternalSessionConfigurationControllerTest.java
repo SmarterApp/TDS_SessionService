@@ -39,7 +39,7 @@ public class ExternalSessionConfigurationControllerTest {
 
     @Test
     public void shouldFindExternalSessionConfigurationByClientName() {
-        ExternalSessionConfiguration externalSessionConfiguration = new ExternalSessionConfiguration("SBAC", "Development");
+        ExternalSessionConfiguration externalSessionConfiguration = new ExternalSessionConfiguration("SBAC", "Development", 0, 0);
         when(externalSessionConfigurationService.findExternalSessionConfigurationByClientName("SBAC")).thenReturn(Optional.of(externalSessionConfiguration));
 
         ResponseEntity<ExternalSessionConfiguration> response = controller.findExternalSessionConfigurationByClientName("SBAC");

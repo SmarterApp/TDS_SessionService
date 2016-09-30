@@ -25,15 +25,24 @@ public class ExternalSessionConfigurationRepositoryImpl implements ExternalSessi
         final SqlParameterSource parameters = new MapSqlParameterSource("clientName", clientName);
 
         String query = "SELECT " +
-            "clientname as clientName, \n" +
-            "environment \n" +
+            "externs.clientname as clientName, \n" +
+            "externs.environment, \n" +
+            "_externs.shiftwindowstart, \n" +
+            "_externs.shiftwindowend \n" +
             "FROM session.externs \n" +
-            "WHERE clientname = :clientName";
+            "JOIN session._externs ON _externs.clientName = externs.clientName \n" +
+            "WHERE externs.clientname = :clientName";
 
         Optional<ExternalSessionConfiguration> maybeExtern;
         try {
             maybeExtern = Optional.of(jdbcTemplate.queryForObject(query, parameters, (rs, rowNum) ->
-                new ExternalSessionConfiguration(rs.getString("clientName"), rs.getString("environment"))));
+                new ExternalSessionConfiguration(
+                    rs.getString("clientName"),
+                    rs.getString("environment"),
+                    rs.getInt("shiftwindowstart"),
+                    rs.getInt("shiftwindowend")
+                )
+            ));
         } catch (EmptyResultDataAccessException e) {
             maybeExtern = Optional.empty();
         }
