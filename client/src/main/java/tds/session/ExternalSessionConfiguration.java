@@ -6,20 +6,30 @@ package tds.session;
 public class ExternalSessionConfiguration {
     private String clientName;
     private String environment;
+    private int shiftWindowStart;
+    private int shiftWindowEnd;
 
     /**
-     * @param clientName  client name for the session
-     * @param environment environment label for the session
+     * @param clientName       client name for the session
+     * @param environment      environment label for the session
+     * @param shiftWindowStart number of days to shift the window start
+     * @param shiftWindowEnd   number of days to shift the window end
      */
-    public ExternalSessionConfiguration(String clientName, String environment) {
+    public ExternalSessionConfiguration(String clientName,
+                                        String environment,
+                                        int shiftWindowStart,
+                                        int shiftWindowEnd) {
         this.clientName = clientName;
         this.environment = environment;
+        this.shiftWindowStart = shiftWindowStart;
+        this.shiftWindowEnd = shiftWindowEnd;
     }
 
     /**
      * Empty constructor for frameworks
      */
-    private ExternalSessionConfiguration(){}
+    private ExternalSessionConfiguration() {
+    }
 
     /**
      * @return client name
@@ -33,5 +43,19 @@ public class ExternalSessionConfiguration {
      */
     public String getEnvironment() {
         return environment;
+    }
+
+    /**
+     * @return number of days to shift the window start
+     */
+    public int getShiftWindowStart() {
+        return shiftWindowStart;
+    }
+
+    /**
+     * @return number of days to shift the window end
+     */
+    public int getShiftWindowEnd() {
+        return shiftWindowEnd;
     }
 }
