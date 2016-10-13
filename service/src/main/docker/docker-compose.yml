@@ -32,9 +32,4 @@ services:
     image: sbacoss/tds-session-service
     ports:
       - "32842:8080"
-    environment:
-      SESSION_DB_HOST: ${SESSION_DB_HOST}
-      SESSION_DB_PORT: ${SESSION_DB_PORT}
-      SESSION_DB_NAME: ${SESSION_DB_NAME}
-      SESSION_DB_USER: ${SESSION_DB_USER}
-      SESSION_DB_PASSWORD: ${SESSION_DB_PASSWORD}
+    env_file: session-service.env
