@@ -31,7 +31,7 @@
 
         <unit-tests.skip>false</unit-tests.skip>
         <integration-tests.skip>true</integration-tests.skip>
-        <docker.image.prefix>sbacoss</docker.image.prefix>
+        <docker.image.prefix>fwsbac</docker.image.prefix>
         <assertj.version>3.4.1</assertj.version>
         <mockito.version>1.10.19</mockito.version>
         <rest-assured.version>2.9.0</rest-assured.version>
