@@ -110,13 +110,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2-database.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>${assertj.version}</version>
@@ -202,35 +195,12 @@
             </plugin>
 
             <plugin>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-maven-plugin</artifactId>
-                <version>4.0.3</version>
-                <executions>
-                    <execution>
-                        <id>flyway_test_migrations</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>migrate</goal>
-                        </goals>
-                        <configuration>
-                            <locations>
-                                <location>filesystem:src/test/resources/db/migration</location>
-                            </locations>
-                            <!-- do not run migrations if integration tests are skipped -->
-                            <skip>${integration-tests.skip}</skip>
-                            <url>jdbc:h2:mem:session;MODE=MySQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS "public";</url>
-                            <user>sa</user>
-                        </configuration>
-                    </execution>
-                </executions>
-
-                <dependencies>
-                    <dependency>
-                        <groupId>com.h2database</groupId>
-                        <artifactId>h2</artifactId>
-                        <version>${h2-database.version}</version>
-                    </dependency>
-                </dependencies>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>
