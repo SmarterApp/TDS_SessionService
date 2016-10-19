@@ -7,8 +7,14 @@
 
 use session;
 
-ALTER TABLE _externs ADD COLUMN environment varchar(50);
+DROP TABLE IF EXISTS _externs;
 
-UPDATE _externs SET environment = 'Development';
+CREATE TABLE _externs (
+  clientname varchar(100) NOT NULL,
+  shiftwindowstart int(11) NOT NULL DEFAULT 0,
+  shiftwindowend int(11) NOT NULL DEFAULT 0,
+  environment varchar(50) NOT NULL
+);
 
-ALTER TABLE _externs MODIFY COLUMN environment varchar(50) NOT NULL;
+INSERT INTO _externs VALUES ('SBAC', 5, 3, 'Development');
+INSERT INTO _externs VALUES ('SBAC-PT', 0, 0, 'Development');
