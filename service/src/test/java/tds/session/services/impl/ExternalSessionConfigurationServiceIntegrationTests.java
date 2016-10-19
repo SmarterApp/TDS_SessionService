@@ -24,7 +24,7 @@ public class ExternalSessionConfigurationServiceIntegrationTests {
         ExternalSessionConfiguration externalSessionConfiguration = externalSessionConfigurationService.findExternalSessionConfigurationByClientName("SBAC").get();
 
         assertThat(externalSessionConfiguration.getClientName()).isEqualTo("SBAC");
-        assertThat(externalSessionConfiguration.getEnvironment()).isEqualTo("SIMULATION");
+        assertThat(externalSessionConfiguration.getEnvironment()).isEqualTo("Development");
         assertThat(externalSessionConfiguration.getShiftWindowEnd()).isEqualTo(3);
         assertThat(externalSessionConfiguration.getShiftWindowStart()).isEqualTo(5);
     }
