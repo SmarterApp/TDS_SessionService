@@ -17,8 +17,6 @@ CREATE OR REPLACE VIEW externs AS
              e.clientstylepath AS clientstylepath,
              x.environment AS environment,
              e.ispracticetest AS ispracticetest,
-             (SELECT a.url FROM configs.geo_clientapplication a WHERE a.clientname = x.clientname AND a.environment = x.environment AND a.servicetype = 'CHECKIN' AND a.appname = 'STUDENT') AS testeecheckin,
-             (SELECT a.url FROM configs.geo_clientapplication a WHERE a.clientname = x.clientname AND a.environment = x.environment AND a.servicetype = 'CHECKIN' AND a.appname = 'PROCTOR') AS proctorcheckin,
              e.timezoneoffset AS timezoneoffset,
              e.publishurl AS publishurl,
              e.initialreportingid AS initialreportingid,
