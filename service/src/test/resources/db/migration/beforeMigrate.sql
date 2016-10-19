@@ -7,3 +7,4 @@
 
 ***********************************************************************************************************************/
 CREATE SCHEMA IF NOT EXISTS session;
+CREATE SCHEMA IF NOT EXISTS configs;

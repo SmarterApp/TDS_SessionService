@@ -24,7 +24,7 @@ public class ExternalSessionConfigurationRepositoryImplIntegrationTests {
         Optional<ExternalSessionConfiguration> maybeExternalSessionConfiguration = externalSessionConfigurationRepository.findExternalSessionConfigurationByClientName("SBAC");
         assertThat(maybeExternalSessionConfiguration).isPresent();
         assertThat(maybeExternalSessionConfiguration.get().getClientName()).isEqualTo("SBAC");
-        assertThat(maybeExternalSessionConfiguration.get().getEnvironment()).isEqualTo("SIMULATION");
+        assertThat(maybeExternalSessionConfiguration.get().getEnvironment()).isEqualTo("Development");
     }
 
     @Test
