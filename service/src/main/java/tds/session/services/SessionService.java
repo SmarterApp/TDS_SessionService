@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import tds.session.PauseSessionResponse;
 import tds.session.Session;
+import tds.session.SessionAssessment;
 
 /**
  * Handles interactions with the testing session
@@ -30,5 +31,13 @@ public interface SessionService {
      * @param newStatus A description of why the {@link Session} is being paused
      */
     Optional<PauseSessionResponse> pause(UUID sessionId, String newStatus);
+
+    /**
+     * Finds the associated {@link tds.session.SessionAssessment}
+     *
+     * @param sessionId the session id
+     * @return {@link tds.session.SessionAssessment} if found otherwise empty
+     */
+    Optional<SessionAssessment> findSessionAssessment(UUID sessionId);
 }
 
