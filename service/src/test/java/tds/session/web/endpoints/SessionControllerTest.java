@@ -18,7 +18,6 @@ import tds.common.web.exceptions.NotFoundException;
 import tds.session.PauseSessionResponse;
 import tds.session.Session;
 import tds.session.services.SessionService;
-import tds.session.web.resources.PauseSessionResponseResource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -80,14 +79,14 @@ public class SessionControllerTest {
         PauseSessionResponse pauseSessionResponse = new PauseSessionResponse(session);
 
         when(sessionService.pause(sessionId, newStatus)).thenReturn(Optional.of(pauseSessionResponse));
-        ResponseEntity<PauseSessionResponseResource> responseEntity = controller.pause(sessionId, newStatus);
+        ResponseEntity<PauseSessionResponse> responseEntity = controller.pause(sessionId, newStatus);
         verify(sessionService).pause(sessionId, newStatus);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody().getExamIds()).isEqualTo(pauseSessionResponse.getExamIds());
         assertThat(responseEntity.getBody().getStatus()).isEqualTo(newStatus);
         assertThat(responseEntity.getBody().getDateChanged()).isEqualTo(dateChanged);
-        assertThat(responseEntity.getBody().getLink("session").getHref()).isEqualTo("http://localhost/sessions/" + sessionId);
+        assertThat(responseEntity.getHeaders().getLocation().toString()).isEqualTo("http://localhost/sessions/" + sessionId);
     }
 
     @Test (expected = NotFoundException.class)

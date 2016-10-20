@@ -19,7 +19,9 @@ import tds.common.web.exceptions.NotFoundException;
 import tds.session.PauseSessionResponse;
 import tds.session.Session;
 import tds.session.services.SessionService;
-import tds.session.web.resources.PauseSessionResponseResource;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
  * Contains the endpoints for the session
@@ -45,14 +47,15 @@ public class SessionController {
 
     @RequestMapping(value = "/{sessionId}/pause", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<PauseSessionResponseResource> pause(@PathVariable final UUID sessionId, @RequestBody final String newStatus) {
+    ResponseEntity<PauseSessionResponse> pause(@PathVariable final UUID sessionId, @RequestBody final String newStatus) {
         final PauseSessionResponse response = sessionService.pause(sessionId, newStatus)
                 .orElseThrow(() -> new NotFoundException("Could not find session id %s", sessionId));
 
-        final PauseSessionResponseResource resource = new PauseSessionResponseResource(response);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(resource.getLink("session").getHref()));
 
-        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        URI location = linkTo(methodOn(SessionController.class).findSessionById(response.getSessionId())).toUri();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(location);
+
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 }
