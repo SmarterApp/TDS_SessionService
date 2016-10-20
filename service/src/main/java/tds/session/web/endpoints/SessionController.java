@@ -38,7 +38,7 @@ public class SessionController {
 
     @RequestMapping(value = "/{sessionId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Session> findSessionById(@PathVariable final UUID sessionId) {
+    ResponseEntity<Session> findSessionById(@PathVariable final UUID sessionId) {
         final Session session = sessionService.findSessionById(sessionId)
                 .orElseThrow(() -> new NotFoundException("Could not find session for %s", sessionId));
 
