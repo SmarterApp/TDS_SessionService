@@ -18,6 +18,7 @@ import java.util.UUID;
 import tds.common.web.exceptions.NotFoundException;
 import tds.session.PauseSessionResponse;
 import tds.session.Session;
+import tds.session.SessionAssessment;
 import tds.session.services.SessionService;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -28,7 +29,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
  */
 @RestController
 @RequestMapping("/sessions")
-public class SessionController {
+class SessionController {
     private final SessionService sessionService;
 
     @Autowired
@@ -57,5 +58,14 @@ public class SessionController {
         headers.setLocation(location);
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{sessionId}/assessment", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    ResponseEntity<SessionAssessment> findSessionAssessment(@PathVariable final UUID sessionId) {
+        final SessionAssessment sessionAssessment = sessionService.findSessionAssessment(sessionId)
+            .orElseThrow(() -> new NotFoundException("Could not find session assessment for %s", sessionId));
+
+        return ResponseEntity.ok(sessionAssessment);
     }
 }
