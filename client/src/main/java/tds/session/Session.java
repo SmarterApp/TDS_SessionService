@@ -234,6 +234,20 @@ public class Session {
     }
 
     /**
+     * Determine if the session is managed by a Proctor
+     * <p>
+     *     A session can be "proctorless" if the "AnonymousTestee" flag is turned on in the
+     *     {@code configs.client_systemflags} table.  A user taking a practice test is another example of a "proctorless"
+     *     session.
+     * </p>
+     *
+     * @return True if the {@code proctorId} is null; otherwise false
+     */
+    public boolean isProctorless() {
+        return this.getProctorId() == null;
+    }
+
+    /**
      * Determine if this {@link Session} is a Guest Session.
      * <p>
      *     A Guest session is created when a user takes a practice assessment without logging into the Student
