@@ -1,5 +1,6 @@
 package tds.session.repositories.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -16,6 +17,7 @@ import tds.session.repositories.ExternalSessionConfigurationRepository;
 public class ExternalSessionConfigurationRepositoryImpl implements ExternalSessionConfigurationRepository {
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
+    @Autowired
     public ExternalSessionConfigurationRepositoryImpl(final DataSource dataSource) {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
