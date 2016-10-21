@@ -1,89 +1,88 @@
 package tds.session.web.endpoints;
 
-import com.jayway.restassured.http.ContentType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
 
-import tds.session.SessionServiceApplication;
+import java.net.URI;
+import java.util.Optional;
+import java.util.UUID;
 
-import static com.jayway.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
+import tds.session.PauseSessionResponse;
+import tds.session.Session;
+import tds.session.services.SessionService;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = SessionServiceApplication.class)
-@WebAppConfiguration
-@IntegrationTest("server.port:8080")
-@Transactional
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@RunWith(SpringRunner.class)
+@WebMvcTest(SessionController.class)
 public class SessionControllerIntegrationTests {
+    @Autowired
+    private MockMvc http;
+
+    @MockBean
+    private SessionService mockSessionService;
+
     @Test
-    public void shouldReturnSessionWhenFoundById() {
-        String sessionId = "06485031-B2B6-4CED-A0C1-B294EDA54DB2".toLowerCase();
-        given()
-            .accept(ContentType.JSON)
-        .when()
-            .get(String.format("/sessions/%s", sessionId))
-        .then()
-            .contentType(ContentType.JSON)
-            .statusCode(200)
-            .body("id", equalTo(sessionId))
-            .body("status", equalTo("closed"));
+    public void shouldReturnSessionWhenFoundById() throws Exception {
+        Session session = new Session.Builder()
+            .withId(UUID.randomUUID())
+            .withStatus("closed")
+            .build();
+
+        when(mockSessionService.findSessionById(session.getId())).thenReturn(Optional.of(session));
+
+        http.perform(get(new URI(String.format("/sessions/%s", session.getId())))
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("id", is(session.getId().toString())))
+            .andExpect(jsonPath("status", is("closed")));
     }
 
     @Test
-    public void shouldReturnNotFoundWhenSessionCannotBeFoundById() {
-        String sessionId = "55585031-B2B6-4CED-A0C1-B294EDA54DB2";
-        given()
-            .accept(ContentType.JSON)
-        .when()
-            .get(String.format("/sessions/%s", sessionId))
-        .then()
-            .statusCode(404);
+    public void shouldReturnNotFoundWhenSessionCannotBeFoundById() throws Exception {
+        UUID id = UUID.randomUUID();
+        when(mockSessionService.findSessionById(id)).thenReturn(Optional.empty());
+
+        http.perform(get(new URI(String.format("/sessions/%s", id)))
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
     }
 
     @Test
-    public void shouldHandleNonUUIDWhenFindingSessionById() {
-        given()
-            .accept(ContentType.JSON)
-        .when()
-            .get(String.format("/sessions/invalidUUID"))
-        .then()
-            .statusCode(400);
+    public void shouldHandleNonUUIDWhenFindingSessionById() throws Exception {
+        http.perform(get(new URI(String.format("/sessions/invalid-uuid")))
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void shouldPauseASession() {
-        String sessionId = "C7F1D37F-8A4A-4AD9-BF7A-915068C9D40D".toLowerCase();
-        String newStatus = "ctrl_test";
-        String selfRel =
-                given()
-                    .accept(ContentType.JSON)
-                    .body(newStatus)
-                .when()
-                    .put(String.format("/sessions/%s/pause", sessionId))
-                .then()
-                    .statusCode(200)
-                    .header("Location", equalTo(String.format("http://localhost:8080/sessions/%s", sessionId)))
-                    .body("status", equalTo(newStatus))
-                    .body("clientname", isEmptyOrNullString())  // Ensure that internal/extra data is not explosed to client
-                    .body("session", isEmptyOrNullString())
-                .extract()
-                    .header("Location");
+    public void shouldPauseASession() throws Exception{
+        UUID id = UUID.randomUUID();
 
+        Session session = new Session.Builder()
+            .withId(id)
+            .withStatus("paused")
+            .withClientName("SBAC_PT")
+            .build();
 
-        // Verify the update happened
-        given()
-            .accept(ContentType.JSON)
-        .when()
-            .get(selfRel)
-        .then()
-            .statusCode(200)
-            .body("id", equalTo(sessionId))
-            .body("status", equalTo(newStatus));
+        when(mockSessionService.pause(id, "paused")).thenReturn(Optional.of(new PauseSessionResponse(session)));
+
+        http.perform(put(new URI(String.format("/sessions/%s/pause", session.getId())))
+            .content("paused")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("sessionId", is(session.getId().toString())))
+            .andExpect(jsonPath("status", is("paused")));
     }
 }
