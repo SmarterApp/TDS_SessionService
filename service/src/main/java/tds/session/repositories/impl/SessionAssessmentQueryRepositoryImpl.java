@@ -34,7 +34,8 @@ class SessionAssessmentQueryRepositoryImpl implements SessionAssessmentQueryRepo
 
         String SQL = "SELECT _fk_session, _efk_adminsubject, _efk_testid \n" +
             "FROM session.sessiontests \n" +
-            "WHERE _fk_session = :sessionId;";
+            "WHERE _fk_session = :sessionId \n" +
+            "LIMIT 1;";
 
         Optional<SessionAssessment> maybeSessionAssessment = Optional.empty();
         try {
