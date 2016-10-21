@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 import tds.common.web.exceptions.NotFoundException;
@@ -53,7 +52,6 @@ class SessionController {
         final PauseSessionResponse response = sessionService.pause(sessionId, newStatus)
                 .orElseThrow(() -> new NotFoundException("Could not find session id %s", sessionId));
 
-
         URI location = linkTo(methodOn(SessionController.class).findSessionById(response.getSessionId())).toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(location);
@@ -61,9 +59,12 @@ class SessionController {
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{sessionId}/assessment", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{sessionId}/assessment/{assessmentKey}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    ResponseEntity<List<SessionAssessment>> findSessionAssessment(@PathVariable final UUID sessionId) {
-        return ResponseEntity.ok(sessionService.findSessionAssessment(sessionId));
+    ResponseEntity<SessionAssessment> findSessionAssessment(@PathVariable final UUID sessionId, @PathVariable final String assessmentKey) {
+        final SessionAssessment sessionAssessment = sessionService.findSessionAssessment(sessionId, assessmentKey)
+            .orElseThrow(() -> new NotFoundException("Could not find session assessment for %s and %s", sessionId, assessmentKey));
+
+        return ResponseEntity.ok(sessionAssessment);
     }
 }

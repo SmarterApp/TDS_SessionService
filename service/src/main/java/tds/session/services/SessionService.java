@@ -1,6 +1,5 @@
 package tds.session.services;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,9 +22,9 @@ public interface SessionService {
     /**
      * Pause a session, updating it to the specified status.
      * <p>
-     *     In the context of TDS, "paused" means the session has been stopped and can no longer support students taking
-     *     exams.  A session that is "stopped" or "closed" (e.g. by a proctor voluntarily ending the session) is
-     *     considered "paused".
+     * In the context of TDS, "paused" means the session has been stopped and can no longer support students taking
+     * exams.  A session that is "stopped" or "closed" (e.g. by a proctor voluntarily ending the session) is
+     * considered "paused".
      * </p>
      *
      * @param sessionId The id of the {@link Session} to pause
@@ -36,9 +35,10 @@ public interface SessionService {
     /**
      * Finds the associated {@link tds.session.SessionAssessment}
      *
-     * @param sessionId the session id
-     * @return list of {@link tds.session.SessionAssessment}
+     * @param sessionId     the session id
+     * @param assessmentKey the unique identifier for a particular assessment
+     * @return {@link tds.session.SessionAssessment} if found otherwise empty
      */
-    List<SessionAssessment> findSessionAssessment(UUID sessionId);
+    Optional<SessionAssessment> findSessionAssessment(UUID sessionId, String assessmentKey);
 }
 

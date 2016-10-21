@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import tds.session.SessionAssessment;
@@ -64,16 +64,16 @@ public class SessionAssessmentQueryRepositoryImplIntegrationTests {
 
     @Test
     public void itShouldReturnEmptyWhenNotFound() {
-        List<SessionAssessment> sessionAssessments = repository.findSessionAssessment(UUID.randomUUID());
-        assertThat(sessionAssessments).isEmpty();
+        Optional<SessionAssessment> maybeSessionAssessment = repository.findSessionAssessment(UUID.randomUUID(), "");
+        assertThat(maybeSessionAssessment).isNotPresent();
     }
 
     @Test
     public void itShouldReturnSessionAssessmentForSession() {
-        List<SessionAssessment> sessionAssessments = repository.findSessionAssessment(sessionUUID);
-        assertThat(sessionAssessments).isNotEmpty();
+        Optional<SessionAssessment> maybeSessionAssessment = repository.findSessionAssessment(sessionUUID, ASSESSMENT_KEY);
+        assertThat(maybeSessionAssessment).isPresent();
 
-        SessionAssessment sessionAssessment = sessionAssessments.get(0);
+        SessionAssessment sessionAssessment = maybeSessionAssessment.get();
         assertThat(sessionAssessment.getAssessmentId()).isEqualTo(ASSESSMENT_ID);
         assertThat(sessionAssessment.getAssessmentKey()).isEqualTo(ASSESSMENT_KEY);
         assertThat(sessionAssessment.getSessionId()).isEqualTo(sessionUUID);

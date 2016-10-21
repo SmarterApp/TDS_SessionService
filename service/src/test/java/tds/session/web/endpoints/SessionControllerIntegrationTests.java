@@ -8,9 +8,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -93,14 +94,29 @@ public class SessionControllerIntegrationTests {
         UUID sessionId = UUID.randomUUID();
         SessionAssessment sessionAssessment = new SessionAssessment(sessionId, "ELA 11", "(SBAC) ELA 11");
 
-        when(mockSessionService.findSessionAssessment(sessionId)).thenReturn(Collections.singletonList(sessionAssessment));
+        UriComponents components = UriComponentsBuilder
+            .fromPath(String.format("/sessions/%s/assessment/%s", sessionId, "(SBAC) ELA 11")).build();
 
-        http.perform(get(new URI(String.format("/sessions/%s/assessment", sessionId)))
+        when(mockSessionService.findSessionAssessment(sessionId, "(SBAC) ELA 11")).thenReturn(Optional.of(sessionAssessment));
+
+        http.perform(get(components.toUri())
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()", is(1)))
-            .andExpect(jsonPath("[0].sessionId", is(sessionId.toString())))
-            .andExpect(jsonPath("[0].assessmentId", is("ELA 11")))
-            .andExpect(jsonPath("[0].assessmentKey", is("(SBAC) ELA 11")));
+            .andExpect(jsonPath("sessionId", is(sessionId.toString())))
+            .andExpect(jsonPath("assessmentId", is("ELA 11")))
+            .andExpect(jsonPath("assessmentKey", is("(SBAC) ELA 11")));
+    }
+
+    @Test
+    public void shouldReturnNotFoundWhenSessionAssessmentCannotBeFoundById() throws Exception {
+        UUID id = UUID.randomUUID();
+        when(mockSessionService.findSessionAssessment(id, "(SBAC) ELA 11")).thenReturn(Optional.empty());
+
+        UriComponents components = UriComponentsBuilder
+            .fromPath(String.format("/sessions/%s/assessment/%s", id, "(SBAC) ELA 11")).build();
+
+        http.perform(get(components.toUri())
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
     }
 }
