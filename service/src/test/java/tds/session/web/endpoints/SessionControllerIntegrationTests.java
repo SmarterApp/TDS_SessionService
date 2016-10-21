@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import tds.session.PauseSessionResponse;
 import tds.session.Session;
+import tds.session.SessionAssessment;
 import tds.session.services.SessionService;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -84,5 +85,30 @@ public class SessionControllerIntegrationTests {
             .andExpect(status().isOk())
             .andExpect(jsonPath("sessionId", is(session.getId().toString())))
             .andExpect(jsonPath("status", is("paused")));
+    }
+
+    @Test
+    public void shouldReturnSessionAssessment() throws Exception {
+        UUID sessionId = UUID.randomUUID();
+        SessionAssessment sessionAssessment = new SessionAssessment(sessionId, "ELA 11", "(SBAC) ELA 11");
+
+        when(mockSessionService.findSessionAssessment(sessionId)).thenReturn(Optional.of(sessionAssessment));
+
+        http.perform(get(new URI(String.format("/sessions/%s/assessment", sessionId)))
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("sessionId", is(sessionId.toString())))
+            .andExpect(jsonPath("assessmentId", is("ELA 11")))
+            .andExpect(jsonPath("assessmentKey", is("(SBAC) ELA 11")));
+    }
+
+    @Test
+    public void shouldReturnNotFoundWhenSessionAssessmentCannotBeFoundById() throws Exception {
+        UUID id = UUID.randomUUID();
+        when(mockSessionService.findSessionAssessment(id)).thenReturn(Optional.empty());
+
+        http.perform(get(new URI(String.format("/sessions/%s/assessment", id)))
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
     }
 }
