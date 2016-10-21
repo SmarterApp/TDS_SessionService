@@ -62,7 +62,7 @@ public class SessionControllerIntegrationTests {
 
     @Test
     public void shouldHandleNonUUIDWhenFindingSessionById() throws Exception {
-        http.perform(get(new URI(String.format("/sessions/invalid-uuid")))
+        http.perform(get(new URI("/sessions/invalid-uuid"))
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest());
     }
