@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -92,23 +93,14 @@ public class SessionControllerIntegrationTests {
         UUID sessionId = UUID.randomUUID();
         SessionAssessment sessionAssessment = new SessionAssessment(sessionId, "ELA 11", "(SBAC) ELA 11");
 
-        when(mockSessionService.findSessionAssessment(sessionId)).thenReturn(Optional.of(sessionAssessment));
+        when(mockSessionService.findSessionAssessment(sessionId)).thenReturn(Collections.singletonList(sessionAssessment));
 
         http.perform(get(new URI(String.format("/sessions/%s/assessment", sessionId)))
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("sessionId", is(sessionId.toString())))
-            .andExpect(jsonPath("assessmentId", is("ELA 11")))
-            .andExpect(jsonPath("assessmentKey", is("(SBAC) ELA 11")));
-    }
-
-    @Test
-    public void shouldReturnNotFoundWhenSessionAssessmentCannotBeFoundById() throws Exception {
-        UUID id = UUID.randomUUID();
-        when(mockSessionService.findSessionAssessment(id)).thenReturn(Optional.empty());
-
-        http.perform(get(new URI(String.format("/sessions/%s/assessment", id)))
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound());
+            .andExpect(jsonPath("$.length()", is(1)))
+            .andExpect(jsonPath("[0].sessionId", is(sessionId.toString())))
+            .andExpect(jsonPath("[0].assessmentId", is("ELA 11")))
+            .andExpect(jsonPath("[0].assessmentKey", is("(SBAC) ELA 11")));
     }
 }

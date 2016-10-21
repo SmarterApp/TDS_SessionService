@@ -7,6 +7,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -68,12 +70,13 @@ public class SessionServiceImplTest {
     public void shouldReturnSessionAssessment() {
         UUID sessionId = UUID.randomUUID();
         SessionAssessment sessionAssessment = new SessionAssessment(sessionId, "3 ELA", "(SBAC) 3 ELA 2015 - 2016");
-        when(mockSessionAssessmentQueryRepository.findSessionAssessment(sessionId)).thenReturn(Optional.of(sessionAssessment));
+        when(mockSessionAssessmentQueryRepository.findSessionAssessment(sessionId)).thenReturn(Collections.singletonList(sessionAssessment));
 
-        Optional<SessionAssessment> maybeSessionAssessment = service.findSessionAssessment(sessionId);
+        List<SessionAssessment> sessionAssessments = service.findSessionAssessment(sessionId);
 
         verify(mockSessionAssessmentQueryRepository).findSessionAssessment(sessionId);
 
-        assertThat(maybeSessionAssessment).isPresent();
+        assertThat(sessionAssessments).isNotEmpty();
+        assertThat(sessionAssessments.get(0)).isEqualTo(sessionAssessment);
     }
 }

@@ -1,6 +1,6 @@
 package tds.session.repositories;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 import tds.session.SessionAssessment;
@@ -13,7 +13,7 @@ public interface SessionAssessmentQueryRepository {
      * Finds the associated {@link tds.session.SessionAssessment}
      *
      * @param sessionId the session id
-     * @return {@link tds.session.SessionAssessment} if found otherwise empty
+     * @return list {@link tds.session.SessionAssessment}
      */
-    Optional<SessionAssessment> findSessionAssessment(UUID sessionId);
+    List<SessionAssessment> findSessionAssessment(UUID sessionId);
 }

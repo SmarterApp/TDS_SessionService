@@ -1,5 +1,6 @@
 package tds.session.services;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,8 +37,8 @@ public interface SessionService {
      * Finds the associated {@link tds.session.SessionAssessment}
      *
      * @param sessionId the session id
-     * @return {@link tds.session.SessionAssessment} if found otherwise empty
+     * @return list of {@link tds.session.SessionAssessment}
      */
-    Optional<SessionAssessment> findSessionAssessment(UUID sessionId);
+    List<SessionAssessment> findSessionAssessment(UUID sessionId);
 }
 

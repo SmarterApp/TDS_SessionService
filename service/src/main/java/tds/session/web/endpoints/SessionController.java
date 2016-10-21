@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 import tds.common.web.exceptions.NotFoundException;
@@ -62,10 +63,7 @@ class SessionController {
 
     @RequestMapping(value = "/{sessionId}/assessment", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    ResponseEntity<SessionAssessment> findSessionAssessment(@PathVariable final UUID sessionId) {
-        final SessionAssessment sessionAssessment = sessionService.findSessionAssessment(sessionId)
-            .orElseThrow(() -> new NotFoundException("Could not find session assessment for %s", sessionId));
-
-        return ResponseEntity.ok(sessionAssessment);
+    ResponseEntity<List<SessionAssessment>> findSessionAssessment(@PathVariable final UUID sessionId) {
+        return ResponseEntity.ok(sessionService.findSessionAssessment(sessionId));
     }
 }

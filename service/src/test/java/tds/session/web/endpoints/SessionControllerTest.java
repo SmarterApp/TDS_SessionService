@@ -14,6 +14,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -101,23 +103,16 @@ public class SessionControllerTest {
         controller.pause(sessionId, "paused");
     }
 
-    @Test (expected = NotFoundException.class)
-    public void shouldThrowNotFoundIfSessionAssessmentNotFound() {
-        UUID sessionId = UUID.randomUUID();
-        when(mockSessionService.findSessionAssessment(sessionId)).thenReturn(Optional.empty());
-        controller.findSessionAssessment(sessionId);
-    }
-
     @Test
     public void shouldFindSessionAssessment() {
         UUID sessionId = UUID.randomUUID();
         SessionAssessment sessionAssessment = new SessionAssessment(sessionId, "ELA 3", "(SBAC) ELA 3");
 
-        when(mockSessionService.findSessionAssessment(sessionId)).thenReturn(Optional.of(sessionAssessment));
-        ResponseEntity<SessionAssessment> response = controller.findSessionAssessment(sessionId);
+        when(mockSessionService.findSessionAssessment(sessionId)).thenReturn(Collections.singletonList(sessionAssessment));
+        ResponseEntity<List<SessionAssessment>> response = controller.findSessionAssessment(sessionId);
         verify(mockSessionService).findSessionAssessment(sessionId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo(sessionAssessment);
+        assertThat(response.getBody().get(0)).isEqualTo(sessionAssessment);
     }
 }
