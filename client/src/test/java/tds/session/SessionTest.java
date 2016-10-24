@@ -122,4 +122,24 @@ public class SessionTest {
 
         assertThat(session.isGuestSession()).isFalse();
     }
+
+    @Test
+    public void shouldReturnTrueForIsProctorlessBecauseProctorIdIsNull() {
+        Session session = new Session.Builder()
+            .withId(UUID.randomUUID())
+            .withProctorId(null)
+            .build();
+
+        assertThat(session.isProctorless()).isTrue();
+    }
+
+    @Test
+    public void shouldReturnFalseForIsProctorlessBecauseProctorIdIsNotNull() {
+        Session session = new Session.Builder()
+            .withId(UUID.randomUUID())
+            .withProctorId(42L)
+            .build();
+
+        assertThat(session.isProctorless()).isFalse();
+    }
 }
