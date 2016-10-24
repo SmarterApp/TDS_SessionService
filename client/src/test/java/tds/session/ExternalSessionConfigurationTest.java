@@ -44,17 +44,24 @@ public class ExternalSessionConfigurationTest {
         assertThat(externalSessionConfiguration.isInDevelopmentEnvironment()).isFalse();
     }
 
-    @Test
-    public void shouldReturnFalseForIsInSimulationEnvironmentAndIsInDevelopmentEnvironmentWhenEnvironmentIsNull() {
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionBecauseClientNameIsNull() {
+        ExternalSessionConfiguration externalSessionConfiguration =
+            new ExternalSessionConfiguration(
+                null,
+                "Production",
+                0,
+                0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionBecauseEnvironmentIsNull() {
         ExternalSessionConfiguration externalSessionConfiguration =
             new ExternalSessionConfiguration(
                 "UNIT_TEST",
                 null,
                 0,
                 0);
-
-        assertThat(externalSessionConfiguration.isInSimulationEnvironment()).isFalse();
-        assertThat(externalSessionConfiguration.isInDevelopmentEnvironment()).isFalse();
     }
 }
 

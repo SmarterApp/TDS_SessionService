@@ -22,6 +22,14 @@ public class ExternalSessionConfiguration {
                                         String environment,
                                         int shiftWindowStart,
                                         int shiftWindowEnd) {
+        if (clientName == null) {
+            throw new IllegalArgumentException("clientname cannot be null");
+        }
+
+        if (environment == null) {
+            throw new IllegalArgumentException("environment cannot be null");
+        }
+
         this.clientName = clientName;
         this.environment = environment;
         this.shiftWindowStart = shiftWindowStart;
@@ -68,8 +76,7 @@ public class ExternalSessionConfiguration {
      * @return True if the environment is set to "simulation" (case-insensitive); otherwise false.
      */
     public boolean isInSimulationEnvironment() {
-        return this.getEnvironment() != null
-            && this.getEnvironment().equalsIgnoreCase(SIMULATION_ENVIRONMENT);
+        return this.getEnvironment().equalsIgnoreCase(SIMULATION_ENVIRONMENT);
     }
 
     /**
@@ -78,7 +85,6 @@ public class ExternalSessionConfiguration {
      * @return True if the environment is set to "development" (case-insensitive); otherwise false.
      */
     public boolean isInDevelopmentEnvironment() {
-        return this.getEnvironment() != null
-            && this.getEnvironment().equalsIgnoreCase(DEVELOPMENT_ENVIRONMENT);
+        return this.getEnvironment().equalsIgnoreCase(DEVELOPMENT_ENVIRONMENT);
     }
 }
