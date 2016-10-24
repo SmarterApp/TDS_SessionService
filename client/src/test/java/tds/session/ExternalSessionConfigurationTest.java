@@ -43,6 +43,19 @@ public class ExternalSessionConfigurationTest {
         assertThat(externalSessionConfiguration.isInSimulationEnvironment()).isFalse();
         assertThat(externalSessionConfiguration.isInDevelopmentEnvironment()).isFalse();
     }
+
+    @Test
+    public void shouldReturnFalseForIsInSimulationEnvironmentAndIsInDevelopmentEnvironmentWhenEnvironmentIsNull() {
+        ExternalSessionConfiguration externalSessionConfiguration =
+            new ExternalSessionConfiguration(
+                "UNIT_TEST",
+                null,
+                0,
+                0);
+
+        assertThat(externalSessionConfiguration.isInSimulationEnvironment()).isFalse();
+        assertThat(externalSessionConfiguration.isInDevelopmentEnvironment()).isFalse();
+    }
 }
 
 

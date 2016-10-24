@@ -68,7 +68,8 @@ public class ExternalSessionConfiguration {
      * @return True if the environment is set to "simulation" (case-insensitive); otherwise false.
      */
     public boolean isInSimulationEnvironment() {
-        return this.getEnvironment().equalsIgnoreCase(SIMULATION_ENVIRONMENT);
+        return this.getEnvironment() != null
+            && this.getEnvironment().equalsIgnoreCase(SIMULATION_ENVIRONMENT);
     }
 
     /**
@@ -77,6 +78,7 @@ public class ExternalSessionConfiguration {
      * @return True if the environment is set to "development" (case-insensitive); otherwise false.
      */
     public boolean isInDevelopmentEnvironment() {
-        return this.getEnvironment().equalsIgnoreCase(DEVELOPMENT_ENVIRONMENT);
+        return this.getEnvironment() != null
+            && this.getEnvironment().equalsIgnoreCase(DEVELOPMENT_ENVIRONMENT);
     }
 }
