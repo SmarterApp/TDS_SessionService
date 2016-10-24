@@ -8,16 +8,21 @@ import java.util.UUID;
 
 import tds.session.PauseSessionResponse;
 import tds.session.Session;
+import tds.session.SessionAssessment;
+import tds.session.repositories.SessionAssessmentQueryRepository;
 import tds.session.repositories.SessionRepository;
 import tds.session.services.SessionService;
 
 @Service
 class SessionServiceImpl implements SessionService {
     private final SessionRepository sessionRepository;
+    private final SessionAssessmentQueryRepository sessionAssessmentQueryRepository;
 
     @Autowired
-    public SessionServiceImpl(SessionRepository sessionRepository) {
+    public SessionServiceImpl(SessionRepository sessionRepository,
+                              SessionAssessmentQueryRepository sessionAssessmentQueryRepository) {
         this.sessionRepository = sessionRepository;
+        this.sessionAssessmentQueryRepository = sessionAssessmentQueryRepository;
     }
 
     @Override
@@ -54,5 +59,10 @@ class SessionServiceImpl implements SessionService {
         Session updatedSession = sessionRepository.findSessionById(sessionId).get(); // we know the session exists already
         pauseSessionResponse = new PauseSessionResponse(updatedSession);
         return Optional.of(pauseSessionResponse);
+    }
+
+    @Override
+    public Optional<SessionAssessment> findSessionAssessment(UUID sessionId, String assessmentKey) {
+        return sessionAssessmentQueryRepository.findSessionAssessment(sessionId, assessmentKey);
     }
 }

@@ -1,5 +1,6 @@
 package tds.session.web.endpoints;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,16 +17,17 @@ import tds.session.services.ExternalSessionConfigurationService;
 
 @RestController
 @RequestMapping("/sessions/external-config")
-public class ExternalSessionConfigurationController {
+class ExternalSessionConfigurationController {
     private final ExternalSessionConfigurationService externalSessionConfigurationService;
 
+    @Autowired
     public ExternalSessionConfigurationController(ExternalSessionConfigurationService externalSessionConfigurationService) {
         this.externalSessionConfigurationService = externalSessionConfigurationService;
     }
 
     @RequestMapping(value = "/{clientName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<ExternalSessionConfiguration> findExternalSessionConfigurationByClientName(@PathVariable final String clientName) {
+    ResponseEntity<ExternalSessionConfiguration> findExternalSessionConfigurationByClientName(@PathVariable final String clientName) {
         final ExternalSessionConfiguration externalSessionConfiguration = externalSessionConfigurationService.findExternalSessionConfigurationByClientName(clientName)
             .orElseThrow((Supplier<RuntimeException>) () -> new NotFoundException("Could not find extern with client name %s", clientName));
 

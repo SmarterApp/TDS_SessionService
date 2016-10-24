@@ -1,5 +1,6 @@
 package tds.session.services.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -12,6 +13,7 @@ import tds.session.services.ExternalSessionConfigurationService;
 public class ExternalSessionConfigurationServiceImpl implements ExternalSessionConfigurationService {
     private final ExternalSessionConfigurationRepository repository;
 
+    @Autowired
     public ExternalSessionConfigurationServiceImpl(ExternalSessionConfigurationRepository repository) {
         this.repository = repository;
     }
