@@ -12,7 +12,7 @@ public class ExternalSessionConfigurationTest {
                 "UNIT_TEST",
                 "Simulation",
                 0,
-                0);
+                0, 0, 0);
 
         assertThat(externalSessionConfiguration.isInSimulationEnvironment()).isTrue();
         assertThat(externalSessionConfiguration.isInDevelopmentEnvironment()).isFalse();
@@ -25,7 +25,7 @@ public class ExternalSessionConfigurationTest {
                 "UNIT_TEST",
                 "Development",
                 0,
-                0);
+                0, 0, 0);
 
         assertThat(externalSessionConfiguration.isInDevelopmentEnvironment()).isTrue();
         assertThat(externalSessionConfiguration.isInSimulationEnvironment()).isFalse();
@@ -38,7 +38,7 @@ public class ExternalSessionConfigurationTest {
                 "UNIT_TEST",
                 "Production",
                 0,
-                0);
+                0, 0, 0);
 
         assertThat(externalSessionConfiguration.isInSimulationEnvironment()).isFalse();
         assertThat(externalSessionConfiguration.isInDevelopmentEnvironment()).isFalse();
@@ -46,22 +46,20 @@ public class ExternalSessionConfigurationTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIllegalArgumentExceptionBecauseClientNameIsNull() {
-        ExternalSessionConfiguration externalSessionConfiguration =
-            new ExternalSessionConfiguration(
-                null,
-                "Production",
-                0,
-                0);
+        new ExternalSessionConfiguration(
+            null,
+            "Production",
+            0,
+            0, 0, 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIllegalArgumentExceptionBecauseEnvironmentIsNull() {
-        ExternalSessionConfiguration externalSessionConfiguration =
-            new ExternalSessionConfiguration(
-                "UNIT_TEST",
-                null,
-                0,
-                0);
+        new ExternalSessionConfiguration(
+            "UNIT_TEST",
+            null,
+            0,
+            0, 0, 0);
     }
 }
 

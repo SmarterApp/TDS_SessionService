@@ -89,4 +89,22 @@ public class ExternalSessionConfiguration {
     public int getShiftFormEnd() {
         return shiftFormEnd;
     }
+
+    /**
+     * Determine if this {@link ExternalSessionConfiguration} is configured for the Simulation environment.
+     *
+     * @return True if the environment is set to "simulation" (case-insensitive); otherwise false.
+     */
+    public boolean isInSimulationEnvironment() {
+        return this.getEnvironment().equalsIgnoreCase(SIMULATION_ENVIRONMENT);
+    }
+
+    /**
+     * Determine if this {@link ExternalSessionConfiguration} is configured for the Development environment.
+     *
+     * @return True if the environment is set to "development" (case-insensitive); otherwise false.
+     */
+    public boolean isInDevelopmentEnvironment() {
+        return this.getEnvironment().equalsIgnoreCase(DEVELOPMENT_ENVIRONMENT);
+    }
 }
