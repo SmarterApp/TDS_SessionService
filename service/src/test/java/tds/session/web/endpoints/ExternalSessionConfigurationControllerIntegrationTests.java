@@ -32,7 +32,7 @@ public class ExternalSessionConfigurationControllerIntegrationTests {
 
     @Test
     public void shouldReturnExternalSessionConfiguration() throws Exception {
-        ExternalSessionConfiguration externalSessionConfiguration = new ExternalSessionConfiguration("SBAC", "development", 3, 5);
+        ExternalSessionConfiguration externalSessionConfiguration = new ExternalSessionConfiguration("SBAC", "development", 3, 5, 10, 11);
         when(service.findExternalSessionConfigurationByClientName("SBAC")).thenReturn(Optional.of(externalSessionConfiguration));
 
         http.perform(get(new URI("/sessions/external-config/SBAC"))
@@ -41,7 +41,9 @@ public class ExternalSessionConfigurationControllerIntegrationTests {
             .andExpect(jsonPath("clientName", is("SBAC")))
             .andExpect(jsonPath("environment", is("development")))
             .andExpect(jsonPath("shiftWindowStart", is(3)))
-            .andExpect(jsonPath("shiftWindowEnd", is(5)));
+            .andExpect(jsonPath("shiftWindowEnd", is(5)))
+            .andExpect(jsonPath("shiftFormStart", is(10)))
+            .andExpect(jsonPath("shiftFormEnd", is(11)));
     }
 
     @Test

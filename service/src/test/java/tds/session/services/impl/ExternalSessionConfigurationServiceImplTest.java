@@ -31,7 +31,7 @@ public class ExternalSessionConfigurationServiceImplTest {
 
     @Test
     public void shouldFindExternalSessionConfigurationByClientName() {
-        ExternalSessionConfiguration externalSessionConfiguration = new ExternalSessionConfiguration("SBAC", "SIMULATION",0,0);
+        ExternalSessionConfiguration externalSessionConfiguration = new ExternalSessionConfiguration("SBAC", "SIMULATION",0,0,10,11);
         when(externalSessionConfigurationRepository.findExternalSessionConfigurationByClientName("SBAC")).thenReturn(Optional.of(externalSessionConfiguration));
         Optional<ExternalSessionConfiguration> optional = externalSessionConfigurationService.findExternalSessionConfigurationByClientName("SBAC");
         verify(externalSessionConfigurationRepository).findExternalSessionConfigurationByClientName("SBAC");
