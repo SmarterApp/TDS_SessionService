@@ -8,6 +8,8 @@ public class ExternalSessionConfiguration {
     private String environment;
     private int shiftWindowStart;
     private int shiftWindowEnd;
+    private int shiftFormStart;
+    private int shiftFormEnd;
 
     /**
      * @param clientName       client name for the session
@@ -18,11 +20,15 @@ public class ExternalSessionConfiguration {
     public ExternalSessionConfiguration(String clientName,
                                         String environment,
                                         int shiftWindowStart,
-                                        int shiftWindowEnd) {
+                                        int shiftWindowEnd,
+                                        int shiftFormStart,
+                                        int shiftFormEnd) {
         this.clientName = clientName;
         this.environment = environment;
         this.shiftWindowStart = shiftWindowStart;
         this.shiftWindowEnd = shiftWindowEnd;
+        this.shiftFormStart = shiftFormStart;
+        this.shiftFormEnd = shiftFormEnd;
     }
 
     /**
@@ -57,5 +63,19 @@ public class ExternalSessionConfiguration {
      */
     public int getShiftWindowEnd() {
         return shiftWindowEnd;
+    }
+
+    /**
+     * @return the number of days to shift the form start
+     */
+    public int getShiftFormStart() {
+        return shiftFormStart;
+    }
+
+    /**
+     * @return the number of days to shift the form end
+     */
+    public int getShiftFormEnd() {
+        return shiftFormEnd;
     }
 }

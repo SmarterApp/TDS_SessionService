@@ -30,7 +30,9 @@ public class ExternalSessionConfigurationRepositoryImpl implements ExternalSessi
             "externs.clientname as clientName, \n" +
             "externs.environment, \n" +
             "_externs.shiftwindowstart, \n" +
-            "_externs.shiftwindowend \n" +
+            "_externs.shiftwindowend, \n " +
+            "_externs.shiftformstart, \n " +
+            "_externs.shiftformend \n " +
             "FROM session.externs \n" +
             "JOIN session._externs ON _externs.clientName = externs.clientName \n" +
             "WHERE externs.clientname = :clientName";
@@ -42,7 +44,9 @@ public class ExternalSessionConfigurationRepositoryImpl implements ExternalSessi
                     rs.getString("clientName"),
                     rs.getString("environment"),
                     rs.getInt("shiftwindowstart"),
-                    rs.getInt("shiftwindowend")
+                    rs.getInt("shiftwindowend"),
+                    rs.getInt("shiftformstart"),
+                    rs.getInt("shiftformend")
                 )
             ));
         } catch (EmptyResultDataAccessException e) {

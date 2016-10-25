@@ -32,7 +32,7 @@ public class ExternalSessionConfigurationRepositoryImplIntegrationTests {
 
     @Before
     public void setUp() {
-        String externsInsertSQL = "INSERT INTO session._externs (clientname, environment) VALUES ('SESSION-SBAC', 'Development');";
+        String externsInsertSQL = "INSERT INTO session._externs (clientname, environment, shiftwindowstart, shiftwindowend, shiftformstart, shiftformend) VALUES ('SESSION-SBAC', 'Development', 1, 2, 10, 11);";
         String clientExternsInsertSQL = "INSERT INTO configs.client_externs VALUES (:uuid,'MultiClient_RTS_2013','MultiClient_RTS_2013','itembank',1,1,'RTS','RTS',1,'session',1,1,'SESSION-SBAC',1,'SESSION-SBAC',NULL,'Development',0,0,NULL,100000,1,NULL,NULL);";
 
         NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
@@ -44,8 +44,15 @@ public class ExternalSessionConfigurationRepositoryImplIntegrationTests {
     public void shouldFindExternalSessionConfigurationByClientName() {
         Optional<ExternalSessionConfiguration> maybeExternalSessionConfiguration = externalSessionConfigurationRepository.findExternalSessionConfigurationByClientName("SESSION-SBAC");
         assertThat(maybeExternalSessionConfiguration).isPresent();
-        assertThat(maybeExternalSessionConfiguration.get().getClientName()).isEqualTo("SESSION-SBAC");
-        assertThat(maybeExternalSessionConfiguration.get().getEnvironment()).isEqualTo("Development");
+
+        ExternalSessionConfiguration config = maybeExternalSessionConfiguration.get();
+        assertThat(config.getClientName()).isEqualTo("SESSION-SBAC");
+        assertThat(config.getEnvironment()).isEqualTo("Development");
+        assertThat(config.getShiftWindowStart()).isEqualTo(1);
+        assertThat(config.getShiftWindowEnd()).isEqualTo(2);
+        assertThat(config.getShiftFormStart()).isEqualTo(10);
+        assertThat(config.getShiftFormEnd()).isEqualTo(11);
+
     }
 
     @Test
