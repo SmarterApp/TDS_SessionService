@@ -4,6 +4,9 @@ package tds.session;
  * configuration properties for the session system
  */
 public class ExternalSessionConfiguration {
+    final String SIMULATION_ENVIRONMENT = "simulation";
+    final String DEVELOPMENT_ENVIRONMENT = "development";
+
     private String clientName;
     private String environment;
     private int shiftWindowStart;
@@ -23,6 +26,14 @@ public class ExternalSessionConfiguration {
                                         int shiftWindowEnd,
                                         int shiftFormStart,
                                         int shiftFormEnd) {
+        if (clientName == null) {
+            throw new IllegalArgumentException("clientname cannot be null");
+        }
+
+        if (environment == null) {
+            throw new IllegalArgumentException("environment cannot be null");
+        }
+
         this.clientName = clientName;
         this.environment = environment;
         this.shiftWindowStart = shiftWindowStart;
