@@ -87,7 +87,7 @@ public class SessionTest {
     public void shouldCrreateAGuestSession() {
         Session session = new Session.Builder()
                 .withId(UUID.randomUUID())
-                .withSessionId("guest session")
+                .withSessionKey("guest session")
                 .build();
 
         assertThat(session.isGuestSession()).isTrue();
@@ -97,7 +97,7 @@ public class SessionTest {
     public void shouldCreateAGuestSessionCaseInsensitive() {
         Session session = new Session.Builder()
                 .withId(UUID.randomUUID())
-                .withSessionId("GUEST sesSion")
+                .withSessionKey("GUEST sesSion")
                 .build();
 
         assertThat(session.isGuestSession()).isTrue();
@@ -107,7 +107,7 @@ public class SessionTest {
     public void shouldCreateARealSessionWithASessionId() {
         Session session = new Session.Builder()
                 .withId(UUID.randomUUID())
-                .withSessionId("unit test session")
+                .withSessionKey("unit test session")
                 .build();
 
         assertThat(session.isGuestSession()).isFalse();
@@ -117,7 +117,7 @@ public class SessionTest {
     public void shouldCreateARealSessionWhenSessionIdIsNull() {
         Session session = new Session.Builder()
                 .withId(UUID.randomUUID())
-                .withSessionId(null)
+                .withSessionKey(null)
                 .build();
 
         assertThat(session.isGuestSession()).isFalse();

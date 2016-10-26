@@ -10,7 +10,7 @@ import java.util.UUID;
  */
 public class Session {
     private UUID id;
-    private String sessionId;
+    private String sessionKey;
     private int type;
     private String status;
     private Instant dateBegin;
@@ -23,7 +23,7 @@ public class Session {
 
     public static class Builder {
         private UUID id;
-        private String sessionId;
+        private String sessionKey;
         private int type;
         private String status;
         private Instant dateBegin;
@@ -39,8 +39,8 @@ public class Session {
             return this;
         }
 
-        public Builder withSessionId(String newSessionId) {
-            sessionId = newSessionId;
+        public Builder withSessionKey(String sessionKey) {
+            this.sessionKey = sessionKey;
             return this;
         }
 
@@ -101,7 +101,7 @@ public class Session {
 
     private Session(Builder builder) {
         id = builder.id;
-        sessionId = builder.sessionId;
+        sessionKey = builder.sessionKey;
         type = builder.type;
         status = builder.status;
         dateBegin = builder.dateBegin;
@@ -127,8 +127,8 @@ public class Session {
      *     logging into the Student UI to take an exam.
      * </p>
      */
-    public String getSessionId() {
-        return this.sessionId;
+    public String getSessionKey() {
+        return this.sessionKey;
     }
 
     /**
@@ -259,7 +259,7 @@ public class Session {
     public boolean isGuestSession() {
         final String GUEST_SESSION_ID = "guest session";
 
-        return this.getSessionId() != null
-                && this.getSessionId().toLowerCase().equals(GUEST_SESSION_ID);
+        return this.getSessionKey() != null
+                && this.getSessionKey().toLowerCase().equals(GUEST_SESSION_ID);
     }
 }
