@@ -108,7 +108,7 @@ class SessionRepositoryImpl implements SessionRepository {
         public Session mapRow(ResultSet rs, int i) throws SQLException {
             return new Session.Builder()
                     .withId(UuidAdapter.getUUIDFromBytes(rs.getBytes("id")))
-                    .withSessionId(rs.getString("sessionId"))
+                    .withSessionKey(rs.getString("sessionId"))
                     .withType(rs.getInt("type"))
                     .withStatus(rs.getString("status"))
                     .withDateBegin(mapTimeStampToInstant(rs, "datebegin"))
