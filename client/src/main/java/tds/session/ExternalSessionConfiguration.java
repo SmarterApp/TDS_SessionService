@@ -4,8 +4,8 @@ package tds.session;
  * configuration properties for the session system
  */
 public class ExternalSessionConfiguration {
-    final String SIMULATION_ENVIRONMENT = "simulation";
-    final String DEVELOPMENT_ENVIRONMENT = "development";
+    public static final String SIMULATION_ENVIRONMENT = "simulation";
+    public static final String DEVELOPMENT_ENVIRONMENT = "development";
 
     private String clientName;
     private String environment;
