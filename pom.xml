@@ -22,8 +22,8 @@
     </parent>
 
     <properties>
-        <java.version>1.8</java.version>
         <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <tds.session.client>0.0.1-SNAPSHOT</tds.session.client>
@@ -34,19 +34,6 @@
         <docker.image.prefix>fwsbac</docker.image.prefix>
         <assertj.version>3.4.1</assertj.version>
         <mockito.version>1.10.19</mockito.version>
+        <joda-time.version>2.9.5</joda-time.version>
     </properties>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.plugin.version}</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

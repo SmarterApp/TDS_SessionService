@@ -1,14 +1,17 @@
 package tds.session;
 
+import org.joda.time.Duration;
+import org.joda.time.Instant;
+import org.joda.time.Period;
 import org.junit.Test;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SessionTest {
+    private static final Duration STANDARD_DURATION = Period.minutes(20).toStandardDuration();
+
     @Test
     public void shouldBeInstantiated() {
         UUID sessionId = UUID.randomUUID();
@@ -28,8 +31,8 @@ public class SessionTest {
         Session session = new Session.Builder()
                 .withId(UUID.randomUUID())
                 .withStatus("open")
-                .withDateBegin(Instant.now().minus(20, ChronoUnit.MINUTES))
-                .withDateEnd(Instant.now().plus(20, ChronoUnit.MINUTES))
+                .withDateBegin(Instant.now().minus(STANDARD_DURATION))
+                .withDateEnd(Instant.now().plus(STANDARD_DURATION))
                 .build();
 
         assertThat(session.isOpen()).isTrue();
@@ -40,8 +43,8 @@ public class SessionTest {
         Session session = new Session.Builder()
                 .withId(UUID.randomUUID())
                 .withStatus("OPEN")
-                .withDateBegin(Instant.now().minus(20, ChronoUnit.MINUTES))
-                .withDateEnd(Instant.now().plus(20, ChronoUnit.MINUTES))
+                .withDateBegin(Instant.now().minus(STANDARD_DURATION))
+                .withDateEnd(Instant.now().plus(STANDARD_DURATION))
                 .build();
 
         assertThat(session.isOpen()).isTrue();
@@ -52,8 +55,8 @@ public class SessionTest {
         Session session = new Session.Builder()
                 .withId(UUID.randomUUID())
                 .withStatus("closed")
-                .withDateBegin(Instant.now().minus(20, ChronoUnit.MINUTES))
-                .withDateEnd(Instant.now().plus(20, ChronoUnit.MINUTES))
+                .withDateBegin(Instant.now().minus(STANDARD_DURATION))
+                .withDateEnd(Instant.now().plus(STANDARD_DURATION))
                 .build();
 
         assertThat(session.isOpen()).isFalse();
@@ -64,8 +67,8 @@ public class SessionTest {
         Session session = new Session.Builder()
                 .withId(UUID.randomUUID())
                 .withStatus("open")
-                .withDateBegin(Instant.now().minus(40, ChronoUnit.MINUTES))
-                .withDateEnd(Instant.now().minus(20, ChronoUnit.MINUTES))
+                .withDateBegin(Instant.now().minus(Period.minutes(40).toStandardDuration()))
+                .withDateEnd(Instant.now().minus(STANDARD_DURATION))
                 .build();
 
         assertThat(session.isOpen()).isFalse();
@@ -76,8 +79,8 @@ public class SessionTest {
         Session session = new Session.Builder()
                 .withId(UUID.randomUUID())
                 .withStatus("open")
-                .withDateBegin(Instant.now().plus(20, ChronoUnit.MINUTES))
-                .withDateEnd(Instant.now().plus(40, ChronoUnit.MINUTES))
+                .withDateBegin(Instant.now().plus(STANDARD_DURATION))
+                .withDateEnd(Instant.now().plus(Period.minutes(40).toStandardDuration()))
                 .build();
 
         assertThat(session.isOpen()).isFalse();

@@ -1,8 +1,11 @@
 package tds.session;
 
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+
+import org.joda.time.Duration;
+import org.joda.time.Instant;
+import org.joda.time.Period;
+
 import java.util.UUID;
 
 /**
@@ -20,6 +23,7 @@ public class Session {
     private String clientName;
     private Long proctorId;
     private UUID browserKey;
+    private static final Duration DATE_BEGIN_WINDOW = Period.minutes(5).toStandardDuration();
 
     public static class Builder {
         private UUID id;
@@ -229,7 +233,7 @@ public class Session {
         final String OPEN_STATUS = "open";
 
         return this.getStatus().toLowerCase().equals(OPEN_STATUS)
-                && now.isAfter(this.getDateBegin().minus(5, ChronoUnit.MINUTES))
+                && now.isAfter(this.getDateBegin().minus(DATE_BEGIN_WINDOW))
                 && now.isBefore(this.getDateEnd());
     }
 

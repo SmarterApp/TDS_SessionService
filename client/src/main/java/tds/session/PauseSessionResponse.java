@@ -1,6 +1,7 @@
 package tds.session;
 
-import java.time.Instant;
+import org.joda.time.Instant;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -14,14 +15,6 @@ public class PauseSessionResponse {
     private Instant dateChanged;
     private Instant dateEnded;
     private List<UUID> examIds;
-
-    // TODO:  DELETE - sample Exam IDs for response to caller.
-    public PauseSessionResponse() {
-        this.examIds = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            this.examIds.add(UUID.randomUUID());
-        }
-    }
 
     public PauseSessionResponse(Session session) {
         this.sessionId = session.getId();

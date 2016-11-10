@@ -18,13 +18,14 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.UUID;
 
 import tds.common.data.mysql.UuidAdapter;
 import tds.session.Session;
 import tds.session.repositories.SessionRepository;
+
+import static tds.common.data.mapping.ResultSetMapperUtility.mapTimeStampToJodaInstant;
 
 @Repository
 class SessionRepositoryImpl implements SessionRepository {
@@ -111,30 +112,14 @@ class SessionRepositoryImpl implements SessionRepository {
                     .withSessionKey(rs.getString("sessionId"))
                     .withType(rs.getInt("type"))
                     .withStatus(rs.getString("status"))
-                    .withDateBegin(mapTimeStampToInstant(rs, "datebegin"))
-                    .withDateEnd(mapTimeStampToInstant(rs, "dateend"))
-                    .withDateChanged(mapTimeStampToInstant(rs, "datechanged"))
-                    .withDateVisited(mapTimeStampToInstant(rs, "datevisited"))
+                    .withDateBegin(mapTimeStampToJodaInstant(rs, "datebegin"))
+                    .withDateEnd(mapTimeStampToJodaInstant(rs, "dateend"))
+                    .withDateChanged(mapTimeStampToJodaInstant(rs, "datechanged"))
+                    .withDateVisited(mapTimeStampToJodaInstant(rs, "datevisited"))
                     .withClientName(rs.getString("clientname"))
                     .withProctorId((Long) rs.getObject("proctorId")) // proctorId can be null in the db table.
                     .withBrowserKey(UuidAdapter.getUUIDFromBytes(rs.getBytes("browserKey")))
                     .build();
-        }
-
-        /**
-         * Map a {@link Timestamp} to an {@link Instant}.
-         *
-         * @param rs The {@link ResultSet} being processed.
-         * @param columnLabel The name of the column that should be mapped.
-         * @return An {@link Instant} representation of the {@link Timestamp} if one exists; otherwise null.
-         * @throws SQLException in the event an error occurs processing the {@code RecordSet}.
-         */
-        private Instant mapTimeStampToInstant(ResultSet rs, String columnLabel) throws SQLException {
-            // TODO:  Should be moved to a more generic mapper to prevent duplication.
-            Timestamp ts = rs.getTimestamp(columnLabel);
-            return ts == null
-                    ? null
-                    : ts.toLocalDateTime().toInstant(ZoneOffset.UTC);
         }
     }
 }
