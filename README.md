@@ -15,6 +15,8 @@ There are a few things you will need to do to build the project.  The following 
 
 In addition to the tools the project also uses [Maven toolchains](https://maven.apache.org/guides/mini/guide-using-toolchains.html) since the client needs to be built at Java 1.7 to support legacy applications.  You will need to either append to your current toolchain file or create a new one in your local .m2 directory.
 
+**Sample Mac OS Version**  
+
 ```<?xml version="1.0" encoding="UTF8"?>
 <toolchains>
   <!-- JDK toolchains -->
