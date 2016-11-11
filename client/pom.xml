@@ -67,7 +67,6 @@
                     <toolchains>
                         <jdk>
                             <version>1.7</version>
-                            <vendor>oracle</vendor>
                         </jdk>
                     </toolchains>
                 </configuration>
