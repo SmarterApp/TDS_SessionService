@@ -23,7 +23,6 @@
 
     <properties>
         <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
-
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <tds.session.client>0.0.1-SNAPSHOT</tds.session.client>
