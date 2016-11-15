@@ -22,14 +22,14 @@ import tds.session.Session;
 import tds.session.repositories.SessionRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static tds.common.data.mapping.ResultSetMapperUtility.mapInstantToTimestamp;
+import static tds.common.data.mapping.ResultSetMapperUtility.mapJodaInstantToTimestamp;
 import static tds.common.data.mysql.UuidAdapter.getBytesFromUUID;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @Transactional
 public class SessionRepositoryImplIntegrationTests {
-    private final static String sessionInsertSQL = "insert into session (\n" +
+    private final static String sessionInsertSQL = "INSERT INTO session (\n" +
         "  _key,\n" +
         "  datecreated,\n" +
         "  clientname,\n" +
@@ -41,7 +41,7 @@ public class SessionRepositoryImplIntegrationTests {
         "  dateend,\n" +
         "  datebegin, \n" +
         "  datevisited \n" +
-        ") values (\n" +
+        ") VALUES (\n" +
         "  :key,\n" +
         "  :dateCreated,\n" +
         "  :clientName,\n" +
@@ -101,7 +101,7 @@ public class SessionRepositoryImplIntegrationTests {
         assertThat(sessionOptional.get().getId()).isEqualTo(sessionId);
         assertThat(sessionOptional.get().getType()).isEqualTo(0);
         assertThat(sessionOptional.get().getStatus()).isEqualTo("closed");
-        assertThat(sessionOptional.get().getDateBegin()).isEqualTo(dateBegin);
+        assertThat(sessionOptional.get().getDateBegin()).isEqualByComparingTo(dateBegin);
         assertThat(sessionOptional.get().getDateChanged()).isEqualTo(dateChanged);
         assertThat(sessionOptional.get().getDateEnd()).isEqualTo(dateEnded);
         assertThat(sessionOptional.get().getDateVisited()).isEqualTo(dateVisited);
@@ -183,11 +183,11 @@ public class SessionRepositoryImplIntegrationTests {
             .addValue("environment", "unitTest")
             .addValue("status", session.getStatus())
             .addValue("proctorId", session.getProctorId())
-            .addValue("dateChanged", mapInstantToTimestamp(session.getDateChanged()))
-            .addValue("dateVisited", mapInstantToTimestamp(session.getDateVisited()))
-            .addValue("dateBegin", mapInstantToTimestamp(session.getDateBegin()))
-            .addValue("dateCreated", mapInstantToTimestamp(Instant.now()))
-            .addValue("dateEnd", mapInstantToTimestamp(session.getDateEnd()));
+            .addValue("dateChanged", mapJodaInstantToTimestamp(session.getDateChanged()))
+            .addValue("dateVisited", mapJodaInstantToTimestamp(session.getDateVisited()))
+            .addValue("dateBegin", mapJodaInstantToTimestamp(session.getDateBegin()))
+            .addValue("dateCreated", mapJodaInstantToTimestamp(Instant.now()))
+            .addValue("dateEnd", mapJodaInstantToTimestamp(session.getDateEnd()));
 
         jdbcTemplate.update(sessionInsertSQL, parameters);
     }
