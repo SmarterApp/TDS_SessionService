@@ -25,7 +25,7 @@ import tds.common.data.mysql.UuidAdapter;
 import tds.session.Session;
 import tds.session.repositories.SessionRepository;
 
-import static tds.common.data.mapping.ResultSetMapperUtility.mapTimeStampToJodaInstant;
+import static tds.common.data.mapping.ResultSetMapperUtility.mapTimestampToJodaInstant;
 
 @Repository
 class SessionRepositoryImpl implements SessionRepository {
@@ -112,10 +112,10 @@ class SessionRepositoryImpl implements SessionRepository {
                     .withSessionKey(rs.getString("sessionId"))
                     .withType(rs.getInt("type"))
                     .withStatus(rs.getString("status"))
-                    .withDateBegin(mapTimeStampToJodaInstant(rs, "datebegin"))
-                    .withDateEnd(mapTimeStampToJodaInstant(rs, "dateend"))
-                    .withDateChanged(mapTimeStampToJodaInstant(rs, "datechanged"))
-                    .withDateVisited(mapTimeStampToJodaInstant(rs, "datevisited"))
+                    .withDateBegin(mapTimestampToJodaInstant(rs, "datebegin"))
+                    .withDateEnd(mapTimestampToJodaInstant(rs, "dateend"))
+                    .withDateChanged(mapTimestampToJodaInstant(rs, "datechanged"))
+                    .withDateVisited(mapTimestampToJodaInstant(rs, "datevisited"))
                     .withClientName(rs.getString("clientname"))
                     .withProctorId((Long) rs.getObject("proctorId")) // proctorId can be null in the db table.
                     .withBrowserKey(UuidAdapter.getUUIDFromBytes(rs.getBytes("browserKey")))
