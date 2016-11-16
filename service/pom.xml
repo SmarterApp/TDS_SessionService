@@ -62,6 +62,12 @@
             <artifactId>spring-context-support</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${joda-time.version}</version>
+        </dependency>
+
         <!-- Database/data access dependencies -->
         <dependency>
             <groupId>mysql</groupId>
