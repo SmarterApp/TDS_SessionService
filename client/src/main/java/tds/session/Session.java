@@ -222,7 +222,6 @@ public class Session {
      * Determine if this {@link Session} is open.  A {@link Session} is open if:
      * <ul>
      *     <li>The {@link Session}'s status is "open" (case-insensitive)</li>
-     *     <li>The current UTC time is after five minutes before this {@link Session}'s begin date</li>
      *     <li>The end date is before the current UTC time</li>
      * </ul>
      *
@@ -233,7 +232,6 @@ public class Session {
         final String OPEN_STATUS = "open";
 
         return this.getStatus().toLowerCase().equals(OPEN_STATUS)
-                && now.isAfter(this.getDateBegin().minus(DATE_BEGIN_WINDOW))
                 && now.isBefore(this.getDateEnd());
     }
 

@@ -75,18 +75,6 @@ public class SessionTest {
     }
 
     @Test
-    public void shouldBeClosedBecauseSessionHasNotStarted() {
-        Session session = new Session.Builder()
-                .withId(UUID.randomUUID())
-                .withStatus("open")
-                .withDateBegin(Instant.now().plus(STANDARD_DURATION))
-                .withDateEnd(Instant.now().plus(Period.minutes(40).toStandardDuration()))
-                .build();
-
-        assertThat(session.isOpen()).isFalse();
-    }
-
-    @Test
     public void shouldCrreateAGuestSession() {
         Session session = new Session.Builder()
                 .withId(UUID.randomUUID())
