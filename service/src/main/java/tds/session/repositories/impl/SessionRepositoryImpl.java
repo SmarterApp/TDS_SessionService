@@ -33,8 +33,8 @@ class SessionRepositoryImpl implements SessionRepository {
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    public SessionRepositoryImpl(DataSource datasource) {
-        this.jdbcTemplate = new NamedParameterJdbcTemplate(datasource);
+    public SessionRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override

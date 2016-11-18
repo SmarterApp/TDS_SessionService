@@ -23,8 +23,8 @@ class SessionAssessmentQueryRepositoryImpl implements SessionAssessmentQueryRepo
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    SessionAssessmentQueryRepositoryImpl(DataSource dataSource) {
-        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+    SessionAssessmentQueryRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override

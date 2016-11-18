@@ -18,8 +18,8 @@ public class ExternalSessionConfigurationRepositoryImpl implements ExternalSessi
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    public ExternalSessionConfigurationRepositoryImpl(final DataSource dataSource) {
-        this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+    public ExternalSessionConfigurationRepositoryImpl(final NamedParameterJdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override

@@ -59,14 +59,7 @@ public class SessionRepositoryImplIntegrationTests {
     private SessionRepository sessionRepository;
 
     @Autowired
-    private DataSource dataSource;
-
     private NamedParameterJdbcTemplate jdbcTemplate;
-
-    @Before
-    public void setUp() {
-        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-    }
 
     @After
     public void tearDown() {

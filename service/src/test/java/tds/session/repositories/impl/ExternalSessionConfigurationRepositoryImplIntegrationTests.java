@@ -28,14 +28,13 @@ public class ExternalSessionConfigurationRepositoryImplIntegrationTests {
     private ExternalSessionConfigurationRepository externalSessionConfigurationRepository;
 
     @Autowired
-    private DataSource dataSource;
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Before
     public void setUp() {
         String externsInsertSQL = "INSERT INTO session._externs (clientname, environment, shiftwindowstart, shiftwindowend, shiftformstart, shiftformend) VALUES ('SESSION-SBAC', 'Development', 1, 2, 10, 11);";
         String clientExternsInsertSQL = "INSERT INTO configs.client_externs VALUES (:uuid,'MultiClient_RTS_2013','MultiClient_RTS_2013','itembank',1,1,'RTS','RTS',1,'session',1,1,'SESSION-SBAC',1,'SESSION-SBAC',NULL,'Development',0,0,NULL,100000,1,NULL,NULL);";
 
-        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         jdbcTemplate.update(externsInsertSQL, new MapSqlParameterSource());
         jdbcTemplate.update(clientExternsInsertSQL, new MapSqlParameterSource("uuid", UuidAdapter.getBytesFromUUID(UUID.randomUUID())));
     }
