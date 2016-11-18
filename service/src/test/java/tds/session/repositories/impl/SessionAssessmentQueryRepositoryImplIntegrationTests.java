@@ -27,7 +27,7 @@ import static tds.common.data.mysql.UuidAdapter.getBytesFromUUID;
 @Transactional
 public class SessionAssessmentQueryRepositoryImplIntegrationTests {
     @Autowired
-    private DataSource dataSource;
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
     private SessionAssessmentQueryRepository repository;
@@ -38,7 +38,6 @@ public class SessionAssessmentQueryRepositoryImplIntegrationTests {
 
     @Before
     public void setUp() {
-        NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         sessionUUID = UUID.randomUUID();
         String sessionInsertSQL = "INSERT INTO session " +
             "VALUES (:sessionId ,5,'57325f70e4b0ed2c55c37e3d','CA Admin','Adm-99','closed','',NULL,'2016-08-18 18:25:07.161','2016-08-18 18:25:07.115'," +
