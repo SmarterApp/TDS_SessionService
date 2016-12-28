@@ -68,6 +68,12 @@
             <version>${joda-time.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>19.0</version>
+        </dependency>
+
         <!-- Database/data access dependencies -->
         <dependency>
             <groupId>mysql</groupId>
