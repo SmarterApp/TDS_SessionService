@@ -41,7 +41,7 @@ class SessionController {
     @ResponseBody
     ResponseEntity<Session> findSessionById(@PathVariable final UUID sessionId) {
         final Session session = sessionService.findSessionById(sessionId)
-                .orElseThrow(() -> new NotFoundException("Could not find session for %s", sessionId));
+            .orElseThrow(() -> new NotFoundException("Could not find session for %s", sessionId));
 
         return ResponseEntity.ok(session);
     }
@@ -50,7 +50,7 @@ class SessionController {
     @ResponseBody
     ResponseEntity<PauseSessionResponse> pause(@PathVariable final UUID sessionId, @RequestBody final String newStatus) {
         final PauseSessionResponse response = sessionService.pause(sessionId, newStatus)
-                .orElseThrow(() -> new NotFoundException("Could not find session id %s", sessionId));
+            .orElseThrow(() -> new NotFoundException("Could not find session id %s", sessionId));
 
         URI location = linkTo(methodOn(SessionController.class).findSessionById(response.getSessionId())).toUri();
         HttpHeaders headers = new HttpHeaders();

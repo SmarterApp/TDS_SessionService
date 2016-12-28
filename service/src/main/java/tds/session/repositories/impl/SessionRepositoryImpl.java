@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -42,7 +41,7 @@ class SessionRepositoryImpl implements SessionRepository {
         final SqlParameterSource parameters = new MapSqlParameterSource("id", UuidAdapter.getBytesFromUUID(id));
 
         String query =
-                "SELECT \n" +
+            "SELECT \n" +
                 "   s._key AS id, \n" +
                 "   s.sessionid AS sessionId, \n" +
                 "   s.sessiontype AS `type`, \n" +
@@ -78,15 +77,15 @@ class SessionRepositoryImpl implements SessionRepository {
         Timestamp utcTs = Timestamp.valueOf(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("UTC")));
 
         final SqlParameterSource parameters =
-                new MapSqlParameterSource("id", UuidAdapter.getBytesFromUUID(sessionId))
-                        .addValue("reason", newStatus)
-                        .addValue("dateChanged", utcTs)
-                        .addValue("dateEnd", utcTs);
+            new MapSqlParameterSource("id", UuidAdapter.getBytesFromUUID(sessionId))
+                .addValue("reason", newStatus)
+                .addValue("dateChanged", utcTs)
+                .addValue("dateEnd", utcTs);
 
         // In order to preserve compatibility with the existing TDS system, this implementation executes an UPDATE
         // against the existing record in the session.session table.
         final String SQL =
-                "UPDATE \n" +
+            "UPDATE \n" +
                 "   session.session \n" +
                 "SET \n" +
                 "   status = :reason, \n" +
@@ -108,18 +107,18 @@ class SessionRepositoryImpl implements SessionRepository {
         @Override
         public Session mapRow(ResultSet rs, int i) throws SQLException {
             return new Session.Builder()
-                    .withId(UuidAdapter.getUUIDFromBytes(rs.getBytes("id")))
-                    .withSessionKey(rs.getString("sessionId"))
-                    .withType(rs.getInt("type"))
-                    .withStatus(rs.getString("status"))
-                    .withDateBegin(mapTimestampToJodaInstant(rs, "datebegin"))
-                    .withDateEnd(mapTimestampToJodaInstant(rs, "dateend"))
-                    .withDateChanged(mapTimestampToJodaInstant(rs, "datechanged"))
-                    .withDateVisited(mapTimestampToJodaInstant(rs, "datevisited"))
-                    .withClientName(rs.getString("clientname"))
-                    .withProctorId((Long) rs.getObject("proctorId")) // proctorId can be null in the db table.
-                    .withBrowserKey(UuidAdapter.getUUIDFromBytes(rs.getBytes("browserKey")))
-                    .build();
+                .withId(UuidAdapter.getUUIDFromBytes(rs.getBytes("id")))
+                .withSessionKey(rs.getString("sessionId"))
+                .withType(rs.getInt("type"))
+                .withStatus(rs.getString("status"))
+                .withDateBegin(mapTimestampToJodaInstant(rs, "datebegin"))
+                .withDateEnd(mapTimestampToJodaInstant(rs, "dateend"))
+                .withDateChanged(mapTimestampToJodaInstant(rs, "datechanged"))
+                .withDateVisited(mapTimestampToJodaInstant(rs, "datevisited"))
+                .withClientName(rs.getString("clientname"))
+                .withProctorId((Long) rs.getObject("proctorId")) // proctorId can be null in the db table.
+                .withBrowserKey(UuidAdapter.getUUIDFromBytes(rs.getBytes("browserKey")))
+                .build();
         }
     }
 }

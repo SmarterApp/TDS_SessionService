@@ -10,6 +10,7 @@ import tds.session.ExternalSessionConfiguration;
 public interface ExternalSessionConfigurationRepository {
     /**
      * Fetches the external session configuration by given client name
+     *
      * @param clientName client name for external session configuration
      * @return optional containing {@link tds.session.ExternalSessionConfiguration Extern} otherwise empty Optional
      */
