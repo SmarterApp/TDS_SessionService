@@ -2,7 +2,6 @@ package tds.session.repositories.impl;
 
 import org.joda.time.Instant;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
 import java.text.ParseException;
 import java.util.Optional;
 import java.util.UUID;

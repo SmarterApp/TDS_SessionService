@@ -36,14 +36,15 @@ public class SessionServiceImplTest {
     }
 
     @After
-    public void tearDown(){}
+    public void tearDown() {
+    }
 
     @Test
     public void shouldReturnASession() {
         UUID id = UUID.randomUUID();
         Session session = new Session.Builder()
-                .withId(id)
-                .build();
+            .withId(id)
+            .build();
         when(mockSessionRepository.findSessionById(id)).thenReturn(Optional.of(session));
 
         Optional<Session> sessionOptional = service.findSessionById(id);

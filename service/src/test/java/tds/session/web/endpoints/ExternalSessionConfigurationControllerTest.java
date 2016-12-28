@@ -35,7 +35,8 @@ public class ExternalSessionConfigurationControllerTest {
     }
 
     @After
-    public void tearDown() {}
+    public void tearDown() {
+    }
 
     @Test
     public void shouldFindExternalSessionConfigurationByClientName() {

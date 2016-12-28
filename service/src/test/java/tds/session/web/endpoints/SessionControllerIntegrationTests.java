@@ -73,7 +73,7 @@ public class SessionControllerIntegrationTests {
     }
 
     @Test
-    public void shouldPauseASession() throws Exception{
+    public void shouldPauseASession() throws Exception {
         UUID id = UUID.randomUUID();
 
         Session session = new Session.Builder()

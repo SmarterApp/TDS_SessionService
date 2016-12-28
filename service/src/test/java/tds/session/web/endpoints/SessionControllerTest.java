@@ -51,8 +51,8 @@ public class SessionControllerTest {
     public void shouldFindASessionById() {
         UUID id = UUID.randomUUID();
         Session session = new Session.Builder()
-                .withId(id)
-                .build();
+            .withId(id)
+            .build();
         when(mockSessionService.findSessionById(id)).thenReturn(Optional.of(session));
 
         ResponseEntity<Session> response = controller.findSessionById(id);
@@ -94,14 +94,14 @@ public class SessionControllerTest {
         assertThat(responseEntity.getHeaders().getLocation().toString()).isEqualTo("http://localhost/sessions/" + sessionId);
     }
 
-    @Test (expected = NotFoundException.class)
+    @Test(expected = NotFoundException.class)
     public void shouldThrowNotFoundIfSessionCannotBeFoundWhenPausingSession() {
         UUID sessionId = UUID.randomUUID();
         when(mockSessionService.pause(sessionId, "paused")).thenReturn(Optional.empty());
         controller.pause(sessionId, "paused");
     }
 
-    @Test (expected = NotFoundException.class)
+    @Test(expected = NotFoundException.class)
     public void shouldThrowNotFoundIfSessionAssessmentNotFound() {
         UUID sessionId = UUID.randomUUID();
         when(mockSessionService.findSessionAssessment(sessionId, "")).thenReturn(Optional.empty());
