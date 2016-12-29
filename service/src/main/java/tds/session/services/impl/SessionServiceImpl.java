@@ -11,18 +11,22 @@ import tds.session.Session;
 import tds.session.SessionAssessment;
 import tds.session.repositories.SessionAssessmentQueryRepository;
 import tds.session.repositories.SessionRepository;
+import tds.session.services.ExamService;
 import tds.session.services.SessionService;
 
 @Service
 class SessionServiceImpl implements SessionService {
     private final SessionRepository sessionRepository;
     private final SessionAssessmentQueryRepository sessionAssessmentQueryRepository;
+    private final ExamService examService;
 
     @Autowired
     public SessionServiceImpl(SessionRepository sessionRepository,
-                              SessionAssessmentQueryRepository sessionAssessmentQueryRepository) {
+                              SessionAssessmentQueryRepository sessionAssessmentQueryRepository,
+                              ExamService examService) {
         this.sessionRepository = sessionRepository;
         this.sessionAssessmentQueryRepository = sessionAssessmentQueryRepository;
+        this.examService = examService;
     }
 
     @Override
@@ -40,19 +44,14 @@ class SessionServiceImpl implements SessionService {
         Session session = sessionOptional.get();
         PauseSessionResponse pauseSessionResponse;
 
-        // if session is not open, it does not need to be paused, so return.
-        // TODO:  This condition might be over-simplified
+        // if session is not open it does not need to be paused, so return.
         if (!session.isOpen()) {
-            // TODO:  Collect all Exams associated w/the Session
-            //pauseSessionResponse.setExamIds(examIds);
             pauseSessionResponse = new PauseSessionResponse(session);
             return Optional.of(pauseSessionResponse);
         }
 
-        // TODO:  Call pause exam for each Exam in session and set affected examIds list on response object
-        // pauseSessionResponse.setExamIds();
+        examService.pauseAllExamsInSession(sessionId);
 
-        // Pause the Session
         sessionRepository.pause(sessionId, newStatus);
 
         // TODO:  Add call to create audit record that indicates the session is paused.
