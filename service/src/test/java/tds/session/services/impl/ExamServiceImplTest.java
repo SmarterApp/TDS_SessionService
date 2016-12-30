@@ -12,7 +12,6 @@ import java.util.UUID;
 import tds.session.configuration.SessionServiceProperties;
 import tds.session.services.ExamService;
 
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -35,7 +34,6 @@ public class ExamServiceImplTest {
     public void shouldPauseAllExamsInASession() {
         UUID sessionId = UUID.randomUUID();
         String url = String.format("%s/pause/%s", BASE_URL, sessionId);
-        doNothing().when(restTemplate).put(url, null);
 
         examService.pauseAllExamsInSession(sessionId);
 

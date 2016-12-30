@@ -78,18 +78,18 @@ public class SessionControllerIntegrationTests {
 
         Session session = new Session.Builder()
             .withId(id)
-            .withStatus("paused")
+            .withStatus("closed")
             .withClientName("SBAC_PT")
             .build();
 
-        when(mockSessionService.pause(id, "paused")).thenReturn(Optional.of(new PauseSessionResponse(session)));
+        when(mockSessionService.pause(id, "closed")).thenReturn(Optional.of(new PauseSessionResponse(session)));
 
         http.perform(put(new URI(String.format("/sessions/%s/pause", session.getId())))
-            .content("paused")
+            .content("closed")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("sessionId", is(session.getId().toString())))
-            .andExpect(jsonPath("status", is("paused")));
+            .andExpect(jsonPath("status", is("closed")));
     }
 
     @Test

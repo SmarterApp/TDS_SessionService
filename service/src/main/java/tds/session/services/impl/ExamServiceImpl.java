@@ -27,6 +27,6 @@ public class ExamServiceImpl implements ExamService {
             UriComponentsBuilder
                 .fromHttpUrl(String.format("%s/pause/%s", sessionServiceProperties.getExamUrl(), sessionId));
 
-        restTemplate.put(builder.toString(), null);
+        restTemplate.put(builder.toUriString(), null);
     }
 }
