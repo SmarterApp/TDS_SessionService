@@ -73,7 +73,7 @@ public class SessionControllerTest {
     @Test
     public void shouldPauseSession() {
         final UUID sessionId = UUID.randomUUID();
-        final String newStatus = "paused";
+        final String newStatus = "closed";
         final Instant dateChanged = Instant.now();
         Session session = new Session.Builder()
             .withId(sessionId)
@@ -88,7 +88,6 @@ public class SessionControllerTest {
         verify(mockSessionService).pause(sessionId, newStatus);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody().getExamIds()).isEqualTo(pauseSessionResponse.getExamIds());
         assertThat(responseEntity.getBody().getStatus()).isEqualTo(newStatus);
         assertThat(responseEntity.getBody().getDateChanged()).isEqualTo(dateChanged);
         assertThat(responseEntity.getHeaders().getLocation().toString()).isEqualTo("http://localhost/sessions/" + sessionId);
@@ -97,8 +96,8 @@ public class SessionControllerTest {
     @Test(expected = NotFoundException.class)
     public void shouldThrowNotFoundIfSessionCannotBeFoundWhenPausingSession() {
         UUID sessionId = UUID.randomUUID();
-        when(mockSessionService.pause(sessionId, "paused")).thenReturn(Optional.empty());
-        controller.pause(sessionId, "paused");
+        when(mockSessionService.pause(sessionId, "closed")).thenReturn(Optional.empty());
+        controller.pause(sessionId, "closed");
     }
 
     @Test(expected = NotFoundException.class)
