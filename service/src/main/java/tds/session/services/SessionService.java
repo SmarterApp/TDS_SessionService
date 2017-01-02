@@ -3,6 +3,8 @@ package tds.session.services;
 import java.util.Optional;
 import java.util.UUID;
 
+import tds.common.Response;
+import tds.session.PauseSessionRequest;
 import tds.session.PauseSessionResponse;
 import tds.session.Session;
 import tds.session.SessionAssessment;
@@ -27,10 +29,10 @@ public interface SessionService {
      * considered "paused".
      * </p>
      *
-     * @param sessionId The id of the {@link Session} to pause
-     * @param newStatus A description of why the {@link Session} is being paused
+     * @param sessionId he session id of {@link tds.session.Session} should be paused
+     * @param request   The proctor id and browser key to identify the requester
      */
-    Optional<PauseSessionResponse> pause(UUID sessionId, String newStatus);
+    Response<PauseSessionResponse> pause(UUID sessionId, PauseSessionRequest request);
 
     /**
      * Finds the associated {@link tds.session.SessionAssessment}

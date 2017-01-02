@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 import java.util.UUID;
 
+import tds.common.Response;
 import tds.common.web.exceptions.NotFoundException;
+import tds.session.PauseSessionRequest;
 import tds.session.PauseSessionResponse;
 import tds.session.Session;
 import tds.session.SessionAssessment;
@@ -48,11 +50,14 @@ class SessionController {
 
     @RequestMapping(value = "/{sessionId}/pause", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    ResponseEntity<PauseSessionResponse> pause(@PathVariable final UUID sessionId, @RequestBody final String newStatus) {
-        final PauseSessionResponse response = sessionService.pause(sessionId, newStatus)
-            .orElseThrow(() -> new NotFoundException("Could not find session id %s", sessionId));
+    ResponseEntity<Response<PauseSessionResponse>> pause(@PathVariable final UUID sessionId, @RequestBody final PauseSessionRequest request) {
+        final Response<PauseSessionResponse> response = sessionService.pause(sessionId, request);
 
-        URI location = linkTo(methodOn(SessionController.class).findSessionById(response.getSessionId())).toUri();
+        if (response.getErrors().length > 0) {
+            return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        URI location = linkTo(methodOn(SessionController.class).findSessionById(response.getData().get().getSessionId())).toUri();
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(location);
 

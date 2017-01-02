@@ -11,7 +11,7 @@ import tds.session.configuration.SessionServiceProperties;
 import tds.session.services.ExamService;
 
 @Service
-public class ExamServiceImpl implements ExamService {
+class ExamServiceImpl implements ExamService {
     private final RestTemplate restTemplate;
     private final SessionServiceProperties sessionServiceProperties;
 

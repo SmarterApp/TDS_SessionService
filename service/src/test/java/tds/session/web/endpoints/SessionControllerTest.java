@@ -17,7 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.UUID;
 
+import tds.common.Response;
+import tds.common.ValidationError;
 import tds.common.web.exceptions.NotFoundException;
+import tds.session.PauseSessionRequest;
 import tds.session.PauseSessionResponse;
 import tds.session.Session;
 import tds.session.SessionAssessment;
@@ -73,31 +76,42 @@ public class SessionControllerTest {
     @Test
     public void shouldPauseSession() {
         final UUID sessionId = UUID.randomUUID();
-        final String newStatus = "closed";
-        final Instant dateChanged = Instant.now();
-        Session session = new Session.Builder()
+        UUID browserKey = UUID.randomUUID();
+        long proctorId = 1L;
+        PauseSessionRequest request = new PauseSessionRequest(proctorId, browserKey);
+        Session mockClosedSession = new Session.Builder()
             .withId(sessionId)
-            .withStatus(newStatus)
-            .withDateChanged(dateChanged)
+            .withProctorId(proctorId)
+            .withBrowserKey(browserKey)
+            .withDateChanged(Instant.now())
+            .withDateEnd(Instant.now())
+            .withStatus("closed")
             .build();
+        PauseSessionResponse mockClosedResponse = new PauseSessionResponse(mockClosedSession);
 
-        PauseSessionResponse pauseSessionResponse = new PauseSessionResponse(session);
-
-        when(mockSessionService.pause(sessionId, newStatus)).thenReturn(Optional.of(pauseSessionResponse));
-        ResponseEntity<PauseSessionResponse> responseEntity = controller.pause(sessionId, newStatus);
-        verify(mockSessionService).pause(sessionId, newStatus);
+        when(mockSessionService.pause(sessionId, request)).thenReturn(new Response<>(mockClosedResponse, new ValidationError[]{}));
+        ResponseEntity<Response<PauseSessionResponse>> responseEntity = controller.pause(sessionId, request);
+        verify(mockSessionService).pause(sessionId, request);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody().getStatus()).isEqualTo(newStatus);
-        assertThat(responseEntity.getBody().getDateChanged()).isEqualTo(dateChanged);
+        PauseSessionResponse resultFromService = responseEntity.getBody().getData().get();
+        assertThat(resultFromService.getSessionId()).isEqualTo(sessionId);
+        assertThat(resultFromService.getStatus()).isEqualTo("closed");
+        assertThat(resultFromService.getDateEnded().getMillis()).isEqualTo(mockClosedResponse.getDateEnded().getMillis());
+        assertThat(resultFromService.getDateChanged().getMillis()).isEqualTo(mockClosedResponse.getDateEnded().getMillis());
         assertThat(responseEntity.getHeaders().getLocation().toString()).isEqualTo("http://localhost/sessions/" + sessionId);
     }
 
     @Test(expected = NotFoundException.class)
     public void shouldThrowNotFoundIfSessionCannotBeFoundWhenPausingSession() {
         UUID sessionId = UUID.randomUUID();
-        when(mockSessionService.pause(sessionId, "closed")).thenReturn(Optional.empty());
-        controller.pause(sessionId, "closed");
+        UUID browserKey = UUID.randomUUID();
+        long proctorId = 1L;
+        PauseSessionRequest request = new PauseSessionRequest(proctorId, browserKey);
+
+        when(mockSessionService.pause(sessionId, request)).thenThrow(new NotFoundException(String.format("Could not find session for session id %s", sessionId)));
+        controller.pause(sessionId, request);
+        verify(mockSessionService).pause(sessionId, request);
     }
 
     @Test(expected = NotFoundException.class)
