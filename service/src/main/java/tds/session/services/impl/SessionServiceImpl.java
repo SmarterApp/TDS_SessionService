@@ -53,7 +53,7 @@ class SessionServiceImpl implements SessionService {
         sessionRepository.pause(sessionId, "closed");
 
         Session updatedSession = sessionRepository.findSessionById(sessionId)
-            .orElseThrow(() -> new NotFoundException(String.format("Could not find session for session id %s", sessionId)));
+            .orElseThrow(() -> new IllegalStateException(String.format("Could not find session that was just closed for session id %s", sessionId)));
 
         return new Response<>(new PauseSessionResponse(updatedSession));
     }

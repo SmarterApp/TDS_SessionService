@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import tds.common.Response;
 import tds.common.ValidationError;
+import tds.common.configuration.JacksonObjectMapperConfiguration;
 import tds.common.web.advice.ExceptionAdvice;
 import tds.session.PauseSessionRequest;
 import tds.session.PauseSessionResponse;
@@ -38,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(SessionController.class)
-@Import({ExceptionAdvice.class, tds.common.configuration.JacksonObjectMapperConfiguration.class})
+@Import({ExceptionAdvice.class, JacksonObjectMapperConfiguration.class})
 public class SessionControllerIntegrationTests {
     @Autowired
     private MockMvc http;

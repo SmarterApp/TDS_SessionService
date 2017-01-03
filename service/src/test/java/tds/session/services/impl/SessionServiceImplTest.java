@@ -27,6 +27,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -153,13 +155,12 @@ public class SessionServiceImplTest {
         PauseSessionRequest request = new PauseSessionRequest(proctorId, browserKey);
 
         when(mockSessionRepository.findSessionById(mockClosedSession.getId())).thenReturn(Optional.of(mockClosedSession));
-        doNothing().when(mockExamService).pauseAllExamsInSession(mockClosedSession.getId());
 
         Response<PauseSessionResponse> response = service.pause(sessionId, request);
 
-        verify(mockExamService, times(0)).pauseAllExamsInSession(mockClosedSession.getId());
-        verify(mockSessionRepository, times(0)).pause(mockClosedSession.getId(), "closed");
+        verifyZeroInteractions(mockExamService);
         verify(mockSessionRepository, times(1)).findSessionById(mockClosedSession.getId());
+        verifyNoMoreInteractions(mockSessionRepository);
 
         assertThat(response.getData().isPresent()).isFalse();
         assertThat(response.getErrors()).hasSize(1);
@@ -184,13 +185,12 @@ public class SessionServiceImplTest {
         PauseSessionRequest request = new PauseSessionRequest(proctorId, browserKey);
 
         when(mockSessionRepository.findSessionById(mockClosedSession.getId())).thenReturn(Optional.of(mockClosedSession));
-        doNothing().when(mockExamService).pauseAllExamsInSession(mockClosedSession.getId());
 
         Response<PauseSessionResponse> response = service.pause(sessionId, request);
 
-        verify(mockExamService, times(0)).pauseAllExamsInSession(mockClosedSession.getId());
-        verify(mockSessionRepository, times(0)).pause(mockClosedSession.getId(), "closed");
+        verifyZeroInteractions(mockExamService);
         verify(mockSessionRepository, times(1)).findSessionById(mockClosedSession.getId());
+        verifyNoMoreInteractions(mockSessionRepository);
 
         assertThat(response.getData().isPresent()).isFalse();
         assertThat(response.getErrors()).hasSize(1);

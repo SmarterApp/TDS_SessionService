@@ -17,16 +17,21 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
+
     <dependencies>
         <dependency>
             <groupId>org.opentestsystem.session</groupId>
             <artifactId>tds-session-client</artifactId>
-            <version>${tds.session.client}</version>
+            <version>${tds.session.client.version}</version>
         </dependency>
         <dependency>
             <groupId>org.opentestsystem.common</groupId>
             <artifactId>tds-common</artifactId>
-            <version>${tds.common}</version>
+            <version>${tds.common.version}</version>
         </dependency>
 
         <!-- Spring dependencies -->
@@ -138,7 +143,7 @@
         <dependency>
             <groupId>org.opentestsystem.common</groupId>
             <artifactId>tds-common-legacy</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${tds.common.version}</version>
         </dependency>
     </dependencies>
 
@@ -202,15 +207,6 @@
                             <include>${project.build.finalName}.jar</include>
                         </resource>
                     </resources>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>

@@ -97,8 +97,8 @@ public class SessionControllerTest {
         PauseSessionResponse resultFromService = responseEntity.getBody().getData().get();
         assertThat(resultFromService.getSessionId()).isEqualTo(sessionId);
         assertThat(resultFromService.getStatus()).isEqualTo("closed");
-        assertThat(resultFromService.getDateEnded().getMillis()).isEqualTo(mockClosedResponse.getDateEnded().getMillis());
-        assertThat(resultFromService.getDateChanged().getMillis()).isEqualTo(mockClosedResponse.getDateEnded().getMillis());
+        assertThat(resultFromService.getDateEnded()).isEqualTo(mockClosedResponse.getDateEnded());
+        assertThat(resultFromService.getDateChanged()).isEqualTo(mockClosedResponse.getDateEnded());
         assertThat(responseEntity.getHeaders().getLocation().toString()).isEqualTo("http://localhost/sessions/" + sessionId);
     }
 

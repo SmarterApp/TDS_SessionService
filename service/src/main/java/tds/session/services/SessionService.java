@@ -29,7 +29,7 @@ public interface SessionService {
      * considered "paused".
      * </p>
      *
-     * @param sessionId he session id of {@link tds.session.Session} should be paused
+     * @param sessionId the session id of {@link tds.session.Session} should be paused
      * @param request   The proctor id and browser key to identify the requester
      */
     Response<PauseSessionResponse> pause(UUID sessionId, PauseSessionRequest request);
