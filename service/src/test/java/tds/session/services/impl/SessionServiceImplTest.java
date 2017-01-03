@@ -1,5 +1,6 @@
 package tds.session.services.impl;
 
+import org.joda.time.Instant;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,14 +11,24 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Optional;
 import java.util.UUID;
 
+import tds.common.Response;
+import tds.common.ValidationError;
+import tds.session.PauseSessionRequest;
+import tds.session.PauseSessionResponse;
 import tds.session.Session;
 import tds.session.SessionAssessment;
+import tds.session.error.ValidationErrorCode;
 import tds.session.repositories.SessionAssessmentQueryRepository;
 import tds.session.repositories.SessionRepository;
+import tds.session.services.ExamService;
 import tds.session.services.SessionService;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -30,9 +41,12 @@ public class SessionServiceImplTest {
     @Mock
     private SessionAssessmentQueryRepository mockSessionAssessmentQueryRepository;
 
+    @Mock
+    private ExamService mockExamService;
+
     @Before
     public void setUp() {
-        service = new SessionServiceImpl(mockSessionRepository, mockSessionAssessmentQueryRepository);
+        service = new SessionServiceImpl(mockSessionRepository, mockSessionAssessmentQueryRepository, mockExamService);
     }
 
     @After
@@ -76,5 +90,144 @@ public class SessionServiceImplTest {
         verify(mockSessionAssessmentQueryRepository).findSessionAssessment(sessionId, "(SBAC) 3 ELA 2015 - 2016");
 
         assertThat(maybeSessionAssessment).isPresent();
+    }
+
+    @Test
+    public void shouldPauseAllExamsInSession() {
+        long proctorId = 1L;
+        UUID sessionId = UUID.randomUUID();
+        UUID browserKey = UUID.randomUUID();
+
+        Session mockOpenSession = new Session.Builder()
+            .withId(sessionId)
+            .withStatus("open")
+            .withDateEnd(Instant.now().plus(600000))
+            .withProctorId(proctorId)
+            .withBrowserKey(browserKey)
+            .build();
+
+        // What the session will look like after mockSessionRepository.pause() is called
+        Session mockUpdatedSession = new Session.Builder()
+            .withId(sessionId)
+            .withStatus("closed")
+            .withDateChanged(Instant.now().plus(750000))
+            .withDateEnd(Instant.now().plus(750000))
+            .withProctorId(proctorId)
+            .withBrowserKey(browserKey)
+            .build();
+
+        PauseSessionRequest request = new PauseSessionRequest(proctorId, browserKey);
+
+        when(mockSessionRepository.findSessionById(mockOpenSession.getId()))
+            .thenReturn(Optional.of(mockOpenSession))
+            .thenReturn(Optional.of(mockUpdatedSession));
+        doNothing().when(mockSessionRepository).pause(mockOpenSession.getId(), "closed");
+        doNothing().when(mockExamService).pauseAllExamsInSession(mockOpenSession.getId());
+
+        Response<PauseSessionResponse> response = service.pause(mockOpenSession.getId(), request);
+
+        verify(mockExamService).pauseAllExamsInSession(mockOpenSession.getId());
+        verify(mockSessionRepository).pause(mockOpenSession.getId(), "closed");
+        verify(mockSessionRepository, times(2)).findSessionById(mockOpenSession.getId());
+
+        assertThat(response.getData()).isNotNull();
+        assertThat(response.getErrors()).hasSize(0);
+        PauseSessionResponse pauseSessionResponse = response.getData().get();
+        assertThat(pauseSessionResponse.getStatus()).isEqualTo(mockUpdatedSession.getStatus());
+        assertThat(pauseSessionResponse.getSessionId()).isEqualTo(mockUpdatedSession.getId());
+        assertThat(pauseSessionResponse.getDateChanged()).isNotNull();
+        assertThat(pauseSessionResponse.getDateEnded()).isNotNull();
+    }
+
+    @Test
+    public void shouldRespondWithSessionClosedValidationErrorWhenPausingAClosedSession() {
+        long proctorId = 1L;
+        UUID sessionId = UUID.randomUUID();
+        UUID browserKey = UUID.randomUUID();
+
+        Session mockClosedSession = new Session.Builder()
+            .withId(sessionId)
+            .withStatus("closed")
+            .withDateChanged(Instant.now().minus(600000))
+            .withDateEnd(Instant.now().minus(600000))
+            .build();
+
+        PauseSessionRequest request = new PauseSessionRequest(proctorId, browserKey);
+
+        when(mockSessionRepository.findSessionById(mockClosedSession.getId())).thenReturn(Optional.of(mockClosedSession));
+
+        Response<PauseSessionResponse> response = service.pause(sessionId, request);
+
+        verifyZeroInteractions(mockExamService);
+        verify(mockSessionRepository, times(1)).findSessionById(mockClosedSession.getId());
+        verifyNoMoreInteractions(mockSessionRepository);
+
+        assertThat(response.getData().isPresent()).isFalse();
+        assertThat(response.getErrors()).hasSize(1);
+        ValidationError error = response.getErrors()[0];
+        assertThat(error.getCode()).isEqualTo(ValidationErrorCode.PAUSE_SESSION_IS_CLOSED);
+        assertThat(error.getMessage()).isEqualTo("The session is closed");
+    }
+
+    @Test
+    public void shouldRespondWithDifferentProctorValidationErrorWhenPausingASessionWithADifferentProctorId() {
+        long proctorId = 1L;
+        UUID sessionId = UUID.randomUUID();
+        UUID browserKey = UUID.randomUUID();
+
+        Session mockClosedSession = new Session.Builder()
+            .withId(sessionId)
+            .withStatus("open")
+            .withDateEnd(Instant.now().plus(600000))
+            .withProctorId(5L)
+            .build();
+
+        PauseSessionRequest request = new PauseSessionRequest(proctorId, browserKey);
+
+        when(mockSessionRepository.findSessionById(mockClosedSession.getId())).thenReturn(Optional.of(mockClosedSession));
+
+        Response<PauseSessionResponse> response = service.pause(sessionId, request);
+
+        verifyZeroInteractions(mockExamService);
+        verify(mockSessionRepository, times(1)).findSessionById(mockClosedSession.getId());
+        verifyNoMoreInteractions(mockSessionRepository);
+
+        assertThat(response.getData().isPresent()).isFalse();
+        assertThat(response.getErrors()).hasSize(1);
+        ValidationError error = response.getErrors()[0];
+        assertThat(error.getCode()).isEqualTo(ValidationErrorCode.PAUSE_SESSION_OWNED_BY_DIFFERENT_PROCTOR);
+        assertThat(error.getMessage()).isEqualTo("The session is not owned by this proctor");
+    }
+
+    @Test
+    public void shouldRespondWithAccessViolationValidationErrorWhenPausingASessionWithADifferentBrowserKey() {
+        long proctorId = 1L;
+        UUID sessionId = UUID.randomUUID();
+        UUID browserKey = UUID.randomUUID();
+
+        Session mockClosedSession = new Session.Builder()
+            .withId(sessionId)
+            .withStatus("open")
+            .withDateEnd(Instant.now().plus(600000))
+            .withProctorId(proctorId)
+            .withBrowserKey(UUID.randomUUID())
+            .build();
+
+        PauseSessionRequest request = new PauseSessionRequest(proctorId, browserKey);
+
+        when(mockSessionRepository.findSessionById(mockClosedSession.getId())).thenReturn(Optional.of(mockClosedSession));
+        doNothing().when(mockExamService).pauseAllExamsInSession(mockClosedSession.getId());
+
+        Response<PauseSessionResponse> response = service.pause(sessionId, request);
+
+        verify(mockExamService, times(0)).pauseAllExamsInSession(mockClosedSession.getId());
+        verify(mockSessionRepository, times(0)).pause(mockClosedSession.getId(), "closed");
+        verify(mockSessionRepository, times(1)).findSessionById(mockClosedSession.getId());
+
+        assertThat(response.getData().isPresent()).isFalse();
+        assertThat(response.getErrors()).hasSize(1);
+        ValidationError error = response.getErrors()[0];
+        assertThat(error.getCode()).isEqualTo(ValidationErrorCode.PAUSE_SESSION_ACCESS_VIOLATION);
+        assertThat(error.getMessage()).isEqualTo("Unauthorized session access");
     }
 }

@@ -14,18 +14,12 @@ public class PauseSessionResponse {
     private String status;
     private Instant dateChanged;
     private Instant dateEnded;
-    private List<UUID> examIds;
 
     public PauseSessionResponse(Session session) {
         this.sessionId = session.getId();
         this.status = session.getStatus();
         this.dateChanged = session.getDateChanged();
         this.dateEnded = session.getDateEnd();
-        this.examIds = new ArrayList<>();
-        // TODO:  DELETE - sample Exam IDs for response to caller.
-        for (int i = 0; i < 5; i++) {
-            this.examIds.add(UUID.randomUUID());
-        }
     }
 
     /**
@@ -54,15 +48,5 @@ public class PauseSessionResponse {
      */
     public Instant getDateEnded() {
         return dateEnded;
-    }
-
-    /**
-     * A side effect of pausing a {@link Session} is that all the associated Exams must also be paused.  This list will
-     * report on the Exams that were affected as a result of pausing this {@link Session}.
-     *
-     * @return A collection of Exam IDs that belong to the {@link Session} that was paused.
-     */
-    public List<UUID> getExamIds() {
-        return examIds;
     }
 }

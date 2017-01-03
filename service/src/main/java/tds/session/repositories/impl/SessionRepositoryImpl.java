@@ -73,7 +73,6 @@ class SessionRepositoryImpl implements SessionRepository {
         // Had to build the UTC Timestamp this way.  Using Timestamp utcTs = Timestamp.from(Instant.now()) would always
         // result in a Timestamp that reflected my local system clock settings.  Want to guarantee that dates/times are
         // always UTC, regardless of system clock.
-        // TODO:  Revisit injecting a clock/time zone dependency to enforce UTC time
         Timestamp utcTs = Timestamp.valueOf(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("UTC")));
 
         final SqlParameterSource parameters =
