@@ -90,7 +90,6 @@ public class SessionRepositoryImplIntegrationTests {
         Optional<Session> sessionOptional = sessionRepository.findSessionById(sessionId);
         assertThat(sessionOptional).isPresent();
         assertThat(sessionOptional.get().getId()).isEqualTo(sessionId);
-        assertThat(sessionOptional.get().getType()).isEqualTo(0);
         assertThat(sessionOptional.get().getStatus()).isEqualTo("closed");
         assertThat(sessionOptional.get().getDateBegin()).isEqualByComparingTo(dateBegin);
         assertThat(sessionOptional.get().getDateChanged()).isEqualTo(dateChanged);
@@ -119,7 +118,6 @@ public class SessionRepositoryImplIntegrationTests {
         Optional<Session> sessionOptional = sessionRepository.findSessionById(sessionId);
         assertThat(sessionOptional).isPresent();
         assertThat(sessionOptional.get().getId()).isEqualTo(sessionId);
-        assertThat(sessionOptional.get().getType()).isEqualTo(0);
         assertThat(sessionOptional.get().getStatus()).isEqualTo("open");
         assertThat(sessionOptional.get().getDateBegin()).isNull();
         assertThat(sessionOptional.get().getDateEnd()).isNull();

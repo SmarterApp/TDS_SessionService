@@ -1,7 +1,6 @@
 package tds.session;
 
 
-
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.joda.time.Period;
@@ -10,11 +9,21 @@ import java.util.UUID;
 
 /**
  * Represents a session.  A session is information concerning the active session for exams to be taken.
+ * <p>
+ * NOTE - The legacy code has a session type which is purposefully not included here.  This is done because
+ * even though there are types in the legacy system the only ones supported by the online open source application
+ * is online.
+ * <ul>
+ * <li>0 == online</li>
+ * <li>1 == paper (not supported)</li>
+ * </ul>
+ * <p>
  */
 public class Session {
+    private static final Duration DATE_BEGIN_WINDOW = Period.minutes(5).toStandardDuration();
+
     private UUID id;
     private String sessionKey;
-    private int type;
     private String status;
     private Instant dateBegin;
     private Instant dateEnd;
@@ -23,12 +32,10 @@ public class Session {
     private String clientName;
     private Long proctorId;
     private UUID browserKey;
-    private static final Duration DATE_BEGIN_WINDOW = Period.minutes(5).toStandardDuration();
 
     public static class Builder {
         private UUID id;
         private String sessionKey;
-        private int type;
         private String status;
         private Instant dateBegin;
         private Instant dateEnd;
@@ -45,11 +52,6 @@ public class Session {
 
         public Builder withSessionKey(String sessionKey) {
             this.sessionKey = sessionKey;
-            return this;
-        }
-
-        public Builder withType(int newType) {
-            type = newType;
             return this;
         }
 
@@ -101,12 +103,12 @@ public class Session {
     /**
      * Empty constructor for frameworks
      */
-    private Session() {}
+    private Session() {
+    }
 
     private Session(Builder builder) {
         id = builder.id;
         sessionKey = builder.sessionKey;
-        type = builder.type;
         status = builder.status;
         dateBegin = builder.dateBegin;
         dateEnd = builder.dateEnd;
@@ -127,8 +129,8 @@ public class Session {
     /**
      * @return The public session identifier for this {@link Session}.
      * <p>
-     *     This value is displayed on the Proctor's user interface as the Session ID.  Students use this value when
-     *     logging into the Student UI to take an exam.
+     * This value is displayed on the Proctor's user interface as the Session ID.  Students use this value when
+     * logging into the Student UI to take an exam.
      * </p>
      */
     public String getSessionKey() {
@@ -143,16 +145,9 @@ public class Session {
     }
 
     /**
-     * @return the type of session
-     */
-    public int getType() {
-        return type;
-    }
-
-    /**
      * @return The time when the {@link Session} was started.
      * <p>
-     *     Should handle date and time in UTC
+     * Should handle date and time in UTC
      * </p>
      */
     public Instant getDateBegin() {
@@ -162,7 +157,7 @@ public class Session {
     /**
      * @return The time when the {@link Session} was ended.
      * <p>
-     *     Should handle date and time in UTC
+     * Should handle date and time in UTC
      * </p>
      */
     public Instant getDateEnd() {
@@ -172,8 +167,8 @@ public class Session {
     /**
      * @return The date and time when a {@link Session} was changed/updated.
      * <p>
-     *     Should handle date and time in UTC.  Currently, this field is only updated when the {@link Session}'s status
-     *     changes.
+     * Should handle date and time in UTC.  Currently, this field is only updated when the {@link Session}'s status
+     * changes.
      * </p>
      */
     public Instant getDateChanged() {
@@ -183,7 +178,7 @@ public class Session {
     /**
      * @return The time when the {@link Session} was "visited".
      * <p>
-     *     Should handle date and time in UTC.  This field is related to evaluating the checkin time.
+     * Should handle date and time in UTC.  This field is related to evaluating the checkin time.
      * </p>
      */
     public Instant getDateVisited() {
@@ -193,8 +188,8 @@ public class Session {
     /**
      * @return The client name for the current tenant
      * <p>
-     *     Correlates to (at least) the session.externs view, the sessions._externs table and the configs.client_externs
-     *     table.
+     * Correlates to (at least) the session.externs view, the sessions._externs table and the configs.client_externs
+     * table.
      * </p>
      */
     public String getClientName() {
@@ -211,7 +206,7 @@ public class Session {
     /**
      * @return The identifier of the browser information for this {@link Session}.
      * <p>
-     *     "Browser information" refers to IP address, user-agent etc, from another table.
+     * "Browser information" refers to IP address, user-agent etc, from another table.
      * </p>
      */
     public UUID getBrowserKey() {
@@ -221,8 +216,8 @@ public class Session {
     /**
      * Determine if this {@link Session} is open.  A {@link Session} is open if:
      * <ul>
-     *     <li>The {@link Session}'s status is "open" (case-insensitive)</li>
-     *     <li>The end date is before the current UTC time</li>
+     * <li>The {@link Session}'s status is "open" (case-insensitive)</li>
+     * <li>The end date is before the current UTC time</li>
      * </ul>
      *
      * @return {@code True} if the {@link Session} satisfies the rules above; otherwise {@code False}.
@@ -232,15 +227,15 @@ public class Session {
         final String OPEN_STATUS = "open";
 
         return this.getStatus().toLowerCase().equals(OPEN_STATUS)
-                && now.isBefore(this.getDateEnd());
+            && now.isBefore(this.getDateEnd());
     }
 
     /**
      * Determine if the session is managed by a Proctor
      * <p>
-     *     A session can be "proctorless" if the "AnonymousTestee" flag is turned on in the
-     *     {@code configs.client_systemflags} table.  A user taking a practice test is another example of a "proctorless"
-     *     session.
+     * A session can be "proctorless" if the "AnonymousTestee" flag is turned on in the
+     * {@code configs.client_systemflags} table.  A user taking a practice test is another example of a "proctorless"
+     * session.
      * </p>
      *
      * @return True if the {@code proctorId} is null; otherwise false
@@ -252,8 +247,8 @@ public class Session {
     /**
      * Determine if this {@link Session} is a Guest Session.
      * <p>
-     *     A Guest session is created when a user takes a practice assessment without logging into the Student
-     *     application.  Also referred to as a "Proctorless session".
+     * A Guest session is created when a user takes a practice assessment without logging into the Student
+     * application.  Also referred to as a "Proctorless session".
      * </p>
      *
      * @return True if the {@link Session}'s session ID is "GUEST Session" (case-insensitive); otherwise false.
@@ -262,6 +257,6 @@ public class Session {
         final String GUEST_SESSION_ID = "guest session";
 
         return this.getSessionKey() != null
-                && this.getSessionKey().toLowerCase().equals(GUEST_SESSION_ID);
+            && this.getSessionKey().toLowerCase().equals(GUEST_SESSION_ID);
     }
 }

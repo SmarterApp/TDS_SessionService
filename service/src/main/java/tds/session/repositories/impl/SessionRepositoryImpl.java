@@ -44,7 +44,6 @@ class SessionRepositoryImpl implements SessionRepository {
             "SELECT \n" +
                 "   s._key AS id, \n" +
                 "   s.sessionid AS sessionId, \n" +
-                "   s.sessiontype AS `type`, \n" +
                 "   s.status, \n" +
                 "   s.datebegin, \n" +
                 "   s.dateend, \n" +
@@ -109,7 +108,6 @@ class SessionRepositoryImpl implements SessionRepository {
             return new Session.Builder()
                 .withId(UuidAdapter.getUUIDFromBytes(rs.getBytes("id")))
                 .withSessionKey(rs.getString("sessionId"))
-                .withType(rs.getInt("type"))
                 .withStatus(rs.getString("status"))
                 .withDateBegin(mapTimestampToJodaInstant(rs, "datebegin"))
                 .withDateEnd(mapTimestampToJodaInstant(rs, "dateend"))
