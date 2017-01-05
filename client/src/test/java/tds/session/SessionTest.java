@@ -83,6 +83,16 @@ public class SessionTest {
     }
 
     @Test
+    public void shouldCreateAGuestSessionCaseInsensitive() {
+        Session session = new Session.Builder()
+            .withId(UUID.randomUUID())
+            .withSessionKey("GUEST sesSion")
+            .build();
+
+        assertThat(session.isGuestSession()).isTrue();
+    }
+
+    @Test
     public void shouldCreateARealSessionWithASessionId() {
         Session session = new Session.Builder()
                 .withId(UUID.randomUUID())
