@@ -17,12 +17,10 @@ public class SessionTest {
         UUID sessionId = UUID.randomUUID();
         Session session = new Session.Builder()
                 .withId(sessionId)
-                .withType(0)
                 .withStatus("closed")
                 .build();
 
         assertThat(session.getId()).isEqualTo(sessionId);
-        assertThat(session.getType()).isEqualTo(0);
         assertThat(session.getStatus()).isEqualTo("closed");
     }
 
@@ -87,9 +85,9 @@ public class SessionTest {
     @Test
     public void shouldCreateAGuestSessionCaseInsensitive() {
         Session session = new Session.Builder()
-                .withId(UUID.randomUUID())
-                .withSessionKey("GUEST sesSion")
-                .build();
+            .withId(UUID.randomUUID())
+            .withSessionKey("GUEST sesSion")
+            .build();
 
         assertThat(session.isGuestSession()).isTrue();
     }
