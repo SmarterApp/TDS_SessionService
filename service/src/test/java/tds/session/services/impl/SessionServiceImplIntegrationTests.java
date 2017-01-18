@@ -36,10 +36,11 @@ public class SessionServiceImplIntegrationTests {
             .build();
         when(mockSessionRepository.findSessionById(id)).thenReturn(Optional.of(session));
 
-        Optional<Session> sessionOptional = sessionService.findSessionById(id);
+        Optional<Session> sessionOptional1 = sessionService.findSessionById(id);
+        Optional<Session> sessionOptional2 = sessionService.findSessionById(id);
 
-        assertThat(sessionOptional).isPresent();
-        assertThat(sessionOptional.get().getId()).isEqualTo(id);
+        assertThat(sessionOptional1).isPresent();
+        assertThat(sessionOptional1).isEqualTo(sessionOptional2);
 
         verify(mockSessionRepository, times(1)).findSessionById(id);
     }
