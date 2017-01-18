@@ -1,10 +1,12 @@
 package tds.session.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import tds.common.cache.CacheType;
 import tds.session.ExternalSessionConfiguration;
 import tds.session.repositories.ExternalSessionConfigurationRepository;
 import tds.session.services.ExternalSessionConfigurationService;
@@ -19,6 +21,7 @@ public class ExternalSessionConfigurationServiceImpl implements ExternalSessionC
     }
 
     @Override
+    @Cacheable(CacheType.MEDIUM_TERM)
     public Optional<ExternalSessionConfiguration> findExternalSessionConfigurationByClientName(String clientName) {
         return repository.findExternalSessionConfigurationByClientName(clientName);
     }

@@ -1,6 +1,7 @@
 package tds.session.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.UUID;
 
 import tds.common.Response;
 import tds.common.ValidationError;
+import tds.common.cache.CacheType;
 import tds.common.web.exceptions.NotFoundException;
 import tds.session.PauseSessionRequest;
 import tds.session.PauseSessionResponse;
@@ -35,6 +37,7 @@ class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    @Cacheable(CacheType.SHORT_TERM)
     public Optional<Session> findSessionById(UUID id) {
         return sessionRepository.findSessionById(id);
     }
@@ -59,6 +62,7 @@ class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    @Cacheable(CacheType.LONG_TERM)
     public Optional<SessionAssessment> findSessionAssessment(UUID sessionId, String assessmentKey) {
         return sessionAssessmentQueryRepository.findSessionAssessment(sessionId, assessmentKey);
     }
