@@ -106,7 +106,6 @@ public class SessionControllerIntegrationTests {
             .content(requestJson.toString())
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("errors").isEmpty())
             .andExpect(jsonPath("data.sessionId", is(mockClosedSession.getId().toString())))
             .andExpect(jsonPath("data.status", is("closed")))
             .andExpect(jsonPath("data.dateChanged").exists())
@@ -139,9 +138,8 @@ public class SessionControllerIntegrationTests {
             .content(requestJson.toString())
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnprocessableEntity())
-            .andExpect(jsonPath("errors").isArray())
-            .andExpect(jsonPath("errors[0].code", is("ownedByDifferentProctor")))
-            .andExpect(jsonPath("errors[0].message", is("The session is not owned by this proctor")));
+            .andExpect(jsonPath("error.code", is("ownedByDifferentProctor")))
+            .andExpect(jsonPath("error.message", is("The session is not owned by this proctor")));
     }
 
     @Test
