@@ -53,7 +53,7 @@ class SessionController {
     ResponseEntity<Response<PauseSessionResponse>> pause(@PathVariable final UUID sessionId, @RequestBody final PauseSessionRequest request) {
         final Response<PauseSessionResponse> response = sessionService.pause(sessionId, request);
 
-        if (response.hasErrors()) {
+        if (response.hasError()) {
             return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
         }
 

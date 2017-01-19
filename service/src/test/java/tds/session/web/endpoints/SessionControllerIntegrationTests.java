@@ -97,7 +97,7 @@ public class SessionControllerIntegrationTests {
             .build();
 
         PauseSessionRequest request = new PauseSessionRequest(proctorId, browserKey);
-        Response<PauseSessionResponse> mockResponse = new Response<>(new PauseSessionResponse(mockClosedSession), new ValidationError[]{});
+        Response<PauseSessionResponse> mockResponse = new Response<>(new PauseSessionResponse(mockClosedSession));
         when(mockSessionService.pause(isA(UUID.class), isA(PauseSessionRequest.class))).thenReturn(mockResponse);
 
         JSONObject requestJson = new JSONObject(request);

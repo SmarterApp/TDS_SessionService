@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import tds.common.Response;
-import tds.common.ValidationError;
 import tds.common.web.exceptions.NotFoundException;
 import tds.session.PauseSessionRequest;
 import tds.session.PauseSessionResponse;
@@ -89,7 +88,7 @@ public class SessionControllerTest {
             .build();
         PauseSessionResponse mockClosedResponse = new PauseSessionResponse(mockClosedSession);
 
-        when(mockSessionService.pause(sessionId, request)).thenReturn(new Response<>(mockClosedResponse, new ValidationError[]{}));
+        when(mockSessionService.pause(sessionId, request)).thenReturn(new Response<>(mockClosedResponse));
         ResponseEntity<Response<PauseSessionResponse>> responseEntity = controller.pause(sessionId, request);
         verify(mockSessionService).pause(sessionId, request);
 

@@ -131,7 +131,7 @@ public class SessionServiceImplTest {
         verify(mockSessionRepository, times(2)).findSessionById(mockOpenSession.getId());
 
         assertThat(response.getData()).isNotNull();
-        assertThat(response.getErrors()).hasSize(0);
+        assertThat(response.hasError()).isFalse();
         PauseSessionResponse pauseSessionResponse = response.getData().get();
         assertThat(pauseSessionResponse.getStatus()).isEqualTo(mockUpdatedSession.getStatus());
         assertThat(pauseSessionResponse.getSessionId()).isEqualTo(mockUpdatedSession.getId());
@@ -163,8 +163,8 @@ public class SessionServiceImplTest {
         verifyNoMoreInteractions(mockSessionRepository);
 
         assertThat(response.getData().isPresent()).isFalse();
-        assertThat(response.getErrors()).hasSize(1);
-        ValidationError error = response.getErrors()[0];
+        assertThat(response.hasError()).isTrue();
+        ValidationError error = response.getError().get();
         assertThat(error.getCode()).isEqualTo(ValidationErrorCode.PAUSE_SESSION_IS_CLOSED);
         assertThat(error.getMessage()).isEqualTo("The session is closed");
     }
@@ -193,8 +193,8 @@ public class SessionServiceImplTest {
         verifyNoMoreInteractions(mockSessionRepository);
 
         assertThat(response.getData().isPresent()).isFalse();
-        assertThat(response.getErrors()).hasSize(1);
-        ValidationError error = response.getErrors()[0];
+        assertThat(response.hasError()).isTrue();
+        ValidationError error = response.getError().get();
         assertThat(error.getCode()).isEqualTo(ValidationErrorCode.PAUSE_SESSION_OWNED_BY_DIFFERENT_PROCTOR);
         assertThat(error.getMessage()).isEqualTo("The session is not owned by this proctor");
     }
@@ -225,8 +225,8 @@ public class SessionServiceImplTest {
         verify(mockSessionRepository, times(1)).findSessionById(mockClosedSession.getId());
 
         assertThat(response.getData().isPresent()).isFalse();
-        assertThat(response.getErrors()).hasSize(1);
-        ValidationError error = response.getErrors()[0];
+        assertThat(response.hasError()).isTrue();
+        ValidationError error = response.getError().get();
         assertThat(error.getCode()).isEqualTo(ValidationErrorCode.PAUSE_SESSION_ACCESS_VIOLATION);
         assertThat(error.getMessage()).isEqualTo("Unauthorized session access");
     }
