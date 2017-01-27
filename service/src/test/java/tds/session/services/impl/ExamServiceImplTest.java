@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ExamServiceImplTest {
-    private static final String BASE_URL = "http://localhost:8080/session";
+    private static final String BASE_URL = "http://localhost:8080";
 
     private ExamService examService;
 
@@ -33,7 +33,7 @@ public class ExamServiceImplTest {
     @Test
     public void shouldPauseAllExamsInASession() {
         UUID sessionId = UUID.randomUUID();
-        String url = String.format("%s/pause/%s", BASE_URL, sessionId);
+        String url = String.format("%s/%s/pause/%s", BASE_URL, ExamServiceImpl.APP_ROOT_CONTEXT, sessionId);
 
         examService.pauseAllExamsInSession(sessionId);
 

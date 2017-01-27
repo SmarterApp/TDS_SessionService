@@ -12,6 +12,7 @@ import tds.session.services.ExamService;
 
 @Service
 class ExamServiceImpl implements ExamService {
+    static final String APP_ROOT_CONTEXT = "exam";
     private final RestTemplate restTemplate;
     private final SessionServiceProperties sessionServiceProperties;
 
@@ -25,7 +26,7 @@ class ExamServiceImpl implements ExamService {
     public void pauseAllExamsInSession(UUID sessionId) {
         UriComponentsBuilder builder =
             UriComponentsBuilder
-                .fromHttpUrl(String.format("%s/pause/%s", sessionServiceProperties.getExamUrl(), sessionId));
+                .fromHttpUrl(String.format("%s/%s/pause/%s", sessionServiceProperties.getExamUrl(), APP_ROOT_CONTEXT, sessionId));
 
         restTemplate.put(builder.toUriString(), null);
     }
