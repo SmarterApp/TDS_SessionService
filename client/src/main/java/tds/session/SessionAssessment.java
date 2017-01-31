@@ -22,6 +22,12 @@ public class SessionAssessment {
     }
 
     /**
+     * Private constructor for frameworks
+     */
+    private SessionAssessment() {
+    }
+
+    /**
      * @return session id
      */
     public UUID getSessionId() {

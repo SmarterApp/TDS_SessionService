@@ -2,8 +2,6 @@ package tds.session;
 
 import org.joda.time.Instant;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -20,6 +18,12 @@ public class PauseSessionResponse {
         this.status = session.getStatus();
         this.dateChanged = session.getDateChanged();
         this.dateEnded = session.getDateEnd();
+    }
+
+    /**
+     * Present for frameworks
+     */
+    private PauseSessionResponse() {
     }
 
     /**
