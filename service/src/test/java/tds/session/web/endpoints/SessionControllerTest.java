@@ -82,7 +82,7 @@ public class SessionControllerTest {
             .withId(sessionId)
             .withProctorId(proctorId)
             .withBrowserKey(browserKey)
-            .withDateChanged(Instant.now())
+            .withDateChanged(Instant.now().minus(1000))
             .withDateEnd(Instant.now())
             .withStatus("closed")
             .build();
@@ -97,7 +97,7 @@ public class SessionControllerTest {
         assertThat(resultFromService.getSessionId()).isEqualTo(sessionId);
         assertThat(resultFromService.getStatus()).isEqualTo("closed");
         assertThat(resultFromService.getDateEnded()).isEqualTo(mockClosedResponse.getDateEnded());
-        assertThat(resultFromService.getDateChanged()).isEqualTo(mockClosedResponse.getDateEnded());
+        assertThat(resultFromService.getDateChanged()).isEqualTo(mockClosedResponse.getDateChanged());
         assertThat(responseEntity.getHeaders().getLocation().toString()).isEqualTo("http://localhost/sessions/" + sessionId);
     }
 
