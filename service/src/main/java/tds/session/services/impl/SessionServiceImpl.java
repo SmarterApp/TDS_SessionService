@@ -3,6 +3,7 @@ package tds.session.services.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -42,6 +43,7 @@ class SessionServiceImpl implements SessionService {
         return sessionRepository.findSessionById(id);
     }
 
+    @Transactional
     @Override
     public Response<PauseSessionResponse> pause(final UUID sessionId, PauseSessionRequest request) {
         final Session session = sessionRepository.findSessionById(sessionId)
@@ -49,7 +51,7 @@ class SessionServiceImpl implements SessionService {
 
         Optional<ValidationError> maybeValidationError = verifySessionCanBePaused(session, request);
         if (maybeValidationError.isPresent()) {
-            return new Response<PauseSessionResponse>(maybeValidationError.get());
+            return new Response<>(maybeValidationError.get());
         }
 
         examService.pauseAllExamsInSession(sessionId);
