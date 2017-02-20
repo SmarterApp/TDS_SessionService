@@ -22,7 +22,7 @@ public class ExternalSessionConfigurationRepositoryImpl implements ExternalSessi
     }
 
     @Override
-    public Optional<ExternalSessionConfiguration> findExternalSessionConfigurationByClientName(String clientName) {
+    public Optional<ExternalSessionConfiguration> findExternalSessionConfigurationByClientName(final String clientName) {
         final SqlParameterSource parameters = new MapSqlParameterSource("clientName", clientName);
 
         String query = "SELECT " +

@@ -16,13 +16,13 @@ public class ExternalSessionConfigurationServiceImpl implements ExternalSessionC
     private final ExternalSessionConfigurationRepository repository;
 
     @Autowired
-    public ExternalSessionConfigurationServiceImpl(ExternalSessionConfigurationRepository repository) {
+    public ExternalSessionConfigurationServiceImpl(final ExternalSessionConfigurationRepository repository) {
         this.repository = repository;
     }
 
     @Override
     @Cacheable(CacheType.MEDIUM_TERM)
-    public Optional<ExternalSessionConfiguration> findExternalSessionConfigurationByClientName(String clientName) {
+    public Optional<ExternalSessionConfiguration> findExternalSessionConfigurationByClientName(final String clientName) {
         return repository.findExternalSessionConfigurationByClientName(clientName);
     }
 }

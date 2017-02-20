@@ -29,15 +29,16 @@ import static tds.common.data.mapping.ResultSetMapperUtility.mapTimestampToJodaI
 @Repository
 class SessionRepositoryImpl implements SessionRepository {
     private static final Logger log = LoggerFactory.getLogger(SessionRepositoryImpl.class);
+    private static final RowMapper<Session> sessionRowMapper = new SessionRowMapper();
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    public SessionRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate) {
+    public SessionRepositoryImpl(final NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public Optional<Session> findSessionById(UUID id) {
+    public Optional<Session> findSessionById(final UUID id) {
         final SqlParameterSource parameters = new MapSqlParameterSource("id", UuidAdapter.getBytesFromUUID(id));
 
         String query =
@@ -59,7 +60,7 @@ class SessionRepositoryImpl implements SessionRepository {
 
         Optional<Session> sessionOptional;
         try {
-            sessionOptional = Optional.of(jdbcTemplate.queryForObject(query, parameters, new SessionRowMapper()));
+            sessionOptional = Optional.of(jdbcTemplate.queryForObject(query, parameters, sessionRowMapper));
         } catch (EmptyResultDataAccessException e) {
             sessionOptional = Optional.empty();
         }
@@ -100,7 +101,7 @@ class SessionRepositoryImpl implements SessionRepository {
         }
     }
 
-    private class SessionRowMapper implements RowMapper<Session> {
+    private static class SessionRowMapper implements RowMapper<Session> {
 
         @Override
         public Session mapRow(ResultSet rs, int i) throws SQLException {

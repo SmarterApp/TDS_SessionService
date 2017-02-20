@@ -14,5 +14,5 @@ public interface ExternalSessionConfigurationRepository {
      * @param clientName client name for external session configuration
      * @return optional containing {@link tds.session.ExternalSessionConfiguration Extern} otherwise empty Optional
      */
-    Optional<ExternalSessionConfiguration> findExternalSessionConfigurationByClientName(String clientName);
+    Optional<ExternalSessionConfiguration> findExternalSessionConfigurationByClientName(final String clientName);
 }

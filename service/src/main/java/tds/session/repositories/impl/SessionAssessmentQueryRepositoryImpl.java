@@ -22,12 +22,12 @@ class SessionAssessmentQueryRepositoryImpl implements SessionAssessmentQueryRepo
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    SessionAssessmentQueryRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate) {
+    SessionAssessmentQueryRepositoryImpl(final NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public Optional<SessionAssessment> findSessionAssessment(UUID sessionId, String assessmentKey) {
+    public Optional<SessionAssessment> findSessionAssessment(final UUID sessionId, final String assessmentKey) {
         SqlParameterSource parameters = new MapSqlParameterSource("assessmentKey", assessmentKey)
             .addValue("sessionId", UuidAdapter.getBytesFromUUID(sessionId));
 

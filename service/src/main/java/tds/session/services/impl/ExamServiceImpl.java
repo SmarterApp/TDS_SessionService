@@ -17,13 +17,13 @@ class ExamServiceImpl implements ExamService {
     private final SessionServiceProperties sessionServiceProperties;
 
     @Autowired
-    public ExamServiceImpl(RestTemplate restTemplate, SessionServiceProperties sessionServiceProperties) {
+    public ExamServiceImpl(final RestTemplate restTemplate, final SessionServiceProperties sessionServiceProperties) {
         this.restTemplate = restTemplate;
         this.sessionServiceProperties = sessionServiceProperties;
     }
 
     @Override
-    public void pauseAllExamsInSession(UUID sessionId) {
+    public void pauseAllExamsInSession(final UUID sessionId) {
         UriComponentsBuilder builder =
             UriComponentsBuilder
                 .fromHttpUrl(String.format("%s/%s/pause/%s", sessionServiceProperties.getExamUrl(), APP_ROOT_CONTEXT, sessionId));

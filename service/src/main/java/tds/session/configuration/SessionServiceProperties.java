@@ -17,7 +17,7 @@ public class SessionServiceProperties {
         return examUrl;
     }
 
-    public void setExamUrl(String examUrl) {
+    public void setExamUrl(final String examUrl) {
         this.examUrl = UrlUtils.removeTrailingSlash(examUrl);
     }
 }

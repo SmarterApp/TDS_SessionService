@@ -11,5 +11,5 @@ public interface ExamService {
      *
      * @param sessionId The unique identifier of the session that has been closed
      */
-    void pauseAllExamsInSession(UUID sessionId);
+    void pauseAllExamsInSession(final UUID sessionId);
 }

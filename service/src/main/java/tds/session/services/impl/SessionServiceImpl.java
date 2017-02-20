@@ -29,9 +29,9 @@ class SessionServiceImpl implements SessionService {
     private final ExamService examService;
 
     @Autowired
-    public SessionServiceImpl(SessionRepository sessionRepository,
-                              SessionAssessmentQueryRepository sessionAssessmentQueryRepository,
-                              ExamService examService) {
+    public SessionServiceImpl(final SessionRepository sessionRepository,
+                              final SessionAssessmentQueryRepository sessionAssessmentQueryRepository,
+                              final ExamService examService) {
         this.sessionRepository = sessionRepository;
         this.sessionAssessmentQueryRepository = sessionAssessmentQueryRepository;
         this.examService = examService;
@@ -39,13 +39,13 @@ class SessionServiceImpl implements SessionService {
 
     @Override
     @Cacheable(CacheType.SHORT_TERM)
-    public Optional<Session> findSessionById(UUID id) {
+    public Optional<Session> findSessionById(final UUID id) {
         return sessionRepository.findSessionById(id);
     }
 
     @Transactional
     @Override
-    public Response<PauseSessionResponse> pause(final UUID sessionId, PauseSessionRequest request) {
+    public Response<PauseSessionResponse> pause(final UUID sessionId, final PauseSessionRequest request) {
         final Session session = sessionRepository.findSessionById(sessionId)
             .orElseThrow(() -> new NotFoundException(String.format("Could not find session for session id %s", sessionId)));
 
@@ -65,7 +65,7 @@ class SessionServiceImpl implements SessionService {
 
     @Override
     @Cacheable(CacheType.LONG_TERM)
-    public Optional<SessionAssessment> findSessionAssessment(UUID sessionId, String assessmentKey) {
+    public Optional<SessionAssessment> findSessionAssessment(final UUID sessionId, final String assessmentKey) {
         return sessionAssessmentQueryRepository.findSessionAssessment(sessionId, assessmentKey);
     }
 
@@ -77,7 +77,7 @@ class SessionServiceImpl implements SessionService {
      * @return {@code Optional.empty()} if the session can be paused, otherwise a {@link tds.common.ValidationError}
      * that describes why the session cannot be paused.
      */
-    private Optional<ValidationError> verifySessionCanBePaused(Session session, PauseSessionRequest request) {
+    private Optional<ValidationError> verifySessionCanBePaused(final Session session, final PauseSessionRequest request) {
         // CommonDLL.ValidateProctorSession_FN (@ line 1727) rules:
 
         // RULE:  The session must be open

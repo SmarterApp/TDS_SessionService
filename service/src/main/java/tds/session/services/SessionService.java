@@ -19,7 +19,7 @@ public interface SessionService {
      * @param id session id
      * @return Optional containing {@link tds.session.Session Session} otherwise empty
      */
-    Optional<Session> findSessionById(UUID id);
+    Optional<Session> findSessionById(final UUID id);
 
     /**
      * Pause a session, updating it to the specified status.
@@ -32,7 +32,7 @@ public interface SessionService {
      * @param sessionId the session id of {@link tds.session.Session} should be paused
      * @param request   The proctor id and browser key to identify the requester
      */
-    Response<PauseSessionResponse> pause(UUID sessionId, PauseSessionRequest request);
+    Response<PauseSessionResponse> pause(final UUID sessionId, final PauseSessionRequest request);
 
     /**
      * Finds the associated {@link tds.session.SessionAssessment}
@@ -41,6 +41,6 @@ public interface SessionService {
      * @param assessmentKey the unique identifier for a particular assessment
      * @return {@link tds.session.SessionAssessment} if found otherwise empty
      */
-    Optional<SessionAssessment> findSessionAssessment(UUID sessionId, String assessmentKey);
+    Optional<SessionAssessment> findSessionAssessment(final UUID sessionId, final String assessmentKey);
 }
 

@@ -15,5 +15,5 @@ public interface SessionAssessmentQueryRepository {
      * @param sessionId the session id
      * @return {@link tds.session.SessionAssessment} if found otherwise empty
      */
-    Optional<SessionAssessment> findSessionAssessment(UUID sessionId, String assessmentKey);
+    Optional<SessionAssessment> findSessionAssessment(final UUID sessionId, final String assessmentKey);
 }

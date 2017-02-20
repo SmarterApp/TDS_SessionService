@@ -15,7 +15,7 @@ public interface SessionRepository {
      * @param id session id
      * @return optional containing {@link tds.session.Session Session} otherwise empty Optional
      */
-    Optional<Session> findSessionById(UUID id);
+    Optional<Session> findSessionById(final UUID id);
 
     /**
      * Pause an existing {@link Session}, updating the {@link Session}'s status to indicate it is no longer "open".
@@ -29,5 +29,5 @@ public interface SessionRepository {
      * @param sessionId The id of the {@link Session} to pause
      * @param newStatus A description of why the {@link Session} is being paused
      */
-    void pause(UUID sessionId, String newStatus);
+    void pause(final UUID sessionId, final String newStatus);
 }
