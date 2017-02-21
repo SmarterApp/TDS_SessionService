@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.net.URI;
 import java.util.Optional;
 
+import tds.common.configuration.SecurityConfiguration;
 import tds.common.web.advice.ExceptionAdvice;
 import tds.session.ExternalSessionConfiguration;
 import tds.session.services.ExternalSessionConfigurationService;
@@ -25,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ExternalSessionConfigurationController.class)
-@Import(ExceptionAdvice.class)
+@Import({ExceptionAdvice.class, SecurityConfiguration.class})
 public class ExternalSessionConfigurationControllerIntegrationTests {
     @Autowired
     private MockMvc http;
