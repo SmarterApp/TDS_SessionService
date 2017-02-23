@@ -12,7 +12,7 @@
     <description>The client classes for interacting with the session service</description>
 
     <parent>
-        <groupId>org.opentestsystem.session</groupId>
+        <groupId>org.opentestsystem.delivery</groupId>
         <artifactId>tds-session</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
