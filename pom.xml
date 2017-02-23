@@ -26,7 +26,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <tds.session.client.version>0.0.1-SNAPSHOT</tds.session.client.version>
-        <tds.common.version>0.0.1-SNAPSHOT</tds.common.version>
+        <tds.common.version>0.0.1</tds.common.version>
 
         <unit-tests.skip>false</unit-tests.skip>
         <integration-tests.skip>true</integration-tests.skip>
