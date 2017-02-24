@@ -1,0 +1,41 @@
+#Configure the Spring Actuator endpoints to require an authenticated user with the MANAGEMENT role
+management:
+  security:
+    roles: MANAGEMENT
+
+---
+spring:
+  profiles: local-development
+  datasource:
+    url: ${sbac.jdbc.host}/session
+    username: ${sbac.jdbc.user}
+    password: ${sbac.jdbc.password}
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
+
+#Configure the default Spring Security user with the MANAGEMENT role
+security:
+  user:
+    name: user
+    password: password
+    role: MANAGEMENT
+
+flyway:
+  enabled: false
+
+server:
+  port: 8082
+  undertow:
+    buffer-size: 16384
+    buffers-per-region: 20
+    io-threads: 64
+    worker-threads: 512
+    direct-buffers: true
+
+session-service:
+  #Assume we're also running a tds-exam-service in "local-development" mode
+  exam-url: http://localhost:8081
