@@ -9,7 +9,7 @@
 
     <scm>
         <connection>scm:git:https://github.com/SmarterApp/TDS_SessionService.git</connection>
-        <developerConnection>scm:git:https://git@github.com/SmarterApp/TDS_SessionService.git</developerConnection>
+        <developerConnection>scm:git:git://github.com/SmarterApp/TDS_SessionService.git</developerConnection>
         <url>https://github.com/SmarterApp/TDS_SessionService</url>
         <tag>HEAD</tag>
     </scm>
@@ -36,13 +36,12 @@
         <joda-time.version>2.9.5</joda-time.version>
         <spring.cloud.config.version>1.2.2.RELEASE</spring.cloud.config.version>
 
-        <tds.common.version>0.0.1</tds.common.version>
+        <tds.common.version>0.0.2</tds.common.version>
 
         <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.source.plugin.version>2.1.2</maven.source.plugin.version>
         <maven.toolchains.plugin.version>1.1</maven.toolchains.plugin.version>
-        <publish.package.name>org.opentestsystem.tds.session</publish.package.name>
     </properties>
 
     <build>
@@ -85,9 +84,9 @@
 
     <distributionManagement>
         <repository>
-            <id>bintray-smarter-app-open-test-system</id>
-            <name>smarter-app-open-test-system</name>
-            <url>https://api.bintray.com/maven/smarter-app/open-test-system/${publish.package.name}/;publish=1</url>
+            <id>central</id>
+            <name>airdev-releases</name>
+            <url>https://airdev.jfrog.io/airdev/libs-releases-local</url>
         </repository>
     </distributionManagement>
 </project>
