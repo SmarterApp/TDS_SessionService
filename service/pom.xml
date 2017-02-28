@@ -5,15 +5,25 @@
     <packaging>jar</packaging>
     <name>tds-session-service</name>
     <description>The microservice for configuration</description>
+    <version>0.0.2-SNAPSHOT</version>
 
     <parent>
         <groupId>org.opentestsystem.delivery</groupId>
         <artifactId>tds-session</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
+
+    <scm>
+        <connection>scm:git:https://github.com/SmarterApp/TDS_SessionService.git</connection>
+        <developerConnection>scm:git:git://github.com/SmarterApp/TDS_SessionService.git</developerConnection>
+        <url>https://github.com/SmarterApp/TDS_SessionService</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <properties>
         <java.version>1.8</java.version>
+        <tds.common.version>0.0.1</tds.common.version>
+        <tds.session.client.version>0.0.1</tds.session.client.version>
     </properties>
 
     <dependencyManagement>
@@ -32,7 +42,7 @@
         <dependency>
             <groupId>org.opentestsystem.delivery</groupId>
             <artifactId>tds-session-client</artifactId>
-            <version>${project.version}</version>
+            <version>${tds.session.client.version}</version>
         </dependency>
         <dependency>
             <groupId>org.opentestsystem.delivery</groupId>

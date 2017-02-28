@@ -5,12 +5,20 @@
     <packaging>jar</packaging>
     <name>tds-session-client</name>
     <description>The client classes for interacting with the session service</description>
+    <version>0.0.2-SNAPSHOT</version>
 
     <parent>
         <groupId>org.opentestsystem.delivery</groupId>
         <artifactId>tds-session</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
+
+    <scm>
+        <connection>scm:git:https://github.com/SmarterApp/TDS_SessionService.git</connection>
+        <developerConnection>scm:git:git://github.com/SmarterApp/TDS_SessionService.git</developerConnection>
+        <url>https://github.com/SmarterApp/TDS_SessionService</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <properties>
         <java.version>1.7</java.version>
