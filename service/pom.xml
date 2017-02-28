@@ -5,7 +5,7 @@
     <packaging>jar</packaging>
     <name>tds-session-service</name>
     <description>The microservice for configuration</description>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
 
     <parent>
         <groupId>org.opentestsystem.delivery</groupId>
@@ -17,7 +17,7 @@
         <connection>scm:git:https://github.com/SmarterApp/TDS_SessionService.git</connection>
         <developerConnection>scm:git:git://github.com/SmarterApp/TDS_SessionService.git</developerConnection>
         <url>https://github.com/SmarterApp/TDS_SessionService</url>
-        <tag>HEAD</tag>
+        <tag>tds-session-service-0.0.2</tag>
     </scm>
 
     <properties>
