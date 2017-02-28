@@ -22,8 +22,8 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <tds.common.version>0.0.1</tds.common.version>
-        <tds.session.client.version>0.0.1</tds.session.client.version>
+        <tds.common.version>0.0.2</tds.common.version>
+        <tds.session.client.version>0.0.2</tds.session.client.version>
     </properties>
 
     <dependencyManagement>
