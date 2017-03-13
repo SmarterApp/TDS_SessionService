@@ -58,13 +58,12 @@ public class PauseSessionResponse {
      * Determine if the {@link tds.session.Session} is in a paused/closed state.
      * <p>
      *     A {@link tds.session.Session} can only be in an open or closed state.  Even though the method in legacy is
-     *     called "pauseSession", the act of pausing a session closes it.  The naming convention has been carried
-     *     forward from the legacy codebase.
+     *     called "pauseSession", the act of pausing a session closes it.
      * </p>
      *
      * @return True if the {@link tds.session.Session}'s status is "closed"; otherwise false.
      */
-    public boolean isPaused() {
+    public boolean isClosed() {
         return this.status.equalsIgnoreCase("closed");
     }
 }
