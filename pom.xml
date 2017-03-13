@@ -5,13 +5,13 @@
     <artifactId>tds-session</artifactId>
     <name>tds-session</name>
     <packaging>pom</packaging>
-    <version>0.0.3</version>
+    <version>0.0.4-SNAPSHOT</version>
 
     <scm>
         <connection>scm:git:https://github.com/SmarterApp/TDS_SessionService.git</connection>
         <developerConnection>scm:git:git://github.com/SmarterApp/TDS_SessionService.git</developerConnection>
         <url>https://github.com/SmarterApp/TDS_SessionService</url>
-        <tag>0.0.3</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <modules>
