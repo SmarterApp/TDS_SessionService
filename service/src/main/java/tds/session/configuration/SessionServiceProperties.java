@@ -3,7 +3,7 @@ package tds.session.configuration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import tds.common.web.utils.UrlUtils;
+import static tds.common.util.Preconditions.checkNotNull;
 
 @Component
 @ConfigurationProperties("session-service")
@@ -18,6 +18,12 @@ public class SessionServiceProperties {
     }
 
     public void setExamUrl(final String examUrl) {
-        this.examUrl = UrlUtils.removeTrailingSlash(examUrl);
+        this.examUrl = removeTrailingSlash(examUrl);
+    }
+
+    private static String removeTrailingSlash(String url) {
+        return checkNotNull(url, "url cannot be null").endsWith("/")
+            ? url.substring(0, url.length() - 1)
+            : url;
     }
 }
