@@ -42,5 +42,12 @@ public interface SessionService {
      * @return {@link tds.session.SessionAssessment} if found otherwise empty
      */
     Optional<SessionAssessment> findSessionAssessment(final UUID sessionId, final String assessmentKey);
+
+    /**
+     * Updates the "date visited" of a {@link tds.session.Session} in order to maintain the session open.
+     *
+     * @param sessionId The id of the {@link tds.session.Session}
+     */
+    void updateDateVisited(UUID sessionId);
 }
 

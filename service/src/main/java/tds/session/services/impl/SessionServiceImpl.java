@@ -69,6 +69,11 @@ class SessionServiceImpl implements SessionService {
         return sessionAssessmentQueryRepository.findSessionAssessment(sessionId, assessmentKey);
     }
 
+    @Override
+    public void updateDateVisited(final UUID sessionId) {
+        sessionRepository.updateDateVisited(sessionId);
+    }
+
     /**
      * Determine if the requested {@link tds.session.Session} can be paused.
      *

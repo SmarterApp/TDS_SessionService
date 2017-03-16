@@ -230,4 +230,11 @@ public class SessionServiceImplTest {
         assertThat(error.getCode()).isEqualTo(ValidationErrorCode.PAUSE_SESSION_ACCESS_VIOLATION);
         assertThat(error.getMessage()).isEqualTo("Unauthorized session access");
     }
+
+    @Test
+    public void shouldUpdateSessionService() {
+        final UUID sessionId = UUID.randomUUID();
+        service.updateDateVisited(sessionId);
+        verify(mockSessionRepository).updateDateVisited(sessionId);
+    }
 }
