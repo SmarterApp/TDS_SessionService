@@ -36,7 +36,7 @@ class SessionController {
     private final SessionService sessionService;
 
     @Autowired
-    public SessionController(SessionService sessionService) {
+    public SessionController(final SessionService sessionService) {
         this.sessionService = sessionService;
     }
 
@@ -66,9 +66,14 @@ class SessionController {
     }
 
     @RequestMapping(value = "/{sessionId}/extend", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    void extendSession(@PathVariable final UUID sessionId) {
-        sessionService.updateDateVisited(sessionId);
+    ResponseEntity<Boolean> extendSession(@PathVariable final UUID sessionId) {
+        Boolean successful = sessionService.updateDateVisited(sessionId);
+
+        if (!successful) {
+            return new ResponseEntity<>(successful, HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        return ResponseEntity.ok(successful);
     }
 
     @RequestMapping(value = "/{sessionId}/assessment/{assessmentKey}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

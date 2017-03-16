@@ -47,7 +47,9 @@ public interface SessionService {
      * Updates the "date visited" of a {@link tds.session.Session} in order to maintain the session open.
      *
      * @param sessionId The id of the {@link tds.session.Session}
+     *
+     * @return {@code true} if the session was successfully updated, {@code false} otherwise
      */
-    void updateDateVisited(UUID sessionId);
+    boolean updateDateVisited(UUID sessionId);
 }
 

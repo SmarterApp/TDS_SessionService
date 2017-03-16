@@ -181,9 +181,26 @@ public class SessionControllerIntegrationTests {
         final UriComponents components = UriComponentsBuilder
             .fromPath(String.format("/sessions/%s/extend", sessionId)).build();
 
+        when(mockSessionService.updateDateVisited(sessionId)).thenReturn(true);
+
         http.perform(put(components.toUri())
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
+
+        verify(mockSessionService).updateDateVisited(sessionId);
+    }
+
+    @Test
+    public void shouldReturnUnprocessableEntityForUnsuccessfulUpdate() throws Exception {
+        final UUID sessionId = UUID.randomUUID();
+        final UriComponents components = UriComponentsBuilder
+            .fromPath(String.format("/sessions/%s/extend", sessionId)).build();
+
+        when(mockSessionService.updateDateVisited(sessionId)).thenReturn(false);
+
+        http.perform(put(components.toUri())
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnprocessableEntity());
 
         verify(mockSessionService).updateDateVisited(sessionId);
     }

@@ -23,8 +23,10 @@ import tds.session.repositories.SessionRepository;
 import tds.session.services.ExamService;
 import tds.session.services.SessionService;
 
+import static io.github.benas.randombeans.api.EnhancedRandom.random;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -233,8 +235,24 @@ public class SessionServiceImplTest {
 
     @Test
     public void shouldUpdateSessionService() {
+        final Session session = random(Session.class);
+
+        when(mockSessionRepository.findSessionById(session.getId())).thenReturn(Optional.of(session));
+        boolean successful = service.updateDateVisited(session.getId());
+
+        assertThat(successful).isTrue();
+        verify(mockSessionRepository).findSessionById(session.getId());
+        verify(mockSessionRepository).updateDateVisited(session.getId());
+    }
+
+    @Test
+    public void shouldReturnFalseForNoSessionFound() {
         final UUID sessionId = UUID.randomUUID();
-        service.updateDateVisited(sessionId);
-        verify(mockSessionRepository).updateDateVisited(sessionId);
+
+        when(mockSessionRepository.findSessionById(sessionId)).thenReturn(Optional.empty());
+        assertThat(service.updateDateVisited(sessionId)).isFalse();
+
+        verify(mockSessionRepository).findSessionById(sessionId);
+        verify(mockSessionRepository, never()).updateDateVisited(sessionId);
     }
 }

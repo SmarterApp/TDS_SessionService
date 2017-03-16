@@ -1,5 +1,7 @@
 package tds.session.services.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ import tds.session.services.SessionService;
 
 @Service
 class SessionServiceImpl implements SessionService {
+    private static final Logger log = LoggerFactory.getLogger(SessionServiceImpl.class);
     private final SessionRepository sessionRepository;
     private final SessionAssessmentQueryRepository sessionAssessmentQueryRepository;
     private final ExamService examService;
@@ -70,8 +73,17 @@ class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public void updateDateVisited(final UUID sessionId) {
+    public boolean updateDateVisited(final UUID sessionId) {
+        Optional<Session> maybeSession = sessionRepository.findSessionById(sessionId);
+
+        if (!maybeSession.isPresent()) {
+            log.error("No session for session id {} found. Unable to extend session.", sessionId);
+            return false;
+        }
+
         sessionRepository.updateDateVisited(sessionId);
+
+        return true;
     }
 
     /**
