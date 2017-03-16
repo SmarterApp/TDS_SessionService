@@ -151,14 +151,12 @@ public class SessionRepositoryImplIntegrationTests {
 
         insertSession(session);
 
-        final String status = "unit test";  // represents the status change sent in from the caller
-
-        sessionRepository.pause(sessionId, status);
+        sessionRepository.pause(sessionId);
 
         Optional<Session> result = sessionRepository.findSessionById(sessionId);
         assertThat(result).isPresent();
         assertThat(result.get().getId()).isEqualTo(sessionId);
-        assertThat(result.get().getStatus()).isEqualTo(status);
+        assertThat(result.get().getStatus()).isEqualTo("closed");
         assertThat(result.get().getDateChanged()).isNotNull();
         assertThat(result.get().getDateChanged()).isGreaterThan(result.get().getDateBegin());
         assertThat(result.get().getDateEnd()).isNotNull();

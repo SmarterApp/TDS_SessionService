@@ -55,7 +55,7 @@ class SessionServiceImpl implements SessionService {
         }
 
         examService.pauseAllExamsInSession(sessionId);
-        sessionRepository.pause(sessionId, "closed");
+        sessionRepository.pause(sessionId);
 
         Session updatedSession = sessionRepository.findSessionById(sessionId)
             .orElseThrow(() -> new IllegalStateException(String.format("Could not find session that was just closed for session id %s", sessionId)));
