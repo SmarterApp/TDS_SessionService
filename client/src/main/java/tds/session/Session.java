@@ -95,6 +95,20 @@ public class Session {
             return this;
         }
 
+        public Builder fromSession(Session session) {
+            id = session.id;
+            sessionKey = session.sessionKey;
+            status = session.status;
+            dateBegin = session.dateBegin;
+            dateEnd = session.dateEnd;
+            dateChanged = session.dateChanged;
+            dateVisited = session.dateVisited;
+            clientName = session.clientName;
+            proctorId = session.proctorId;
+            browserKey = session.browserKey;
+            return this;
+        }
+
         public Session build() {
             return new Session(this);
         }

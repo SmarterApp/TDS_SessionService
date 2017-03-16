@@ -19,6 +19,7 @@ import java.util.UUID;
 import tds.session.Session;
 import tds.session.repositories.SessionRepository;
 
+import static io.github.benas.randombeans.api.EnhancedRandom.random;
 import static org.assertj.core.api.Assertions.assertThat;
 import static tds.common.data.mapping.ResultSetMapperUtility.mapJodaInstantToTimestamp;
 import static tds.common.data.mysql.UuidAdapter.getBytesFromUUID;
@@ -161,6 +162,27 @@ public class SessionRepositoryImplIntegrationTests {
         assertThat(result.get().getDateChanged()).isGreaterThan(result.get().getDateBegin());
         assertThat(result.get().getDateEnd()).isNotNull();
         assertThat(result.get().getDateEnd()).isGreaterThan(result.get().getDateBegin());
+    }
+
+    @Test
+    public void shouldUpdateSessionDateVisited() {
+        Session session = new Session.Builder()
+            .fromSession(random(Session.class))
+            .withDateVisited(Instant.now().minus(99999))
+            .build();
+        insertSession(session);
+
+        assertThat(session.getDateVisited()).isNotNull();
+
+        Optional<Session> retSession = sessionRepository.findSessionById(session.getId());
+        assertThat(retSession).isPresent();
+
+        Instant priorDateVisited = retSession.get().getDateVisited();
+
+        sessionRepository.updateDateVisited(session.getId());
+        Optional<Session> updatedSession = sessionRepository.findSessionById(session.getId());
+        assertThat(updatedSession).isPresent();
+        assertThat(priorDateVisited.isBefore(updatedSession.get().getDateVisited())).isTrue();
     }
 
     private void insertSession(Session session) {

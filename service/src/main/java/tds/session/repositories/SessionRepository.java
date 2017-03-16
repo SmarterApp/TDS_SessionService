@@ -29,4 +29,12 @@ public interface SessionRepository {
      * @param sessionId The id of the {@link Session} to pause
      */
     void pause(final UUID sessionId);
+
+    /**
+     * Updates the "datevisited" column of the session table to prevent the session from being closed from a timeout due
+     * to proctor inactivity.
+     *
+     * @param sessionId The id of the {@link tds.session.Session} to extend
+     */
+    void updateDateVisited(UUID sessionId);
 }

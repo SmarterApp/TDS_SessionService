@@ -24,6 +24,7 @@ import tds.common.data.mysql.UuidAdapter;
 import tds.session.Session;
 import tds.session.repositories.SessionRepository;
 
+import static tds.common.data.mapping.ResultSetMapperUtility.mapInstantToTimestamp;
 import static tds.common.data.mapping.ResultSetMapperUtility.mapTimestampToJodaInstant;
 
 @Repository
@@ -89,6 +90,30 @@ class SessionRepositoryImpl implements SessionRepository {
                 "   status = 'closed', \n" +
                 "   datechanged = :dateChanged, \n" +
                 "   dateend = :dateEnd \n" +
+                "WHERE \n" +
+                "   _key = :id";
+
+        try {
+            jdbcTemplate.update(SQL, parameters);
+        } catch (DataAccessException e) {
+            log.error("{} UPDATE threw exception", SQL, e);
+            throw e;
+        }
+    }
+
+    @Override
+    public void updateDateVisited(final UUID sessionId) {
+        final SqlParameterSource parameters =
+            new MapSqlParameterSource("id", UuidAdapter.getBytesFromUUID(sessionId))
+                .addValue("dateVisited", mapInstantToTimestamp(Instant.now()));
+
+        // In order to preserve compatibility with the existing TDS system, this implementation executes an UPDATE
+        // against the existing record in the session.session table.
+        final String SQL =
+            "UPDATE \n" +
+                "   session.session \n" +
+                "SET \n" +
+                "   datevisited = :dateVisited \n" +
                 "WHERE \n" +
                 "   _key = :id";
 

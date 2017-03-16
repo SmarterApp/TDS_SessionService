@@ -32,6 +32,7 @@ import tds.session.services.SessionService;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -172,5 +173,35 @@ public class SessionControllerIntegrationTests {
         http.perform(get(components.toUri())
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldUpdateDateVisitedForSession() throws Exception {
+        final UUID sessionId = UUID.randomUUID();
+        final UriComponents components = UriComponentsBuilder
+            .fromPath(String.format("/sessions/%s/extend", sessionId)).build();
+
+        when(mockSessionService.updateDateVisited(sessionId)).thenReturn(true);
+
+        http.perform(put(components.toUri())
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+
+        verify(mockSessionService).updateDateVisited(sessionId);
+    }
+
+    @Test
+    public void shouldReturnUnprocessableEntityForUnsuccessfulUpdate() throws Exception {
+        final UUID sessionId = UUID.randomUUID();
+        final UriComponents components = UriComponentsBuilder
+            .fromPath(String.format("/sessions/%s/extend", sessionId)).build();
+
+        when(mockSessionService.updateDateVisited(sessionId)).thenReturn(false);
+
+        http.perform(put(components.toUri())
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnprocessableEntity());
+
+        verify(mockSessionService).updateDateVisited(sessionId);
     }
 }
