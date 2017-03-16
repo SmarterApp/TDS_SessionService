@@ -70,7 +70,7 @@ class SessionRepositoryImpl implements SessionRepository {
     }
 
     @Override
-    public void pause(final UUID sessionId, final String newStatus) {
+    public void pause(final UUID sessionId) {
         // Had to build the UTC Timestamp this way.  Using Timestamp utcTs = Timestamp.from(Instant.now()) would always
         // result in a Timestamp that reflected my local system clock settings.  Want to guarantee that dates/times are
         // always UTC, regardless of system clock.
@@ -78,7 +78,6 @@ class SessionRepositoryImpl implements SessionRepository {
 
         final SqlParameterSource parameters =
             new MapSqlParameterSource("id", UuidAdapter.getBytesFromUUID(sessionId))
-                .addValue("reason", newStatus)
                 .addValue("dateChanged", utcTs)
                 .addValue("dateEnd", utcTs);
 
@@ -88,7 +87,7 @@ class SessionRepositoryImpl implements SessionRepository {
             "UPDATE \n" +
                 "   session.session \n" +
                 "SET \n" +
-                "   status = :reason, \n" +
+                "   status = 'closed', \n" +
                 "   datechanged = :dateChanged, \n" +
                 "   dateend = :dateEnd \n" +
                 "WHERE \n" +

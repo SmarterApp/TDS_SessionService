@@ -27,9 +27,8 @@ public interface SessionRepository {
      * </p>
      *
      * @param sessionId The id of the {@link Session} to pause
-     * @param newStatus A description of why the {@link Session} is being paused
      */
-    void pause(final UUID sessionId, final String newStatus);
+    void pause(final UUID sessionId);
 
     /**
      * Updates the "datevisited" column of the session table to prevent the session from being closed from a timeout due

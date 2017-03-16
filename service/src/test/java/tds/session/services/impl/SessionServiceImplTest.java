@@ -121,13 +121,13 @@ public class SessionServiceImplTest {
         when(mockSessionRepository.findSessionById(mockOpenSession.getId()))
             .thenReturn(Optional.of(mockOpenSession))
             .thenReturn(Optional.of(mockUpdatedSession));
-        doNothing().when(mockSessionRepository).pause(mockOpenSession.getId(), "closed");
+        doNothing().when(mockSessionRepository).pause(mockOpenSession.getId());
         doNothing().when(mockExamService).pauseAllExamsInSession(mockOpenSession.getId());
 
         Response<PauseSessionResponse> response = service.pause(mockOpenSession.getId(), request);
 
         verify(mockExamService).pauseAllExamsInSession(mockOpenSession.getId());
-        verify(mockSessionRepository).pause(mockOpenSession.getId(), "closed");
+        verify(mockSessionRepository).pause(mockOpenSession.getId());
         verify(mockSessionRepository, times(2)).findSessionById(mockOpenSession.getId());
 
         assertThat(response.getData()).isNotNull();
@@ -221,7 +221,7 @@ public class SessionServiceImplTest {
         Response<PauseSessionResponse> response = service.pause(sessionId, request);
 
         verify(mockExamService, times(0)).pauseAllExamsInSession(mockClosedSession.getId());
-        verify(mockSessionRepository, times(0)).pause(mockClosedSession.getId(), "closed");
+        verify(mockSessionRepository, times(0)).pause(mockClosedSession.getId());
         verify(mockSessionRepository, times(1)).findSessionById(mockClosedSession.getId());
 
         assertThat(response.getData().isPresent()).isFalse();
