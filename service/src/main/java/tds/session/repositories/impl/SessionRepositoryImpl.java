@@ -53,9 +53,14 @@ class SessionRepositoryImpl implements SessionRepository {
                 "   s.datevisited, \n" +
                 "   s.clientname, \n" +
                 "   s._efk_proctor AS proctorId, \n" +
-                "   s._fk_browser AS browserKey \n" +
+                "   s._fk_browser AS browserKey, \n" +
+                "   s.proctorName, \n" +
+                "   u.email as proctorEmail \n" +
                 "FROM \n" +
                 "   session.session s\n" +
+                "JOIN \n " +
+                "   session.tbluser u \n" +
+                "ON s._efk_proctor = u.userkey \n" +
                 "WHERE \n" +
                 "   s._key = :id";
 
@@ -139,7 +144,9 @@ class SessionRepositoryImpl implements SessionRepository {
                 .withDateVisited(mapTimestampToJodaInstant(rs, "datevisited"))
                 .withClientName(rs.getString("clientname"))
                 .withProctorId((Long) rs.getObject("proctorId")) // proctorId can be null in the db table.
+                .withProctorName(rs.getString("proctorName"))
                 .withBrowserKey(UuidAdapter.getUUIDFromBytes(rs.getBytes("browserKey")))
+                .withProctorEmail(rs.getString("proctorEmail"))
                 .build();
         }
     }

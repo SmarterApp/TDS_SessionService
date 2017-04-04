@@ -39,7 +39,8 @@ public class SessionRepositoryImplIntegrationTests {
         "  datechanged,\n" +
         "  dateend,\n" +
         "  datebegin, \n" +
-        "  datevisited \n" +
+        "  datevisited, \n" +
+        "  proctorName \n" +
         ") VALUES (\n" +
         "  :key,\n" +
         "  :dateCreated,\n" +
@@ -51,8 +52,21 @@ public class SessionRepositoryImplIntegrationTests {
         "  :dateChanged,\n" +
         "  :dateEnd,\n" +
         "  :dateBegin,\n" +
-        "  :dateVisited\n" +
+        "  :dateVisited, \n" +
+        "  :proctorName \n" +
         ");";
+
+    private final static String tblUserInsertSQL =
+        "INSERT INTO tbluser ( \n" +
+            "   userid, \n" +
+            "   userkey, \n" +
+            "   email \n" +
+            ") \n" +
+            "VALUES ( \n" +
+            "   :userId, \n" +
+            "   :userKey, \n" +
+            "   :email \n" +
+            ");";
 
     @Autowired
     private SessionRepository sessionRepository;
@@ -68,6 +82,8 @@ public class SessionRepositoryImplIntegrationTests {
     public void shouldRetrieveSessionForId() throws ParseException {
         UUID sessionId = UUID.randomUUID();
         UUID browserKey = UUID.randomUUID();
+        final String proctorName = "Proctor";
+        final String proctorEmail = "mail@proctor.com";
 
         Instant dateBegin = Instant.now().minus(10000);
         Instant dateVisited = Instant.now().minus(8000);
@@ -83,6 +99,8 @@ public class SessionRepositoryImplIntegrationTests {
             .withDateBegin(dateBegin)
             .withDateVisited(dateVisited)
             .withDateChanged(dateChanged)
+            .withProctorName(proctorName)
+            .withProctorEmail(proctorEmail)
             .withDateEnd(dateEnded)
             .build();
 
@@ -99,6 +117,8 @@ public class SessionRepositoryImplIntegrationTests {
         assertThat(sessionOptional.get().getClientName()).isEqualTo("SBAC_PT");
         assertThat(sessionOptional.get().getProctorId()).isEqualTo(23);
         assertThat(sessionOptional.get().getBrowserKey()).isEqualTo(browserKey);
+        assertThat(sessionOptional.get().getProctorName()).isEqualTo(proctorName);
+        assertThat(sessionOptional.get().getProctorEmail()).isEqualTo(proctorEmail);
     }
 
     @Test
@@ -196,8 +216,15 @@ public class SessionRepositoryImplIntegrationTests {
             .addValue("dateVisited", mapJodaInstantToTimestamp(session.getDateVisited()))
             .addValue("dateBegin", mapJodaInstantToTimestamp(session.getDateBegin()))
             .addValue("dateCreated", mapJodaInstantToTimestamp(Instant.now()))
+            .addValue("proctorName", session.getProctorName())
             .addValue("dateEnd", mapJodaInstantToTimestamp(session.getDateEnd()));
 
         jdbcTemplate.update(sessionInsertSQL, parameters);
+
+        parameters = new MapSqlParameterSource("userId", UUID.randomUUID().toString())
+            .addValue("userKey", session.getProctorId())
+            .addValue("email", session.getProctorEmail());
+
+        jdbcTemplate.update(tblUserInsertSQL, parameters);
     }
 }
