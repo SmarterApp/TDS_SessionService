@@ -58,7 +58,7 @@ class SessionRepositoryImpl implements SessionRepository {
                 "   u.email as proctorEmail \n" +
                 "FROM \n" +
                 "   session.session s\n" +
-                "JOIN \n " +
+                "LEFT JOIN \n " +
                 "   session.tbluser u \n" +
                 "ON s._efk_proctor = u.userkey \n" +
                 "WHERE \n" +

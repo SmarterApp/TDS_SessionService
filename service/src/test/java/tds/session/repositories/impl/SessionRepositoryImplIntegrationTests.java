@@ -104,7 +104,7 @@ public class SessionRepositoryImplIntegrationTests {
             .withDateEnd(dateEnded)
             .build();
 
-        insertSession(session);
+        insertSession(session, true);
 
         Optional<Session> sessionOptional = sessionRepository.findSessionById(sessionId);
         assertThat(sessionOptional).isPresent();
@@ -134,7 +134,7 @@ public class SessionRepositoryImplIntegrationTests {
             .withProctorId(99L)
             .build();
 
-        insertSession(session);
+        insertSession(session, true);
 
         Optional<Session> sessionOptional = sessionRepository.findSessionById(sessionId);
         assertThat(sessionOptional).isPresent();
@@ -155,6 +155,29 @@ public class SessionRepositoryImplIntegrationTests {
     }
 
     @Test
+    public void shouldFindProctorlessSession() {
+        UUID sessionId = UUID.randomUUID();
+        UUID browserKey = UUID.randomUUID();
+
+        Instant dateBegin = Instant.now().minus(10000);
+
+        Session session = new Session.Builder()
+            .withId(sessionId)
+            .withClientName("SBAC_PT")
+            .withBrowserKey(browserKey)
+            .withStatus("open")
+            .withDateBegin(dateBegin)
+            .build();
+
+        insertSession(session, false);
+
+        Optional<Session> sessionOptional = sessionRepository.findSessionById(sessionId);
+        assertThat(sessionOptional).isPresent();
+        assertThat(sessionOptional.get().getProctorId()).isNull();
+        assertThat(sessionOptional.get().getProctorEmail()).isNull();
+    }
+
+    @Test
     public void shouldPauseASession() {
         UUID sessionId = UUID.randomUUID();
         UUID browserKey = UUID.randomUUID();
@@ -170,7 +193,7 @@ public class SessionRepositoryImplIntegrationTests {
             .withDateBegin(dateBegin)
             .build();
 
-        insertSession(session);
+        insertSession(session, true);
 
         sessionRepository.pause(sessionId);
 
@@ -190,7 +213,7 @@ public class SessionRepositoryImplIntegrationTests {
             .fromSession(random(Session.class))
             .withDateVisited(Instant.now().minus(99999))
             .build();
-        insertSession(session);
+        insertSession(session, true);
 
         assertThat(session.getDateVisited()).isNotNull();
 
@@ -205,7 +228,7 @@ public class SessionRepositoryImplIntegrationTests {
         assertThat(priorDateVisited.isBefore(updatedSession.get().getDateVisited())).isTrue();
     }
 
-    private void insertSession(Session session) {
+    private void insertSession(Session session, boolean insertProctorData) {
         SqlParameterSource parameters = new MapSqlParameterSource("key", getBytesFromUUID(session.getId()))
             .addValue("clientName", session.getClientName())
             .addValue("browserId", getBytesFromUUID(session.getBrowserKey()))
@@ -221,10 +244,12 @@ public class SessionRepositoryImplIntegrationTests {
 
         jdbcTemplate.update(sessionInsertSQL, parameters);
 
-        parameters = new MapSqlParameterSource("userId", UUID.randomUUID().toString())
-            .addValue("userKey", session.getProctorId())
-            .addValue("email", session.getProctorEmail());
+        if (insertProctorData) {
+            parameters = new MapSqlParameterSource("userId", UUID.randomUUID().toString())
+                .addValue("userKey", session.getProctorId())
+                .addValue("email", session.getProctorEmail());
 
-        jdbcTemplate.update(tblUserInsertSQL, parameters);
+            jdbcTemplate.update(tblUserInsertSQL, parameters);
+        }
     }
 }
