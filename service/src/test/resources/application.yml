@@ -11,7 +11,7 @@ spring:
     add-mappings: false
 
 flyway:
-  enabled: true
+  enabled: false
   baseline-on-migrate: true
   out-of-order: true
 
