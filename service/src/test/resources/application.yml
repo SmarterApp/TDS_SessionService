@@ -10,11 +10,6 @@ spring:
   resources:
     add-mappings: false
 
-flyway:
-  enabled: false
-  baseline-on-migrate: true
-  out-of-order: true
-
 server:
   port: 8082
   undertow:
