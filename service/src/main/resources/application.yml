@@ -24,9 +24,6 @@ security:
     password: password
     role: MANAGEMENT
 
-flyway:
-  enabled: false
-
 server:
   port: 8082
   undertow:
