@@ -17,6 +17,11 @@ spring:
   resources:
     add-mappings: false
 
+management:
+  health:
+    redis:
+      enabled: false
+
 #Configure the default Spring Security user with the MANAGEMENT role
 security:
   user:
