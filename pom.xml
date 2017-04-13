@@ -35,7 +35,7 @@
         <mockito.version>1.10.19</mockito.version>
         <joda-time.version>2.9.5</joda-time.version>
 
-        <tds.common.version>0.0.9-SNAPSHOT</tds.common.version>
+        <tds.common.version>0.0.9</tds.common.version>
 
         <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
