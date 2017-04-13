@@ -34,9 +34,8 @@
         <assertj.version>3.4.1</assertj.version>
         <mockito.version>1.10.19</mockito.version>
         <joda-time.version>2.9.5</joda-time.version>
-        <spring.cloud.config.version>1.2.3.RELEASE</spring.cloud.config.version>
 
-        <tds.common.version>0.0.8</tds.common.version>
+        <tds.common.version>0.0.10</tds.common.version>
 
         <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
