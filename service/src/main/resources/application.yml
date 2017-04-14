@@ -17,6 +17,10 @@ spring:
   resources:
     add-mappings: false
 
+#Port defined in TDS_Build:docker-compose.yml
+  rabbitmq:
+    port: 32846
+
 management:
   health:
     redis:
