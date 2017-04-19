@@ -1,5 +1,6 @@
 package tds.session.web.endpoints;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.joda.time.Instant;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -48,6 +49,9 @@ public class SessionControllerIntegrationTests {
 
     @MockBean
     private SessionService mockSessionService;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Test
     public void shouldReturnSessionWhenFoundById() throws Exception {
@@ -102,10 +106,8 @@ public class SessionControllerIntegrationTests {
         Response<PauseSessionResponse> mockResponse = new Response<>(new PauseSessionResponse(mockClosedSession));
         when(mockSessionService.pause(isA(UUID.class), isA(PauseSessionRequest.class))).thenReturn(mockResponse);
 
-        JSONObject requestJson = new JSONObject(request);
-
         http.perform(put(new URI(String.format("/sessions/%s/pause", mockClosedSession.getId())))
-            .content(requestJson.toString())
+            .content(objectMapper.writer().writeValueAsString(request))
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("data.sessionId", is(mockClosedSession.getId().toString())))
@@ -134,10 +136,8 @@ public class SessionControllerIntegrationTests {
         Response<PauseSessionResponse> mockResponse = new Response<>(new PauseSessionResponse(mockOwnedByAnotherProctor), mockError);
         when(mockSessionService.pause(isA(UUID.class), isA(PauseSessionRequest.class))).thenReturn(mockResponse);
 
-        JSONObject requestJson = new JSONObject(mockRequest);
-
         http.perform(put(new URI(String.format("/sessions/%s/pause", mockOwnedByAnotherProctor.getId())))
-            .content(requestJson.toString())
+            .content(objectMapper.writer().writeValueAsString(mockRequest))
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnprocessableEntity())
             .andExpect(jsonPath("error.code", is("ownedByDifferentProctor")))
