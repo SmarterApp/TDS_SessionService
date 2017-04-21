@@ -1,5 +1,6 @@
 package tds.session.web.endpoints;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.joda.time.Instant;
 import org.json.JSONObject;
@@ -12,11 +13,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,6 +36,7 @@ import tds.session.error.ValidationErrorCode;
 import tds.session.services.SessionService;
 
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
@@ -175,7 +179,7 @@ public class SessionControllerIntegrationTests {
 
         when(mockSessionService.findSessionAssessments(sessionId)).thenReturn(Arrays.asList(sessionAssessment1, sessionAssessment2));
 
-        http.perform(get(components.toUri())
+        MvcResult result = http.perform(get(components.toUri())
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("[0].sessionId", is(sessionAssessment1.getSessionId().toString())))
@@ -183,7 +187,11 @@ public class SessionControllerIntegrationTests {
             .andExpect(jsonPath("[0].assessmentKey", is(sessionAssessment1.getAssessmentKey())))
             .andExpect(jsonPath("[1].sessionId", is(sessionAssessment2.getSessionId().toString())))
             .andExpect(jsonPath("[1].assessmentId", is(sessionAssessment2.getAssessmentId())))
-            .andExpect(jsonPath("[1].assessmentKey", is(sessionAssessment2.getAssessmentKey())));
+            .andExpect(jsonPath("[1].assessmentKey", is(sessionAssessment2.getAssessmentKey())))
+            .andReturn();
+
+        List<SessionAssessment> parsedResponse = objectMapper.readValue(result.getResponse().getContentAsByteArray(), new TypeReference<List<SessionAssessment>>() {});
+        assertThat(parsedResponse).hasSize(2);
     }
 
     @Test

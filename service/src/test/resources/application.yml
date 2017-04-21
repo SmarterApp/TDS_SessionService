@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: ${sbac.jdbc.host}/session
-    username: root
-    password: password123
+    username: ${sbac.jdbc.user}
+    password: ${sbac.jdbc.password}
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.jdbc.Driver
   mvc:
