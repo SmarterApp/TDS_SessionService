@@ -24,6 +24,10 @@ spring:
   rabbitmq:
     port: 32846
 
+tds:
+  cache:
+    enabled: false
+
 management:
   health:
     redis:
