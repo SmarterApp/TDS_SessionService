@@ -28,7 +28,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <unit-tests.skip>false</unit-tests.skip>
         <integration-tests.skip>true</integration-tests.skip>
         <docker.image.prefix>fwsbac</docker.image.prefix>
         <assertj.version>3.4.1</assertj.version>
