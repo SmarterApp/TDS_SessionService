@@ -8,6 +8,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -92,6 +94,20 @@ public class SessionServiceImplTest {
         verify(mockSessionAssessmentQueryRepository).findSessionAssessment(sessionId, "(SBAC) 3 ELA 2015 - 2016");
 
         assertThat(maybeSessionAssessment).isPresent();
+    }
+
+    @Test
+    public void shouldFindAllSessionAssessmentsForSession() {
+        final UUID sessionId = UUID.randomUUID();
+        final SessionAssessment sessionAssessment1 = random(SessionAssessment.class);
+        final SessionAssessment sessionAssessment2 = random(SessionAssessment.class);
+
+        when(mockSessionAssessmentQueryRepository.findSessionAssessments(sessionId))
+            .thenReturn(Arrays.asList(sessionAssessment1, sessionAssessment2));
+        List<SessionAssessment> sessionAssessments = service.findSessionAssessments(sessionId);
+        verify(mockSessionAssessmentQueryRepository).findSessionAssessments(sessionId);
+
+        assertThat(sessionAssessments).containsExactlyInAnyOrder(sessionAssessment1, sessionAssessment2);
     }
 
     @Test

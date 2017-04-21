@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -49,5 +50,22 @@ class SessionAssessmentQueryRepositoryImpl implements SessionAssessmentQueryRepo
         }
 
         return maybeSessionAssessment;
+    }
+
+    @Override
+    public List<SessionAssessment> findSessionAssessments(final UUID sessionId) {
+        SqlParameterSource parameters = new MapSqlParameterSource("sessionId", UuidAdapter.getBytesFromUUID(sessionId));
+
+        String SQL = "SELECT _fk_session, _efk_adminsubject, _efk_testid \n" +
+            "FROM session.sessiontests \n" +
+            "WHERE _fk_session = :sessionId";
+
+        return jdbcTemplate.query(SQL, parameters, (rs, rowNum) ->
+            new SessionAssessment(
+                UuidAdapter.getUUIDFromBytes(rs.getBytes("_fk_session")),
+                rs.getString("_efk_testid"),
+                rs.getString("_efk_adminsubject")
+            )
+        );
     }
 }
