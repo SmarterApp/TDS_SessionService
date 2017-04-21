@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -84,6 +85,11 @@ class SessionServiceImpl implements SessionService {
         sessionRepository.updateDateVisited(sessionId);
 
         return true;
+    }
+
+    @Override
+    public List<SessionAssessment> findSessionAssessments(final UUID sessionId) {
+        return sessionAssessmentQueryRepository.findSessionAssessments(sessionId);
     }
 
     /**

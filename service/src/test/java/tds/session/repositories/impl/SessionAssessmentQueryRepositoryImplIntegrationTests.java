@@ -12,9 +12,11 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import tds.session.Session;
 import tds.session.SessionAssessment;
 import tds.session.repositories.SessionAssessmentQueryRepository;
 
@@ -32,8 +34,10 @@ public class SessionAssessmentQueryRepositoryImplIntegrationTests {
     private SessionAssessmentQueryRepository repository;
 
     private UUID sessionUUID;
-    private static final String ASSESSMENT_ID = "SBAC-ELA-3";
-    private static final String ASSESSMENT_KEY = "(SBAC_PT)SBAC-ELA-3-Spring-2013-2015";
+    private static final String ASSESSMENT_ID1 = "SBAC-ELA-3";
+    private static final String ASSESSMENT_KEY1 = "(SBAC_PT)SBAC-ELA-3-Spring-2013-2015";
+    private static final String ASSESSMENT_ID2 = "SBAC-ELA-5";
+    private static final String ASSESSMENT_KEY2 = "(SBAC_PT)SBAC-ELA-5-Spring-2013-2015";
 
     @Before
     public void setUp() {
@@ -51,8 +55,13 @@ public class SessionAssessmentQueryRepositoryImplIntegrationTests {
             "VALUES (:sessionId, :assessmentKey, :assessmentId);";
 
         parameters = new MapSqlParameterSource("sessionId", getBytesFromUUID(sessionUUID))
-            .addValue("assessmentKey", ASSESSMENT_KEY)
-            .addValue("assessmentId", ASSESSMENT_ID);
+            .addValue("assessmentKey", ASSESSMENT_KEY1)
+            .addValue("assessmentId", ASSESSMENT_ID1);
+        jdbcTemplate.update(sessionTestsInsertSQL, parameters);
+
+        parameters = new MapSqlParameterSource("sessionId", getBytesFromUUID(sessionUUID))
+            .addValue("assessmentKey", ASSESSMENT_KEY2)
+            .addValue("assessmentId", ASSESSMENT_ID2);
         jdbcTemplate.update(sessionTestsInsertSQL, parameters);
     }
 
@@ -68,12 +77,34 @@ public class SessionAssessmentQueryRepositoryImplIntegrationTests {
 
     @Test
     public void itShouldReturnSessionAssessmentForSession() {
-        Optional<SessionAssessment> maybeSessionAssessment = repository.findSessionAssessment(sessionUUID, ASSESSMENT_KEY);
+        Optional<SessionAssessment> maybeSessionAssessment = repository.findSessionAssessment(sessionUUID, ASSESSMENT_KEY1);
         assertThat(maybeSessionAssessment).isPresent();
 
         SessionAssessment sessionAssessment = maybeSessionAssessment.get();
-        assertThat(sessionAssessment.getAssessmentId()).isEqualTo(ASSESSMENT_ID);
-        assertThat(sessionAssessment.getAssessmentKey()).isEqualTo(ASSESSMENT_KEY);
+        assertThat(sessionAssessment.getAssessmentId()).isEqualTo(ASSESSMENT_ID1);
+        assertThat(sessionAssessment.getAssessmentKey()).isEqualTo(ASSESSMENT_KEY1);
         assertThat(sessionAssessment.getSessionId()).isEqualTo(sessionUUID);
+    }
+
+    @Test
+    public void shouldReturnAllSessionAssessmentsForSession() {
+        List<SessionAssessment> sessionAssessments = repository.findSessionAssessments(sessionUUID);
+        assertThat(sessionAssessments).hasSize(2);
+
+        SessionAssessment sessionAssessment1 = null;
+        SessionAssessment sessionAssessment2 = null;
+
+        for (SessionAssessment sa : sessionAssessments) {
+            if (sa.getAssessmentKey().equals(ASSESSMENT_KEY1)) {
+                sessionAssessment1 = sa;
+            } else if (sa.getAssessmentKey().equals(ASSESSMENT_KEY2)) {
+                sessionAssessment2 = sa;
+            }
+        }
+
+        assertThat(sessionAssessment1.getAssessmentId()).isEqualTo(ASSESSMENT_ID1);
+        assertThat(sessionAssessment1.getSessionId()).isEqualTo(sessionUUID);
+        assertThat(sessionAssessment2.getAssessmentId()).isEqualTo(ASSESSMENT_ID2);
+        assertThat(sessionAssessment2.getSessionId()).isEqualTo(sessionUUID);
     }
 }
