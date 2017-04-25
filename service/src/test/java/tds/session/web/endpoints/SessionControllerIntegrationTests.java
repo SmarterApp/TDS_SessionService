@@ -3,7 +3,6 @@ package tds.session.web.endpoints;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.joda.time.Instant;
-import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +81,7 @@ public class SessionControllerIntegrationTests {
 
         when(mockSessionService.findSessionsByIds(session1.getId(), session2.getId())).thenReturn(Arrays.asList(session1, session2));
 
-        http.perform(get(new URI("/sessions/"))
+        MvcResult result = http.perform(get(new URI("/sessions/"))
             .contentType(MediaType.APPLICATION_JSON)
             .param("sessionId", session1.getId().toString())
             .param("sessionId", session2.getId().toString()))
@@ -98,8 +97,17 @@ public class SessionControllerIntegrationTests {
             .andExpect(jsonPath("[1].proctorName", is(session2.getProctorName())))
             .andExpect(jsonPath("[1].sessionKey", is(session2.getSessionKey())))
             .andExpect(jsonPath("[1].proctorId", is(session2.getProctorId())))
-            .andExpect(jsonPath("[1].browserKey", is(session2.getBrowserKey().toString())));
+            .andExpect(jsonPath("[1].browserKey", is(session2.getBrowserKey().toString())))
+            .andReturn();
 
+
+        List<Session> parsedSessions = objectMapper.readValue(result.getResponse().getContentAsByteArray(), new TypeReference<List<Session>>() {});
+        assertThat(parsedSessions).hasSize(2);
+        Session retSession1 = parsedSessions.get(0);
+        Session retSession2 = parsedSessions.get(1);
+
+        assertThat(retSession1.getId()).isEqualTo(session1.getId());
+        assertThat(retSession2.getId()).isEqualTo(session2.getId());
     }
 
     @Test
