@@ -1,5 +1,6 @@
 package tds.session.repositories;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,12 +11,12 @@ import tds.session.Session;
  */
 public interface SessionRepository {
     /**
-     * Finds the Session by given id
+     * Finds the list of {@link tds.session.Session}s for the specified session ids
      *
-     * @param id session id
-     * @return optional containing {@link tds.session.Session Session} otherwise empty Optional
+     * @param ids The ids of the {@link tds.session.Session}s to find
+     * @return A list of sessions for the provided ids
      */
-    Optional<Session> findSessionById(final UUID id);
+    List<Session> findSessionsByIds(final UUID... ids);
 
     /**
      * Pause an existing {@link Session}, updating the {@link Session}'s status to indicate it is no longer "open".

@@ -17,8 +17,11 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import tds.common.data.mysql.UuidAdapter;
 import tds.session.Session;
@@ -39,8 +42,12 @@ class SessionRepositoryImpl implements SessionRepository {
     }
 
     @Override
-    public Optional<Session> findSessionById(final UUID id) {
-        final SqlParameterSource parameters = new MapSqlParameterSource("id", UuidAdapter.getBytesFromUUID(id));
+    public List<Session> findSessionsByIds(final UUID... ids) {
+        final SqlParameterSource parameters = new MapSqlParameterSource("ids",
+            Arrays.asList(ids).stream()
+                .map(id -> UuidAdapter.getBytesFromUUID(id))
+                .collect(Collectors.toList())
+        );
 
         String query =
             "SELECT \n" +
@@ -62,16 +69,9 @@ class SessionRepositoryImpl implements SessionRepository {
                 "   session.tbluser u \n" +
                 "ON s._efk_proctor = u.userkey \n" +
                 "WHERE \n" +
-                "   s._key = :id";
+                "   s._key IN (:ids)";
 
-        Optional<Session> sessionOptional;
-        try {
-            sessionOptional = Optional.of(jdbcTemplate.queryForObject(query, parameters, sessionRowMapper));
-        } catch (EmptyResultDataAccessException e) {
-            sessionOptional = Optional.empty();
-        }
-
-        return sessionOptional;
+        return jdbcTemplate.query(query, parameters, sessionRowMapper);
     }
 
     @Override

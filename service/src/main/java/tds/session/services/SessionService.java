@@ -59,5 +59,13 @@ public interface SessionService {
      * @return the list of all {@link tds.session.SessionAssessment}s for this session
      */
     List<SessionAssessment> findSessionAssessments(final UUID sessionId);
+
+    /**
+     * Finds the list of {@link tds.session.Session}s for the specified session ids
+     *
+     * @param sessionIds The ids of the {@link tds.session.Session}s to find
+     * @return A list of sessions for the provided ids
+     */
+    List<Session> findSessionsByIds(final UUID... sessionIds);
 }
 

@@ -44,13 +44,13 @@ class SessionServiceImpl implements SessionService {
     @Override
     @Cacheable(CacheType.SHORT_TERM)
     public Optional<Session> findSessionById(final UUID id) {
-        return sessionRepository.findSessionById(id);
+        return sessionRepository.findSessionsByIds(id).stream().findFirst();
     }
 
     @Transactional
     @Override
     public Response<PauseSessionResponse> pause(final UUID sessionId, final PauseSessionRequest request) {
-        final Session session = sessionRepository.findSessionById(sessionId)
+        final Session session = findSessionById(sessionId)
             .orElseThrow(() -> new NotFoundException(String.format("Could not find session for session id %s", sessionId)));
 
         Optional<ValidationError> maybeValidationError = verifySessionCanBePaused(session, request);
@@ -61,7 +61,7 @@ class SessionServiceImpl implements SessionService {
         examService.pauseAllExamsInSession(sessionId);
         sessionRepository.pause(sessionId);
 
-        Session updatedSession = sessionRepository.findSessionById(sessionId)
+        Session updatedSession = findSessionById(sessionId)
             .orElseThrow(() -> new IllegalStateException(String.format("Could not find session that was just closed for session id %s", sessionId)));
 
         return new Response<>(new PauseSessionResponse(updatedSession));
@@ -75,7 +75,7 @@ class SessionServiceImpl implements SessionService {
 
     @Override
     public boolean updateDateVisited(final UUID sessionId) {
-        Optional<Session> maybeSession = sessionRepository.findSessionById(sessionId);
+        Optional<Session> maybeSession = findSessionById(sessionId);
 
         if (!maybeSession.isPresent()) {
             log.error("No session for session id {} found. Unable to extend session.", sessionId);
@@ -90,6 +90,11 @@ class SessionServiceImpl implements SessionService {
     @Override
     public List<SessionAssessment> findSessionAssessments(final UUID sessionId) {
         return sessionAssessmentQueryRepository.findSessionAssessments(sessionId);
+    }
+
+    @Override
+    public List<Session> findSessionsByIds(final UUID... sessionIds) {
+        return sessionRepository.findSessionsByIds(sessionIds);
     }
 
     /**
