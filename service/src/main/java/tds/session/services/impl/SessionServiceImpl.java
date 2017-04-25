@@ -92,6 +92,11 @@ class SessionServiceImpl implements SessionService {
         return sessionAssessmentQueryRepository.findSessionAssessments(sessionId);
     }
 
+    @Override
+    public List<Session> findSessionsByIds(final UUID... sessionIds) {
+        return sessionRepository.findSessionsByIds(sessionIds);
+    }
+
     /**
      * Determine if the requested {@link tds.session.Session} can be paused.
      *

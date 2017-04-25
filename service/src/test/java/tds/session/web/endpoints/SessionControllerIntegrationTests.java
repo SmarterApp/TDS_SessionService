@@ -76,6 +76,33 @@ public class SessionControllerIntegrationTests {
     }
 
     @Test
+    public void shouldReturnSessionsByIds() throws Exception {
+        final Session session1 = random(Session.class);
+        final Session session2 = random(Session.class);
+
+        when(mockSessionService.findSessionsByIds(session1.getId(), session2.getId())).thenReturn(Arrays.asList(session1, session2));
+
+        http.perform(get(new URI("/sessions/"))
+            .contentType(MediaType.APPLICATION_JSON)
+            .param("sessionId", session1.getId().toString())
+            .param("sessionId", session2.getId().toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("[0].id", is(session1.getId().toString())))
+            .andExpect(jsonPath("[0].status", is(session1.getStatus())))
+            .andExpect(jsonPath("[0].proctorName", is(session1.getProctorName())))
+            .andExpect(jsonPath("[0].sessionKey", is(session1.getSessionKey())))
+            .andExpect(jsonPath("[0].proctorId", is(session1.getProctorId())))
+            .andExpect(jsonPath("[0].browserKey", is(session1.getBrowserKey().toString())))
+            .andExpect(jsonPath("[1].id", is(session2.getId().toString())))
+            .andExpect(jsonPath("[1].status", is(session2.getStatus())))
+            .andExpect(jsonPath("[1].proctorName", is(session2.getProctorName())))
+            .andExpect(jsonPath("[1].sessionKey", is(session2.getSessionKey())))
+            .andExpect(jsonPath("[1].proctorId", is(session2.getProctorId())))
+            .andExpect(jsonPath("[1].browserKey", is(session2.getBrowserKey().toString())));
+
+    }
+
+    @Test
     public void shouldReturnNotFoundWhenSessionCannotBeFoundById() throws Exception {
         UUID id = UUID.randomUUID();
         when(mockSessionService.findSessionById(id)).thenReturn(Optional.empty());

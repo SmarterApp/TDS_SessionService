@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -76,6 +77,42 @@ public class SessionRepositoryImplIntegrationTests {
 
     @After
     public void tearDown() {
+    }
+
+    @Test
+    public void shouldRetrieveSessionsForIds() throws ParseException {
+        Session session1 = random(Session.class);
+        Session session2 = random(Session.class);
+
+        insertSession(session1, true);
+        insertSession(session2, true);
+
+        List<Session> retSessions = sessionRepository.findSessionsByIds(session1.getId(), session2.getId());
+
+        Session retSession1 = null;
+        Session retSession2 = null;
+
+        for (Session s : retSessions) {
+            if (s.getId().equals(session1.getId())) {
+                retSession1 = s;
+            } else if (s.getId().equals(session2.getId())) {
+                retSession2 = s;
+            }
+        }
+
+        assertThat(retSession1.getId()).isEqualTo(session1.getId());
+        assertThat(retSession1.getStatus()).isEqualTo(session1.getStatus());
+        assertThat(retSession1.getDateBegin()).isEqualByComparingTo(session1.getDateBegin());
+        assertThat(retSession1.getDateChanged()).isEqualTo(session1.getDateChanged());
+        assertThat(retSession1.getDateEnd()).isEqualTo(session1.getDateEnd());
+        assertThat(retSession1.getDateVisited()).isEqualTo(session1.getDateVisited());
+        assertThat(retSession1.getClientName()).isEqualTo(session1.getClientName());
+        assertThat(retSession1.getProctorId()).isEqualTo(session1.getProctorId());
+        assertThat(retSession1.getBrowserKey()).isEqualTo(session1.getBrowserKey());
+        assertThat(retSession1.getProctorName()).isEqualTo(session1.getProctorName());
+        assertThat(retSession1.getProctorEmail()).isEqualTo(session1.getProctorEmail());
+
+        assertThat(retSession2.getId()).isEqualTo(session2.getId());
     }
 
     @Test
