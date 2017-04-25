@@ -25,7 +25,7 @@
         <dependency>
             <groupId>org.opentestsystem.delivery</groupId>
             <artifactId>tds-common</artifactId>
-            <version>${tds.common.version}</version>
+            <version>${tds-common.version}</version>
         </dependency>
 
         <!-- Spring dependencies -->
