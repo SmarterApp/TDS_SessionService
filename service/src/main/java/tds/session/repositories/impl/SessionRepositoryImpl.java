@@ -42,17 +42,6 @@ class SessionRepositoryImpl implements SessionRepository {
     }
 
     @Override
-    public Optional<Session> findSessionById(final UUID id) {
-        List<Session> sessions = findSessionsByIds(id);
-
-        if (sessions.size() > 0) {
-            return Optional.of(sessions.get(0));
-        }
-
-        return Optional.empty();
-    }
-
-    @Override
     public List<Session> findSessionsByIds(final UUID... ids) {
         final SqlParameterSource parameters = new MapSqlParameterSource("ids",
             Arrays.asList(ids).stream()

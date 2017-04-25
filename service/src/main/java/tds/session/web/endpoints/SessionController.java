@@ -51,7 +51,7 @@ class SessionController {
         return ResponseEntity.ok(session);
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     ResponseEntity<List<Session>> findSessionsByIds(@RequestParam("sessionId") final UUID... sessionIds) {
         return ResponseEntity.ok(sessionService.findSessionsByIds(sessionIds));

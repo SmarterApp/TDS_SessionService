@@ -11,14 +11,6 @@ import tds.session.Session;
  */
 public interface SessionRepository {
     /**
-     * Finds the Session by given id
-     *
-     * @param id session id
-     * @return optional containing {@link tds.session.Session Session} otherwise empty Optional
-     */
-    Optional<Session> findSessionById(final UUID id);
-
-    /**
      * Finds the list of {@link tds.session.Session}s for the specified session ids
      *
      * @param ids The ids of the {@link tds.session.Session}s to find
