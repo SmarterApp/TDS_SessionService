@@ -42,7 +42,6 @@ class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    @Cacheable(CacheType.SHORT_TERM)
     public Optional<Session> findSessionById(final UUID id) {
         return sessionRepository.findSessionsByIds(id).stream().findFirst();
     }
