@@ -1,5 +1,6 @@
 package tds.session.services.impl;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class SessionServiceImplIntegrationTests {
     private SessionService sessionService;
 
     @Test
+    @Ignore("Session caching is disabled until we can handle eviction")
     public void shouldReturnCachedSession() {
         UUID id = UUID.randomUUID();
         Session session = new Session.Builder()
