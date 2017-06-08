@@ -17,13 +17,17 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import tds.common.data.mysql.UuidAdapter;
 import tds.session.Session;
 import tds.session.repositories.SessionRepository;
 
+import static tds.common.data.mapping.ResultSetMapperUtility.mapInstantToTimestamp;
 import static tds.common.data.mapping.ResultSetMapperUtility.mapTimestampToJodaInstant;
 
 @Repository
@@ -38,8 +42,12 @@ class SessionRepositoryImpl implements SessionRepository {
     }
 
     @Override
-    public Optional<Session> findSessionById(final UUID id) {
-        final SqlParameterSource parameters = new MapSqlParameterSource("id", UuidAdapter.getBytesFromUUID(id));
+    public List<Session> findSessionsByIds(final UUID... ids) {
+        final SqlParameterSource parameters = new MapSqlParameterSource("ids",
+            Arrays.asList(ids).stream()
+                .map(id -> UuidAdapter.getBytesFromUUID(id))
+                .collect(Collectors.toList())
+        );
 
         String query =
             "SELECT \n" +
@@ -52,24 +60,22 @@ class SessionRepositoryImpl implements SessionRepository {
                 "   s.datevisited, \n" +
                 "   s.clientname, \n" +
                 "   s._efk_proctor AS proctorId, \n" +
-                "   s._fk_browser AS browserKey \n" +
+                "   s._fk_browser AS browserKey, \n" +
+                "   s.proctorName, \n" +
+                "   u.email as proctorEmail \n" +
                 "FROM \n" +
                 "   session.session s\n" +
+                "LEFT JOIN \n " +
+                "   session.tbluser u \n" +
+                "ON s._efk_proctor = u.userkey \n" +
                 "WHERE \n" +
-                "   s._key = :id";
+                "   s._key IN (:ids)";
 
-        Optional<Session> sessionOptional;
-        try {
-            sessionOptional = Optional.of(jdbcTemplate.queryForObject(query, parameters, sessionRowMapper));
-        } catch (EmptyResultDataAccessException e) {
-            sessionOptional = Optional.empty();
-        }
-
-        return sessionOptional;
+        return jdbcTemplate.query(query, parameters, sessionRowMapper);
     }
 
     @Override
-    public void pause(final UUID sessionId, final String newStatus) {
+    public void pause(final UUID sessionId) {
         // Had to build the UTC Timestamp this way.  Using Timestamp utcTs = Timestamp.from(Instant.now()) would always
         // result in a Timestamp that reflected my local system clock settings.  Want to guarantee that dates/times are
         // always UTC, regardless of system clock.
@@ -77,7 +83,6 @@ class SessionRepositoryImpl implements SessionRepository {
 
         final SqlParameterSource parameters =
             new MapSqlParameterSource("id", UuidAdapter.getBytesFromUUID(sessionId))
-                .addValue("reason", newStatus)
                 .addValue("dateChanged", utcTs)
                 .addValue("dateEnd", utcTs);
 
@@ -87,9 +92,33 @@ class SessionRepositoryImpl implements SessionRepository {
             "UPDATE \n" +
                 "   session.session \n" +
                 "SET \n" +
-                "   status = :reason, \n" +
+                "   status = 'closed', \n" +
                 "   datechanged = :dateChanged, \n" +
                 "   dateend = :dateEnd \n" +
+                "WHERE \n" +
+                "   _key = :id";
+
+        try {
+            jdbcTemplate.update(SQL, parameters);
+        } catch (DataAccessException e) {
+            log.error("{} UPDATE threw exception", SQL, e);
+            throw e;
+        }
+    }
+
+    @Override
+    public void updateDateVisited(final UUID sessionId) {
+        final SqlParameterSource parameters =
+            new MapSqlParameterSource("id", UuidAdapter.getBytesFromUUID(sessionId))
+                .addValue("dateVisited", mapInstantToTimestamp(Instant.now()));
+
+        // In order to preserve compatibility with the existing TDS system, this implementation executes an UPDATE
+        // against the existing record in the session.session table.
+        final String SQL =
+            "UPDATE \n" +
+                "   session.session \n" +
+                "SET \n" +
+                "   datevisited = :dateVisited \n" +
                 "WHERE \n" +
                 "   _key = :id";
 
@@ -115,7 +144,9 @@ class SessionRepositoryImpl implements SessionRepository {
                 .withDateVisited(mapTimestampToJodaInstant(rs, "datevisited"))
                 .withClientName(rs.getString("clientname"))
                 .withProctorId((Long) rs.getObject("proctorId")) // proctorId can be null in the db table.
+                .withProctorName(rs.getString("proctorName"))
                 .withBrowserKey(UuidAdapter.getUUIDFromBytes(rs.getBytes("browserKey")))
+                .withProctorEmail(rs.getString("proctorEmail"))
                 .build();
         }
     }

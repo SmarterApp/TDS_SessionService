@@ -1,10 +1,13 @@
 package tds.session.services.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,6 +27,7 @@ import tds.session.services.SessionService;
 
 @Service
 class SessionServiceImpl implements SessionService {
+    private static final Logger log = LoggerFactory.getLogger(SessionServiceImpl.class);
     private final SessionRepository sessionRepository;
     private final SessionAssessmentQueryRepository sessionAssessmentQueryRepository;
     private final ExamService examService;
@@ -38,15 +42,14 @@ class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    @Cacheable(CacheType.SHORT_TERM)
     public Optional<Session> findSessionById(final UUID id) {
-        return sessionRepository.findSessionById(id);
+        return sessionRepository.findSessionsByIds(id).stream().findFirst();
     }
 
     @Transactional
     @Override
     public Response<PauseSessionResponse> pause(final UUID sessionId, final PauseSessionRequest request) {
-        final Session session = sessionRepository.findSessionById(sessionId)
+        final Session session = findSessionById(sessionId)
             .orElseThrow(() -> new NotFoundException(String.format("Could not find session for session id %s", sessionId)));
 
         Optional<ValidationError> maybeValidationError = verifySessionCanBePaused(session, request);
@@ -55,9 +58,9 @@ class SessionServiceImpl implements SessionService {
         }
 
         examService.pauseAllExamsInSession(sessionId);
-        sessionRepository.pause(sessionId, "closed");
+        sessionRepository.pause(sessionId);
 
-        Session updatedSession = sessionRepository.findSessionById(sessionId)
+        Session updatedSession = findSessionById(sessionId)
             .orElseThrow(() -> new IllegalStateException(String.format("Could not find session that was just closed for session id %s", sessionId)));
 
         return new Response<>(new PauseSessionResponse(updatedSession));
@@ -67,6 +70,30 @@ class SessionServiceImpl implements SessionService {
     @Cacheable(CacheType.LONG_TERM)
     public Optional<SessionAssessment> findSessionAssessment(final UUID sessionId, final String assessmentKey) {
         return sessionAssessmentQueryRepository.findSessionAssessment(sessionId, assessmentKey);
+    }
+
+    @Override
+    public boolean updateDateVisited(final UUID sessionId) {
+        Optional<Session> maybeSession = findSessionById(sessionId);
+
+        if (!maybeSession.isPresent()) {
+            log.error("No session for session id {} found. Unable to extend session.", sessionId);
+            return false;
+        }
+
+        sessionRepository.updateDateVisited(sessionId);
+
+        return true;
+    }
+
+    @Override
+    public List<SessionAssessment> findSessionAssessments(final UUID sessionId) {
+        return sessionAssessmentQueryRepository.findSessionAssessments(sessionId);
+    }
+
+    @Override
+    public List<Session> findSessionsByIds(final UUID... sessionIds) {
+        return sessionRepository.findSessionsByIds(sessionIds);
     }
 
     /**

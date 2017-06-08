@@ -1,5 +1,6 @@
 package tds.session.repositories;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,12 +11,12 @@ import tds.session.Session;
  */
 public interface SessionRepository {
     /**
-     * Finds the Session by given id
+     * Finds the list of {@link tds.session.Session}s for the specified session ids
      *
-     * @param id session id
-     * @return optional containing {@link tds.session.Session Session} otherwise empty Optional
+     * @param ids The ids of the {@link tds.session.Session}s to find
+     * @return A list of sessions for the provided ids
      */
-    Optional<Session> findSessionById(final UUID id);
+    List<Session> findSessionsByIds(final UUID... ids);
 
     /**
      * Pause an existing {@link Session}, updating the {@link Session}'s status to indicate it is no longer "open".
@@ -27,7 +28,14 @@ public interface SessionRepository {
      * </p>
      *
      * @param sessionId The id of the {@link Session} to pause
-     * @param newStatus A description of why the {@link Session} is being paused
      */
-    void pause(final UUID sessionId, final String newStatus);
+    void pause(final UUID sessionId);
+
+    /**
+     * Updates the "datevisited" column of the session table to prevent the session from being closed from a timeout due
+     * to proctor inactivity.
+     *
+     * @param sessionId The id of the {@link tds.session.Session} to extend
+     */
+    void updateDateVisited(UUID sessionId);
 }

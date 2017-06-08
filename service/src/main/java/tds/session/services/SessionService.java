@@ -1,5 +1,6 @@
 package tds.session.services;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,5 +43,29 @@ public interface SessionService {
      * @return {@link tds.session.SessionAssessment} if found otherwise empty
      */
     Optional<SessionAssessment> findSessionAssessment(final UUID sessionId, final String assessmentKey);
+
+    /**
+     * Updates the "date visited" of a {@link tds.session.Session} in order to maintain the session open.
+     *
+     * @param sessionId The id of the {@link tds.session.Session}
+     * @return {@code true} if the session was successfully updated, {@code false} otherwise
+     */
+    boolean updateDateVisited(final UUID sessionId);
+
+    /**
+     * Finds the associated {@link List<tds.session.SessionAssessment>} for a session
+     *
+     * @param sessionId the id of the session to find the {@link tds.session.SessionAssessment}s for
+     * @return the list of all {@link tds.session.SessionAssessment}s for this session
+     */
+    List<SessionAssessment> findSessionAssessments(final UUID sessionId);
+
+    /**
+     * Finds the list of {@link tds.session.Session}s for the specified session ids
+     *
+     * @param sessionIds The ids of the {@link tds.session.Session}s to find
+     * @return A list of sessions for the provided ids
+     */
+    List<Session> findSessionsByIds(final UUID... sessionIds);
 }
 

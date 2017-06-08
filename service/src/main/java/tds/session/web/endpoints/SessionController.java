@@ -9,10 +9,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 import tds.common.Response;
@@ -35,7 +38,7 @@ class SessionController {
     private final SessionService sessionService;
 
     @Autowired
-    public SessionController(SessionService sessionService) {
+    public SessionController(final SessionService sessionService) {
         this.sessionService = sessionService;
     }
 
@@ -46,6 +49,12 @@ class SessionController {
             .orElseThrow(() -> new NotFoundException("Could not find session for %s", sessionId));
 
         return ResponseEntity.ok(session);
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    ResponseEntity<List<Session>> findSessionsByIds(@RequestParam("sessionId") final UUID... sessionIds) {
+        return ResponseEntity.ok(sessionService.findSessionsByIds(sessionIds));
     }
 
     @RequestMapping(value = "/{sessionId}/pause", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,6 +73,17 @@ class SessionController {
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{sessionId}/extend", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Boolean> extendSession(@PathVariable final UUID sessionId) {
+        Boolean successful = sessionService.updateDateVisited(sessionId);
+
+        if (!successful) {
+            return new ResponseEntity<>(successful, HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        return ResponseEntity.ok(successful);
+    }
+
     @RequestMapping(value = "/{sessionId}/assessment/{assessmentKey}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     ResponseEntity<SessionAssessment> findSessionAssessment(@PathVariable final UUID sessionId, @PathVariable final String assessmentKey) {
@@ -71,5 +91,11 @@ class SessionController {
             .orElseThrow(() -> new NotFoundException("Could not find session assessment for %s and %s", sessionId, assessmentKey));
 
         return ResponseEntity.ok(sessionAssessment);
+    }
+
+    @RequestMapping(value = "/{sessionId}/assessment", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    ResponseEntity<List<SessionAssessment>> findSessionAssessments(@PathVariable final UUID sessionId) {
+        return ResponseEntity.ok(sessionService.findSessionAssessments(sessionId));
     }
 }
