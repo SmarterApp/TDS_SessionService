@@ -8,6 +8,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,8 +27,10 @@ import tds.session.repositories.SessionRepository;
 import tds.session.services.ExamService;
 import tds.session.services.SessionService;
 
+import static io.github.benas.randombeans.api.EnhancedRandom.random;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -59,20 +65,20 @@ public class SessionServiceImplTest {
         Session session = new Session.Builder()
             .withId(id)
             .build();
-        when(mockSessionRepository.findSessionById(id)).thenReturn(Optional.of(session));
+        when(mockSessionRepository.findSessionsByIds(id)).thenReturn(Collections.singletonList(session));
 
         Optional<Session> sessionOptional = service.findSessionById(id);
 
         assertThat(sessionOptional).isPresent();
         assertThat(sessionOptional.get().getId()).isEqualTo(id);
 
-        verify(mockSessionRepository).findSessionById(id);
+        verify(mockSessionRepository).findSessionsByIds(id);
     }
 
     @Test
     public void shouldReturnOptionalEmptyForInvalidSessionId() {
         UUID id = UUID.randomUUID();
-        when(mockSessionRepository.findSessionById(id)).thenReturn(Optional.empty());
+        when(mockSessionRepository.findSessionsByIds(id)).thenReturn(new ArrayList<>());
 
         Optional<Session> result = service.findSessionById(id);
 
@@ -90,6 +96,55 @@ public class SessionServiceImplTest {
         verify(mockSessionAssessmentQueryRepository).findSessionAssessment(sessionId, "(SBAC) 3 ELA 2015 - 2016");
 
         assertThat(maybeSessionAssessment).isPresent();
+    }
+
+    @Test
+    public void shouldFindAllSessionAssessmentsForSession() {
+        final UUID sessionId = UUID.randomUUID();
+        final SessionAssessment sessionAssessment1 = random(SessionAssessment.class);
+        final SessionAssessment sessionAssessment2 = random(SessionAssessment.class);
+
+        when(mockSessionAssessmentQueryRepository.findSessionAssessments(sessionId))
+            .thenReturn(Arrays.asList(sessionAssessment1, sessionAssessment2));
+        List<SessionAssessment> sessionAssessments = service.findSessionAssessments(sessionId);
+        verify(mockSessionAssessmentQueryRepository).findSessionAssessments(sessionId);
+
+        assertThat(sessionAssessments).containsExactlyInAnyOrder(sessionAssessment1, sessionAssessment2);
+    }
+
+    @Test
+    public void shouldFindAllSessionsForSessionId() {
+        Session session1 = random(Session.class);
+        Session session2 = random(Session.class);
+
+        when(mockSessionRepository.findSessionsByIds(session1.getId(), session2.getId()))
+            .thenReturn(Arrays.asList(session1, session2));
+        List<Session> retSessions = service.findSessionsByIds(session1.getId(), session2.getId());
+
+        Session retSession1 = null;
+        Session retSession2 = null;
+
+        for (Session s : retSessions) {
+            if (s.getId().equals(session1.getId())) {
+                retSession1 = s;
+            } else if (s.getId().equals(session2.getId())) {
+                retSession2 = s;
+            }
+        }
+
+        assertThat(retSession1.getId()).isEqualTo(session1.getId());
+        assertThat(retSession1.getStatus()).isEqualTo(session1.getStatus());
+        assertThat(retSession1.getDateBegin()).isEqualByComparingTo(session1.getDateBegin());
+        assertThat(retSession1.getDateChanged()).isEqualTo(session1.getDateChanged());
+        assertThat(retSession1.getDateEnd()).isEqualTo(session1.getDateEnd());
+        assertThat(retSession1.getDateVisited()).isEqualTo(session1.getDateVisited());
+        assertThat(retSession1.getClientName()).isEqualTo(session1.getClientName());
+        assertThat(retSession1.getProctorId()).isEqualTo(session1.getProctorId());
+        assertThat(retSession1.getBrowserKey()).isEqualTo(session1.getBrowserKey());
+        assertThat(retSession1.getProctorName()).isEqualTo(session1.getProctorName());
+        assertThat(retSession1.getProctorEmail()).isEqualTo(session1.getProctorEmail());
+
+        assertThat(retSession2.getId()).isEqualTo(session2.getId());
     }
 
     @Test
@@ -118,17 +173,17 @@ public class SessionServiceImplTest {
 
         PauseSessionRequest request = new PauseSessionRequest(proctorId, browserKey);
 
-        when(mockSessionRepository.findSessionById(mockOpenSession.getId()))
-            .thenReturn(Optional.of(mockOpenSession))
-            .thenReturn(Optional.of(mockUpdatedSession));
-        doNothing().when(mockSessionRepository).pause(mockOpenSession.getId(), "closed");
+        when(mockSessionRepository.findSessionsByIds(mockOpenSession.getId()))
+            .thenReturn(Collections.singletonList(mockOpenSession))
+            .thenReturn(Collections.singletonList(mockUpdatedSession));
+        doNothing().when(mockSessionRepository).pause(mockOpenSession.getId());
         doNothing().when(mockExamService).pauseAllExamsInSession(mockOpenSession.getId());
 
         Response<PauseSessionResponse> response = service.pause(mockOpenSession.getId(), request);
 
         verify(mockExamService).pauseAllExamsInSession(mockOpenSession.getId());
-        verify(mockSessionRepository).pause(mockOpenSession.getId(), "closed");
-        verify(mockSessionRepository, times(2)).findSessionById(mockOpenSession.getId());
+        verify(mockSessionRepository).pause(mockOpenSession.getId());
+        verify(mockSessionRepository, times(2)).findSessionsByIds(mockOpenSession.getId());
 
         assertThat(response.getData()).isNotNull();
         assertThat(response.hasError()).isFalse();
@@ -154,12 +209,12 @@ public class SessionServiceImplTest {
 
         PauseSessionRequest request = new PauseSessionRequest(proctorId, browserKey);
 
-        when(mockSessionRepository.findSessionById(mockClosedSession.getId())).thenReturn(Optional.of(mockClosedSession));
+        when(mockSessionRepository.findSessionsByIds(mockClosedSession.getId())).thenReturn(Collections.singletonList(mockClosedSession));
 
         Response<PauseSessionResponse> response = service.pause(sessionId, request);
 
         verifyZeroInteractions(mockExamService);
-        verify(mockSessionRepository, times(1)).findSessionById(mockClosedSession.getId());
+        verify(mockSessionRepository, times(1)).findSessionsByIds(mockClosedSession.getId());
         verifyNoMoreInteractions(mockSessionRepository);
 
         assertThat(response.getData().isPresent()).isFalse();
@@ -184,12 +239,12 @@ public class SessionServiceImplTest {
 
         PauseSessionRequest request = new PauseSessionRequest(proctorId, browserKey);
 
-        when(mockSessionRepository.findSessionById(mockClosedSession.getId())).thenReturn(Optional.of(mockClosedSession));
+        when(mockSessionRepository.findSessionsByIds(mockClosedSession.getId())).thenReturn(Collections.singletonList(mockClosedSession));
 
         Response<PauseSessionResponse> response = service.pause(sessionId, request);
 
         verifyZeroInteractions(mockExamService);
-        verify(mockSessionRepository, times(1)).findSessionById(mockClosedSession.getId());
+        verify(mockSessionRepository, times(1)).findSessionsByIds(mockClosedSession.getId());
         verifyNoMoreInteractions(mockSessionRepository);
 
         assertThat(response.getData().isPresent()).isFalse();
@@ -215,19 +270,42 @@ public class SessionServiceImplTest {
 
         PauseSessionRequest request = new PauseSessionRequest(proctorId, browserKey);
 
-        when(mockSessionRepository.findSessionById(mockClosedSession.getId())).thenReturn(Optional.of(mockClosedSession));
+        when(mockSessionRepository.findSessionsByIds(mockClosedSession.getId())).thenReturn(Collections.singletonList(mockClosedSession));
         doNothing().when(mockExamService).pauseAllExamsInSession(mockClosedSession.getId());
 
         Response<PauseSessionResponse> response = service.pause(sessionId, request);
 
         verify(mockExamService, times(0)).pauseAllExamsInSession(mockClosedSession.getId());
-        verify(mockSessionRepository, times(0)).pause(mockClosedSession.getId(), "closed");
-        verify(mockSessionRepository, times(1)).findSessionById(mockClosedSession.getId());
+        verify(mockSessionRepository, times(0)).pause(mockClosedSession.getId());
+        verify(mockSessionRepository, times(1)).findSessionsByIds(mockClosedSession.getId());
 
         assertThat(response.getData().isPresent()).isFalse();
         assertThat(response.hasError()).isTrue();
         ValidationError error = response.getError().get();
         assertThat(error.getCode()).isEqualTo(ValidationErrorCode.PAUSE_SESSION_ACCESS_VIOLATION);
         assertThat(error.getMessage()).isEqualTo("Unauthorized session access");
+    }
+
+    @Test
+    public void shouldUpdateSessionService() {
+        final Session session = random(Session.class);
+
+        when(mockSessionRepository.findSessionsByIds(session.getId())).thenReturn(Collections.singletonList(session));
+        boolean successful = service.updateDateVisited(session.getId());
+
+        assertThat(successful).isTrue();
+        verify(mockSessionRepository).findSessionsByIds(session.getId());
+        verify(mockSessionRepository).updateDateVisited(session.getId());
+    }
+
+    @Test
+    public void shouldReturnFalseForNoSessionFound() {
+        final UUID sessionId = UUID.randomUUID();
+
+        when(mockSessionRepository.findSessionsByIds(sessionId)).thenReturn(new ArrayList<>());
+        assertThat(service.updateDateVisited(sessionId)).isFalse();
+
+        verify(mockSessionRepository).findSessionsByIds(sessionId);
+        verify(mockSessionRepository, never()).updateDateVisited(sessionId);
     }
 }

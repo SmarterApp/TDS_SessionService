@@ -5,13 +5,13 @@
     <artifactId>tds-session</artifactId>
     <name>tds-session</name>
     <packaging>pom</packaging>
-    <version>0.0.4-SNAPSHOT</version>
+    <version>3.1.0.RELEASE</version>
 
     <scm>
         <connection>scm:git:https://github.com/SmarterApp/TDS_SessionService.git</connection>
         <developerConnection>scm:git:git://github.com/SmarterApp/TDS_SessionService.git</developerConnection>
         <url>https://github.com/SmarterApp/TDS_SessionService</url>
-        <tag>HEAD</tag>
+        <tag>3.1.0.RELEASE</tag>
     </scm>
 
     <modules>
@@ -22,21 +22,19 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.4.2.RELEASE</version>
+        <version>1.5.2.RELEASE</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <unit-tests.skip>false</unit-tests.skip>
         <integration-tests.skip>true</integration-tests.skip>
         <docker.image.prefix>fwsbac</docker.image.prefix>
         <assertj.version>3.4.1</assertj.version>
         <mockito.version>1.10.19</mockito.version>
         <joda-time.version>2.9.5</joda-time.version>
-        <spring.cloud.config.version>1.2.3.RELEASE</spring.cloud.config.version>
 
-        <tds.common.version>0.0.5</tds.common.version>
+        <tds-common.version>3.1.0.RELEASE</tds-common.version>
 
         <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>

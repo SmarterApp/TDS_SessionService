@@ -32,6 +32,8 @@ public class Session {
     private String clientName;
     private Long proctorId;
     private UUID browserKey;
+    private String proctorName;
+    private String proctorEmail;
 
     public static class Builder {
         private UUID id;
@@ -44,6 +46,8 @@ public class Session {
         private String clientName;
         private Long proctorId;
         private UUID browserKey;
+        private String proctorName;
+        private String proctorEmail;
 
         public Builder withId(UUID newId) {
             id = newId;
@@ -95,6 +99,30 @@ public class Session {
             return this;
         }
 
+        public Builder withProctorName(String proctorName) {
+            this.proctorName = proctorName;
+            return this;
+        }
+
+        public Builder withProctorEmail(String proctorEmail) {
+            this.proctorEmail = proctorEmail;
+            return this;
+        }
+
+        public Builder fromSession(Session session) {
+            id = session.id;
+            sessionKey = session.sessionKey;
+            status = session.status;
+            dateBegin = session.dateBegin;
+            dateEnd = session.dateEnd;
+            dateChanged = session.dateChanged;
+            dateVisited = session.dateVisited;
+            clientName = session.clientName;
+            proctorId = session.proctorId;
+            browserKey = session.browserKey;
+            return this;
+        }
+
         public Session build() {
             return new Session(this);
         }
@@ -117,6 +145,8 @@ public class Session {
         clientName = builder.clientName;
         proctorId = builder.proctorId;
         browserKey = builder.browserKey;
+        proctorName = builder.proctorName;
+        proctorEmail = builder.proctorEmail;
     }
 
     /**
@@ -201,6 +231,20 @@ public class Session {
      */
     public Long getProctorId() {
         return proctorId;
+    }
+
+    /**
+     * @return The name of the proctor
+     */
+    public String getProctorName() {
+        return proctorName;
+    }
+
+    /**
+     * @return The email address of the proctor user
+     */
+    public String getProctorEmail() {
+        return proctorEmail;
     }
 
     /**

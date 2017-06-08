@@ -1,5 +1,6 @@
 package tds.session.services.impl;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,12 +34,13 @@ public class SessionServiceImplIntegrationTests {
     private SessionService sessionService;
 
     @Test
+    @Ignore("Session caching is disabled until we can handle eviction")
     public void shouldReturnCachedSession() {
         UUID id = UUID.randomUUID();
         Session session = new Session.Builder()
             .withId(id)
             .build();
-        when(mockSessionRepository.findSessionById(id)).thenReturn(Optional.of(session));
+        when(mockSessionRepository.findSessionsByIds(id)).thenReturn(Collections.singletonList(session));
 
         Optional<Session> sessionOptional1 = sessionService.findSessionById(id);
         Optional<Session> sessionOptional2 = sessionService.findSessionById(id);
@@ -45,6 +48,6 @@ public class SessionServiceImplIntegrationTests {
         assertThat(sessionOptional1).isPresent();
         assertThat(sessionOptional1).isEqualTo(sessionOptional2);
 
-        verify(mockSessionRepository, times(1)).findSessionById(id);
+        verify(mockSessionRepository, times(1)).findSessionsByIds(id);
     }
 }
