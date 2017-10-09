@@ -62,5 +62,5 @@ To build the service and run integration tests:
 Additional Documentation can be found in the documentation folder.  This includes:
 
 * [Spring Configuration](documentation/spring_configuration.md)
-* [Running Session Microservice](running_service.md)
+* [Running Session Microservice](documentation/running_service.md)
 
