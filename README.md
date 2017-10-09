@@ -58,3 +58,9 @@ To build the service and run integration tests:
   
 * `mvn clean install -Dintegration-tests.skip=false -f /path/to/service/pom.xml`
 
+# Additional Documentation
+Additional Documentation can be found in the documentation folder.  This includes:
+
+* [Spring Configuration](documentation/spring_configuration.md)
+* [Running Session Microservice](running_service.md)
+
