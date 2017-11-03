@@ -48,7 +48,7 @@ security:
     role: MANAGEMENT
 
 server:
-  port: 8082
+  port: 32842
   undertow:
     buffer-size: 8192
     io-threads: 4
